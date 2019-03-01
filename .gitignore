@@ -12,3 +12,4 @@ Cargo.lock
 **/*.rs.bk
 
 create_empty.sh
+.ccls-cache
