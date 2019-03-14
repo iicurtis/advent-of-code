@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-use packed_simd::i32x16;
+// use packed_simd::i32x16;
 use rayon::prelude::*;
 use std::fmt::{self, Display};
 use std::i32;
@@ -24,7 +24,8 @@ type Error = Box<std::error::Error>;
 pub fn solve(input: &str) -> Result<String, Error> {
     let input = parse_input(input);
     let soln1 = part1(&input);
-    let soln2 = part2(&input);
+    // let soln2 = part2(&input);
+    let soln2 = "No SIMD available currently";
     Ok(format!("Part 1: {}\nPart 2: {}", soln1, soln2))
 }
 
@@ -123,43 +124,43 @@ fn part1(input: &Vec<Point>) -> usize {
         .unwrap()
 }
 
-fn simd_dist_l1(x1: i32x16, y1: i32x16, x2: i32x16, y2: i32x16) -> i32x16 {
-    abs_s(x1 - x2) + abs_s(y1 - y2)
-}
+// fn simd_dist_l1(x1: i32x16, y1: i32x16, x2: i32x16, y2: i32x16) -> i32x16 {
+    // abs_s(x1 - x2) + abs_s(y1 - y2)
+// }
 
-fn abs_s(vec: i32x16) -> i32x16 {
-    let mask = vec >> (std::mem::size_of::<i32>() * 8 - 1) as u32;
-    (vec + mask) ^ mask
-}
+// fn abs_s(vec: i32x16) -> i32x16 {
+    // let mask = vec >> (std::mem::size_of::<i32>() * 8 - 1) as u32;
+    // (vec + mask) ^ mask
+// }
 
-fn part2(input: &Vec<Point>) -> usize {
-    const MAX_DIST: i32x16 = i32x16::splat(10_000);
-    const ONES: i32x16 = i32x16::splat(1);
-    const ZEROS: i32x16 = i32x16::splat(0);
-    let range_32: i32x16 = i32x16::new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-    let max_x = input.iter().max_by_key(|k| k.x).unwrap().x;
-    let max_y = input.iter().max_by_key(|k| k.y).unwrap().y;
-    let min_x = input.iter().min_by_key(|k| k.x).unwrap().x;
-    let min_y = input.iter().min_by_key(|k| k.y).unwrap().y;
-    (min_x..max_x + 1)
-        .into_par_iter()
-        .map(|x| {
-            let mut count = 0;
-            let x1_simd = i32x16::splat(x);
-            for y in (min_y..=max_y).step_by(i32x16::lanes()) {
-                let mut dist = i32x16::splat(0);
-                let y1_simd = i32x16::splat(y) + range_32;
-                for k in input {
-                    let x2_simd = i32x16::splat(k.x);
-                    let y2_simd = i32x16::splat(k.y);
-                    dist += simd_dist_l1(x1_simd, y1_simd, x2_simd, y2_simd);
-                }
-                count += dist.lt(MAX_DIST).select(ONES, ZEROS).wrapping_sum() as u32;
-            }
-            count
-        })
-        .sum::<u32>() as usize
-}
+// fn part2(input: &Vec<Point>) -> usize {
+    // const MAX_DIST: i32x16 = i32x16::splat(10_000);
+    // const ONES: i32x16 = i32x16::splat(1);
+    // const ZEROS: i32x16 = i32x16::splat(0);
+    // let range_32: i32x16 = i32x16::new(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+    // let max_x = input.iter().max_by_key(|k| k.x).unwrap().x;
+    // let max_y = input.iter().max_by_key(|k| k.y).unwrap().y;
+    // let min_x = input.iter().min_by_key(|k| k.x).unwrap().x;
+    // let min_y = input.iter().min_by_key(|k| k.y).unwrap().y;
+    // (min_x..max_x + 1)
+        // .into_par_iter()
+        // .map(|x| {
+            // let mut count = 0;
+            // let x1_simd = i32x16::splat(x);
+            // for y in (min_y..=max_y).step_by(i32x16::lanes()) {
+                // let mut dist = i32x16::splat(0);
+                // let y1_simd = i32x16::splat(y) + range_32;
+                // for k in input {
+                    // let x2_simd = i32x16::splat(k.x);
+                    // let y2_simd = i32x16::splat(k.y);
+                    // dist += simd_dist_l1(x1_simd, y1_simd, x2_simd, y2_simd);
+                // }
+                // count += dist.lt(MAX_DIST).select(ONES, ZEROS).wrapping_sum() as u32;
+            // }
+            // count
+        // })
+        // .sum::<u32>() as usize
+// }
 
 #[cfg(test)]
 mod test {

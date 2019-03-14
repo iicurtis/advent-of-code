@@ -1,5 +1,5 @@
 [package]
-name = "advent2018-rs"
+name = "advent2018"
 version = "0.1.0"
 authors = ["Isaac Curtis <iicurtis@outlook.com>"]
 edition = "2018"
@@ -8,9 +8,14 @@ edition = "2018"
 clap = "2"
 itertools = "0.7"
 hashbrown = "0.1"
-packed_simd = "0.3"
+# packed_simd = "0.3"
+simdeez = "0.5"
 rayon = "1"
 nom = "4"
 
 [dev-dependencies]
 criterion = "*"
+
+[[bench]]
+name = 'aoc'
+harness = false

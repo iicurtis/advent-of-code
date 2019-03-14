@@ -1,6 +1,5 @@
 extern crate clap;
 extern crate hashbrown;
-extern crate packed_simd;
 extern crate rayon;
 
 pub mod day01;
@@ -23,4 +22,3 @@ pub mod day17;
 pub mod day18;
 // pub mod day19;
 
-// aoc_lib! { year = 2018 }

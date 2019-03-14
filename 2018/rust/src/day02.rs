@@ -19,13 +19,13 @@ use std::str;
 type Error = Box<std::error::Error>;
 
 pub fn solve(input: &str) -> Result<String, Error> {
-    let soln1 = part1_burnt(&input);
-    let soln2 = part2_simd(&input);
+    let soln1 = part1(&input);
+    let soln2 = part2(&input);
+    // let soln2 = part2_simd(&input);
     Ok(format!("Part 1: {}\nPart 2: {}", soln1, soln2))
 }
 
-// https://github.com/BurntSushi/advent-of-code/blob/master/2018/aoc02/src/main.rs
-fn part1_burnt(input: &str) -> u32 {
+pub fn part1(input: &str) -> u32 {
     let mut frequencies = [0u8; 256];
     let (mut twos, mut threes) = (0, 0);
     for line in input.lines() {
@@ -45,44 +45,102 @@ fn part1_burnt(input: &str) -> u32 {
     return twos * threes;
 }
 
-pub fn part2_simd<'a>(input: &'a str) -> String {
-    use packed_simd::u8x32;
-    use std::hint::unreachable_unchecked;
-    let lines = input.lines();
+// pub fn part2_simd<'a>(input: &'a str) -> String {
+    // use packed_simd::u8x32;
+    // use std::hint::unreachable_unchecked;
+    // let lines = input.lines();
 
-    #[repr(align(32))]
-    #[derive(Copy, Clone)]
-    struct Line([u8; 32]);
+    // #[repr(align(32))]
+    // #[derive(Copy, Clone)]
+    // struct Line([u8; 32]);
 
-    let mut storage = [u8x32::splat(0); 250];
-    let mut buf = Line([0; 32]);
-    for (storage, line) in storage.iter_mut().zip(lines) {
-        let line = line.trim_end();
-        buf.0[..line.len()].copy_from_slice(line.as_bytes());
-        *storage = u8x32::from_slice_aligned(&buf.0);
-    }
+    // let mut storage = [u8x32::splat(0); 250];
+    // let mut buf = Line([0; 32]);
+    // for (storage, line) in storage.iter_mut().zip(lines) {
+        // let line = line.trim_end();
+        // buf.0[..line.len()].copy_from_slice(line.as_bytes());
+        // *storage = u8x32::from_slice_aligned(&buf.0);
+    // }
 
-    for (i, &a) in storage.iter().enumerate() {
-        for &b in &storage[i + 1..] {
-            if a.eq(b)
-                .select(u8x32::splat(1), u8x32::splat(0))
-                .wrapping_sum()
-                == 31
-            {
-                let mut buf = String::with_capacity(25);
-                let a: [u8; 32] = a.into();
-                let b: [u8; 32] = b.into();
-                for (&a, &b) in a.iter().zip(&b) {
-                    if a == b && a != 0 {
-                        buf.push(a as char);
-                    }
-                }
-                return buf;
+    // for (i, &a) in storage.iter().enumerate() {
+        // for &b in &storage[i + 1..] {
+            // if a.eq(b)
+                // .select(u8x32::splat(1), u8x32::splat(0))
+                // .wrapping_sum()
+                // == 31
+            // {
+                // let mut buf = String::with_capacity(25);
+                // let a: [u8; 32] = a.into();
+                // let b: [u8; 32] = b.into();
+                // for (&a, &b) in a.iter().zip(&b) {
+                    // if a == b && a != 0 {
+                        // buf.push(a as char);
+                    // }
+                // }
+                // return buf;
+            // }
+        // }
+    // }
+    // unsafe { unreachable_unchecked() };
+// }
+
+pub fn part2<'a>(input: &'a str) -> String {
+    let lines: Vec<&str> = input.lines().collect();
+    let line_len = 26;
+    let mut parts = hashbrown::HashSet::with_capacity(250);
+
+    for split in 0..line_len {
+        for line in lines.clone() {
+            let line = line.as_bytes();
+            let (left, right) = (&line[..split], &line[split + 1..]);
+            if !parts.insert((left, right)) {
+                let left_str = std::str::from_utf8(left).unwrap();
+                let right_str = std::str::from_utf8(right).unwrap();
+                return format!("{}{}", left_str, right_str)
             }
         }
     }
-    unsafe { unreachable_unchecked() };
+
+    panic!("No solution")
 }
+
+// #[cfg(target_arch = "x86_64")]
+// #[target_feature(enable = "avx2")]
+// pub unsafe fn part2_unsafe<'a>(input: &'a str) -> String {
+    // #[cfg(target_arch = "x86_64")]
+    // use std::arch::x86_64::*;
+    // let lines = input.lines();
+
+    // #[repr(align(32))]
+    // #[derive(Copy, Clone)]
+    // struct Line([u8; 32]);
+
+    // let mut storage: [__m256i; 250] = [_mm256_setzero_si256(); 250];
+    // let mut buf = Line([0; 32]);
+    // for (storage, line) in storage.iter_mut().zip(lines) {
+        // let line = line.trim_end();
+        // buf.0[..line.len()].copy_from_slice(line.as_bytes());
+        // *storage = _mm256_load_si256(std::mem::transmute::<&[u8], &__m256i>(&buf.0));
+    // }
+
+    // for (i, &a) in storage.iter().enumerate() {
+        // for &b in &storage[i + 1..] {
+            // let cmp_ne = !_mm256_movemask_epi8(_mm256_cmpeq_epi8(a, b));
+            // let diff1 = _blsi_u32(cmp_ne);
+            // if (diff1 == cmp_ne) {
+                // let mut buf = String::with_capacity(25);
+                // let a: [u8; 32] = a.into();
+                // let b: [u8; 32] = b.into();
+                // for (&a, &b) in a.iter().zip(&b) {
+                    // if a == b && a != 0 {
+                        // buf.push(a as char);
+                    // }
+                // }
+                // return buf;
+            // }
+        // }
+    // }
+// }
 
 #[cfg(test)]
 mod tests {
@@ -93,11 +151,11 @@ mod tests {
 
     #[test]
     fn part1_example() {
-        assert_eq!(part1_burnt(INPUT_PART1), 12);
+        assert_eq!(part1(INPUT_PART1), 12);
     }
 
     #[test]
     fn part2_example() {
-        assert_eq!(part2_simd(INPUT_PART2), "fgij");
+        assert_eq!(part2(INPUT_PART2), "fgij");
     }
 }

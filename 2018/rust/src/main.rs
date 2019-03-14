@@ -14,9 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-extern crate advent2018_rs;
+extern crate advent2018;
 
-use advent2018_rs::*;
+use advent2018::*;
 use clap::{App, Arg};
 use std::io::{self, Write};
 

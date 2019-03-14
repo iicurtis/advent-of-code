@@ -14,102 +14,158 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-// use nom::types::CompleteStr;
-// use nom::*;
-// use std::str::FromStr;
+use std::fmt::{self, Display};
 
 type Error = Box<std::error::Error>;
 
 pub fn solve(input: &str) -> Result<String, Error> {
-    // let input = parse_input(input);
-    // let soln1 = part1(&input);
+    let input = parse_input(input);
+    let soln1 = part1(&input);
     // let soln2 = part2(&input);
-    let soln1 = "Day17 not solved yet";
-    let soln2 = "Day17 not solved yet";
+    let soln2 = "Day 17 part2 not solved yet";
     Ok(format!("Part 1: {}\nPart 2: {}", soln1, soln2))
 }
 
-// #[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd)]
-// struct Point {
-    // x: usize,
-    // y: usize,
-// }
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd)]
+struct Point {
+    x: usize,
+    y: usize,
+}
 
-// #[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd)]
-// struct PointRange {
-    // x0: usize,
-    // y0: usize,
-    // x1: usize,
-    // y1: usize,
-// }
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd)]
+enum Element {
+    SAND,
+    CLAY,
+    WATER,
+    FLOW,
+    VOID,
+}
 
-// named!(number(CompleteStr) -> usize, map_res!(recognize!(digit), |CompleteStr(s)| usize::from_str(s)));
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+struct World {
+    world: Vec<Element>,
+    x_offset: usize,
+    x_dim: usize,
+    y_dim: usize,
+}
 
-// named!(scanline(CompleteStr) -> PointRange,
-// do_parse!(
-    // axis: alt!(tag!("x") | tag!("y")) >>
-    // tag!("=") >>
-    // coord: number >>
-    // tag!(", ") >>
-    // alt!(tag!("x=") | tag!("y=")) >>
-    // range_start: number >>
-    // tag!("..") >>
-    // range_end: number >>
-    // tag!("\n") >> ( {
-        // if axis == CompleteStr("x") {
-            // PointRange{x0: coord, x1: coord, y0: range_start, y1: range_end}
-        // } else {
-            // PointRange{y0: coord, y1: coord, x0: range_start, x1: range_end}
-        // }
-    // })));
+impl World {
+    fn new(points: Vec<Point>, y_max: usize, x_max: usize, x_min: usize) -> World {
+        let x_dim = x_max - x_min + 1;
+        let y_dim = y_max + 1;
+        let mut world = vec![Element::SAND; y_dim * x_dim];
+        for point in points.iter() {
+            let x = point.x - x_min;
+            let y = point.y;
+            let index = x + y * x_dim;
+            world[index] = Element::CLAY;
+        }
+        world[500 - x_min] = Element::WATER;
+        World {
+            world,
+            x_offset: x_min,
+            x_dim,
+            y_dim,
+        }
+    }
+}
 
-// #[derive(Debug, Clone)]
-// pub struct ParseError;
+impl Display for Element {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Element::SAND => write!(f, "."),
+            Element::CLAY => write!(f, "#"),
+            Element::WATER => write!(f, "+"),
+            Element::FLOW => write!(f, "|"),
+            _ => write!(f, "%"),
+        }
+    }
+}
 
-// impl std::str::FromStr for PointRange {
-    // type Err = ParseError;
+impl Display for World {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        for y in 0..self.y_dim {
+            for x in 0..self.x_dim {
+                write!(f, "{}", self.world[x + y * self.x_dim])?;
+            }
+            write!(f, "\n")?;
+        }
+        Ok(())
+    }
+}
 
-    // fn from_str(input: &str) -> Result<Self, Self::Err> {
-        // match scanline(CompleteStr(input)) {
-            // Ok((CompleteStr(""), points)) => Ok(points),
-            // _ => Err(ParseError),
-        // }
-    // }
-// }
+fn parse_input(input: &str) -> World {
+    let mut points = Vec::new();
+    let mut x_min = 500; // 500 is where the spring is
+    let mut x_max = 0;
+    let mut y_max = 0;
+    for line in input.trim().lines() {
+        let mut coords = line.split(", ");
 
-// #[aoc_generator(day17)]
-// fn parse_input(input: &str) -> Vec<Point> {
-    // let mut points = input
-        // .lines()
-        // .map(|line| line.trim().parse())
-        // .collect::<Result<Vec<Point>, _>>()
-        // .unwrap();
-    // let (_incomplete, parsed) = instr(CompleteStr(input)).expect("Couldn't parse input");
-    // return parsed;
-// }
+        let left = coords.next().unwrap();
+        let right = coords.next().unwrap();
 
+        let coord = left[2..].parse().unwrap();
+        let mut range = right[2..].split("..");
 
-// #[aoc(day17, part1)]
-// fn part1(input: &Input) -> usize {
-    // let mut three_or_more = 0;
-    // for i in input.samples.iter() {
-        // let a = i.instr[1];
-        // let b = i.instr[2];
-        // let c = i.instr[3];
-        // let mut possibles = 0;
-        // for f in OPS.iter() {
-            // let mut reg = i.before.clone();
-            // f(&mut reg, a, b, c);
-            // if reg == i.after {
-                // possibles += 1;
-                // if possibles >= 3 {
-                    // three_or_more += 1;
-                    // break;
-                // }
-            // }
-        // }
-    // }
-    // return three_or_more;
-// }
+        let range_start = range.next().unwrap().parse().unwrap();
+        let range_end = range.next().unwrap().parse().unwrap();
 
+        match line.bytes().next().unwrap() {
+            b'x' => {
+                for y in range_start..=range_end {
+                    if coord > x_max {
+                        x_max = coord;
+                    } else if coord < x_min {
+                        x_min = coord;
+                    }
+                    if y > y_max {
+                        y_max = y;
+                    }
+                    points.push(Point { x: coord, y: y });
+                }
+            }
+            b'y' => {
+                for x in range_start..=range_end {
+                    if coord > y_max {
+                        y_max = coord;
+                    }
+                    if x > x_max {
+                        x_max = x;
+                    } else if x < x_min {
+                        x_min = x;
+                    }
+                    points.push(Point { x: x, y: coord });
+                }
+            }
+            invalid => unreachable!("Invalid coord {}", invalid),
+        }
+    }
+    println!("Parse complete");
+    World::new(points, y_max, x_max, x_min)
+}
 
+fn part1(input: &World) -> usize {
+    println!("{}", input);
+    return 0;
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_part1_0() {
+        let input = r#"
+x=495, y=2..7
+y=7, x=495..501
+x=501, y=3..7
+x=498, y=2..4
+x=506, y=1..2
+x=498, y=10..13
+x=504, y=10..13
+y=13, x=498..504
+"#;
+        assert_eq!(part1(&parse_input(input)), 27730);
+    }
+}

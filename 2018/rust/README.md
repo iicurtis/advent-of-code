@@ -1,24 +1,18 @@
 # adventofcode
-My personal implementations for
-[Advent of Code (AoC)](https://adventofcode.com/)
+
+[Advent of Code 2018](http://adventofcode.com/2018/) rust solutions.
 
 ## Instructions
 
 The code is designed to take input from `stdin`. A wrapper program *run_day.sh*
 exists to run code from the *inputs/* directory.
 
-### Install cargo-aoc
-
-This requires `cargo-aoc` to work. 
-
-```
-cargo install cargo-aoc
-```
-
 ### Running a single day
 
 ```
-cargo aoc -d 1
+cargo run --release -- <day>
+# For day one:
+cargo run --release -- 1
 ```
 
 ### Running all days
@@ -27,14 +21,11 @@ cargo aoc -d 1
 cargo run --release
 ```
 
-### Running custom input
+# [Notes](NOTES.md)
 
-I actually don't know how to do this with `cargo-aoc`. It does lose a bit of its
-flexibility. But its nice to get benchmarks and have a coding paradigm very
-similar to others.
+Go to the [notes](NOTES.md) to read about the implementations for each day.
 
-
-## Other Rust AoC
+# Other Rust AoC
 
 Be sure to check out the Rust Discord! We are on there every day.
 
@@ -48,7 +39,7 @@ Be sure to check out the Rust Discord! We are on there every day.
 * [zesterer/advent-of-code-2018](https://github.com/zesterer/advent-of-code-2018)
 * [troiganto/aoc-2018](https://github.com/troiganto/aoc-2018)
 
-## TODO
+# TODO
 
 * [ ] Add tests
 * [ ] Follow BurntSushi's example and don't panic

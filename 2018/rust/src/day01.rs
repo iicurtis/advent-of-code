@@ -25,18 +25,18 @@ pub fn solve(input: &str) -> Result<String, Error> {
     Ok(format!("Part 1: {}\nPart 2: {}", soln1, soln2))
 }
 
-fn parse_input(input: &str) -> Vec<isize> {
+pub fn parse_input(input: &str) -> Vec<isize> {
     input
         .lines()
         .map(|line| line.parse::<isize>().unwrap())
         .collect()
 }
 
-fn part1(input: &[isize]) -> isize {
+pub fn part1(input: &[isize]) -> isize {
     return input.iter().sum();
 }
 
-fn part2(input: &[isize]) -> isize {
+pub fn part2(input: &[isize]) -> isize {
     let mut seen = hashbrown::HashSet::with_capacity(input.len());
     let mut sum = 0;
     seen.insert(sum);
