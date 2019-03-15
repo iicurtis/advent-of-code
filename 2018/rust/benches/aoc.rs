@@ -26,10 +26,9 @@ fn day03(c: &mut Criterion) {
     use advent2018::day03;
     let input = fs::read_to_string("../inputs/day03.txt").expect("Couldn't find file");
     let input = day03::parse_input(&input);
-    c.bench_function("day03 p1", move |b| b.iter(|| day03::part1(&input)));
+    c.bench_function("day03", move |b| b.iter(|| day03::day03(&input)));
     let input = fs::read_to_string("../inputs/day03.txt").expect("Couldn't find file");
-    let input = day03::parse_input(&input);
-    c.bench_function("day03 p2", move |b| b.iter(|| day03::part2(&input)));
+    c.bench_function("day03 input", move |b| b.iter(|| day03::parse_input(&input)));
 }
 
 criterion_group!(benches,

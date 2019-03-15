@@ -21,84 +21,112 @@ type Error = Box<std::error::Error>;
 
 pub fn solve(input: &str) -> Result<String, Error> {
     let input = parse_input(input);
-    let soln1 = part1(&input);
-    let soln2 = part2(&input);
+    let (soln1, soln2) = day03(&input);
     Ok(format!("Part 1: {}\nPart 2: {}", soln1, soln2))
 }
 
-#[derive(Debug)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Debug)]
 pub struct LandClaim {
-    id: u16,
-    x: u16,
     y: u16,
-    width: u16,
-    height: u16,
+    id: u16,
+    h: u16,
+    idx: u8,
+    mask0: u64,
+    mask1: u64,
+    no_collision: bool,
 }
 
 pub fn parse_input(input: &str) -> Vec<LandClaim> {
-    let mut input_vec: Vec<LandClaim> = Vec::new();
+    let mut input_vec: Vec<LandClaim> = Vec::with_capacity(1500);
     for line in input.trim().lines() {
         let all_the_things = line
             .split(|c| c == ' ' || c == '@' || c == ',' || c == ':' || c == 'x' || c == '#')
             .filter_map(|c| c.parse::<u16>().ok())
             .collect::<Vec<_>>();
         let id = all_the_things[0];
-        let xpos = all_the_things[1];
-        let ypos = all_the_things[2];
-        let xsize = all_the_things[3];
-        let ysize = all_the_things[4];
+        let x = all_the_things[1];
+        let y = all_the_things[2];
+        let w = all_the_things[3];
+        let h = all_the_things[4];
+        let idx = (x/ 64) as u8;
+        let shift = x % 64;
+        let mask: u64 = (1 << w) - 1;
+        let mask0 = mask << shift;
+        let mask1 = if shift != 0 { mask >> (64 - shift) } else { 0 };
         input_vec.push(LandClaim {
             id: id,
-            x: xpos,
-            y: ypos,
-            width: xsize,
-            height: ysize,
+            idx,
+            y,
+            h,
+            mask0,
+            mask1,
+            no_collision: true,
         })
     }
+    // reverse sort
+    input_vec.sort_unstable_by(|a, b| b.cmp(a));
     return input_vec;
 }
 
-pub fn part1(input: &Vec<LandClaim>) -> usize {
-    let mut claims: Vec<u16> = vec![0; 1 << 20];
-    let fabric_width = 1024;
+pub fn day03(input: &Vec<LandClaim>) -> (usize, usize) {
+    let mut input = input.clone();
+    let mut part1: usize = 0;
+    let mut part2: usize = 0;
 
-    for claim in input.iter() {
-        for x in claim.x..claim.x+claim.width {
-            for y in claim.y..claim.y + claim.height {
-                let idx = y as usize * fabric_width + x as usize;
-                claims[idx] = claims[idx] + 1;
+    // sweep vertically down fabric, one row at a time,
+    // checking for collisions between claims
+    let mut row: [u64; 17];
+    let mut collide: [u64; 17];
+    'outer: while !input.is_empty() {
+        row = [0; 17];
+        collide = [0; 17];
+
+        let y = input.last().unwrap().y;
+        // For all claims that exist at row y
+        // mark the row bits where occupied
+        // mark the collide bit where row was previously occupied
+        for claim in input.iter().rev() {
+            if claim.y != y {
+                break;
             }
+            let idx = claim.idx as usize;
+            collide[idx] |= row[idx] & claim.mask0;
+            row[idx] |= claim.mask0;
+            collide[idx + 1] |= row[idx + 1] & claim.mask1;
+            row[idx + 1] |= claim.mask1;
         }
-    }
-    let intersected_claims = claims.iter().filter(|v| **v > 1).count();
-    return intersected_claims;
-}
 
-pub fn part2(input: &Vec<LandClaim>) -> usize {
-    // minimum size is 1000x1000 large; 1024x1024 is close
-    let mut claims: Vec<u16> = vec![0; 1 << 20];
-    let fabric_width = 1024;
-
-    for claim in input.iter() {
-        for x in claim.x..claim.x+claim.width {
-            for y in claim.y..claim.y + claim.height {
-                let idx = y as usize * fabric_width + x as usize;
-                claims[idx] = claims[idx] + 1;
+        // mark all claims on row that have collision
+        // then move to next row
+        for cidx in (0..input.len()).rev() {
+            if input[cidx].y != y {
+                break;        // break out if we've left the row
             }
-        }
-    }
-
-    'outer: for claim in input.iter() {
-        for x in claim.x..claim.x + claim.width {
-            for y in claim.y..claim.y + claim.height {
-                if claims[y as usize * fabric_width + x as usize] > 1 {
-                    continue 'outer;
+            let idx = input[cidx].idx as usize;
+            if input[cidx].no_collision {
+                if ((collide[idx] & input[cidx].mask0) != 0) || ((collide[idx + 1] & input[cidx].mask1) != 0) {
+                    input[cidx].no_collision = false;
                 }
             }
+
+            input[cidx].y += 1;
+            input[cidx].h -= 1;
+            if input[cidx].h == 0 {
+                // reached end of the input[cidx];
+                // check for part 2 solution
+                if input[cidx].no_collision {
+                    part2 = input[cidx].id as usize;
+                }
+                input.swap_remove(cidx);
+            }
         }
-        return claim.id as usize;
+
+        for c in collide.iter() {
+            part1 += c.count_ones() as usize;
+        }
     }
-    panic!("No solution")
+
+    return (part1, part2);
 }
 
 // This is GALAXY BRAIN MODE
@@ -213,17 +241,7 @@ mod test {
     #2 @ 3,1: 4x4
     #3 @ 5,5: 2x2
     "#;
-        assert_eq!(part1(&parse_input(input)), 4);
-    }
-
-    #[test]
-    fn test_part2() {
-        let input = r#"
-    #1 @ 1,3: 4x4
-    #2 @ 3,1: 4x4
-    #3 @ 5,5: 2x2
-    "#;
-        assert_eq!(part2(&parse_input(input)), 3);
+        assert_eq!(day03(&parse_input(input)), (4, 3));
     }
 
 }
