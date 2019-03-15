@@ -21,8 +21,9 @@ use clap::{App, Arg};
 use std::io::{self, Write};
 
 type Error = Box<std::error::Error>;
+type Soln = fn(&str) -> Result<String, Error>;
 
-const SOLUTIONS: &[fn(&str) -> Result<String, Error>] = &[
+const SOLUTIONS: &[Soln] = &[
     day01::solve,
     day02::solve,
     day03::solve,
@@ -43,27 +44,32 @@ const SOLUTIONS: &[fn(&str) -> Result<String, Error>] = &[
     day18::solve,
 ];
 
-pub fn run(day_s: &str) -> Result<(), Error> {
+fn runday(d: usize, soln: Soln) -> Result<(), Error> {
     use std::fs;
+    use std::time::Instant;
+
+    println!("Running day: {}", d);
+    let inputfile: String = format!("../inputs/day{:02}.txt", d);
+    let input = fs::read_to_string(inputfile).expect("Couldn't find file");
+    let before = Instant::now();
+    let result = soln(&input).map_err(|e| e.to_string())?;
+    writeln!(io::stdout(), "{}", result)?;
+    println!("Time: {}μs", before.elapsed().as_micros());
+    Ok(())
+}
+
+pub fn run(day_s: &str) -> Result<(), Error> {
+    use std::time::Instant;
     let day = day_s.parse::<usize>()?;
     if day == 0 {
+        let now = Instant::now();
         for (d, soln) in SOLUTIONS.iter().enumerate() {
-            println!("Running day: {}", d + 1);
-            let inputfile: String = format!("../inputs/day{:02}.txt", d + 1);
-            let input = fs::read_to_string(inputfile).expect("Couldn't find file");
-            let result = soln(&input).map_err(|e| e.to_string())?;
-            writeln!(io::stdout(), "{}", result)?;
+            runday(d + 1, *soln)?;
         }
+        println!("Total time: {}ms", now.elapsed().as_millis());
     } else {
-        println!("Running day: {}", day);
-        let inputfile: String = format!("../inputs/day{:02}.txt", day);
-        let input = fs::read_to_string(inputfile).expect("Couldn't find file");
         let solution = SOLUTIONS.get(day - 1).ok_or("Day number out of range")?;
-        writeln!(
-            io::stdout(),
-            "{}",
-            (solution)(&input).map_err(|e| e.to_string())?
-        )?;
+        runday(day, *solution)?;
     }
     Ok(())
 }
