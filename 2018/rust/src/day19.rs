@@ -9,43 +9,31 @@ pub fn solve(input: &str) -> Result<String, Error> {
 }
 
 pub fn day19(input: &str) -> (usize, usize) {
-    let mut inputiter = input.as_bytes().iter();
+    let mut inputiter = input.trim().lines();
 
-    // parse first line of file for IP register
-    let mut ip_reg = -1;
-    while let Some(c) = inputiter.next() {
-        if (c - b'0') < 6 {
-            ip_reg = (c - b'0') as isize;
-            break;
-        }
-    }
-
-    if ip_reg == -1 {
-        panic!("Error: file invalid");
-    }
+    let ip_reg = inputiter.next().unwrap().as_bytes()[4] - b'0';
 
     // parse instructions
-    let mut instructions = Vec::<[i8; 4]>::with_capacity(36);
-    let mut current_instructions = [0; 4];
-    let mut have = false;
-    let mut n_parse = 0;
-    let mut i = 0;
-    while let Some(nextbyte) = inputiter.next() {
-        let c = nextbyte - b'0';
-        if c < 100 {
-            have = true;
-            n_parse = 10 * n_parse + c;
-        } else if have {
-            current_instructions[i] = n_parse as i8;
-            n_parse = 0;
-            have = false;
-            i += 1;
-            if i == 4 {
-                i = 0;
-                instructions.push(current_instructions);
-            }
-        }
-    }
+    let instructions: Vec<[i8; 4]> = inputiter.map(|line| {
+        let mut current_instr = [0; 4];
+        let mut tokens = line.split(' ');
+        let mnemonic = tokens.next().unwrap();
+        current_instr[0] = match mnemonic {
+            "addi" => -7,
+            "addr" => 2,
+            "eqrr" => 66,
+            "muli" => -51,
+            "mulr" => -42,
+            "seti" => 77,
+            "setr" => 86,
+            "gtrr" => 4,
+            invalid => panic!("Invalid op code: {:?}", invalid)
+        };
+        current_instr[1] = tokens.next().unwrap().parse::<i8>().unwrap();
+        current_instr[2] = tokens.next().unwrap().parse::<i8>().unwrap();
+        current_instr[3] = tokens.next().unwrap().parse::<i8>().unwrap();
+        current_instr
+    }).collect();
 
     let mut soln = [0, 0];
     for part in [0, 1].iter() {
@@ -118,16 +106,45 @@ mod test {
     #[test]
     fn test_part1_0() {
         let input = r#"
-#ip 0
-seti 5 0 1
-seti 6 0 2
-addi 0 1 0
-addr 1 2 3
-setr 1 0 0
-seti 8 0 4
-seti 9 0 5
+#ip 3
+addi 3 16 3
+seti 1 2 5
+seti 1 3 2
+mulr 5 2 1
+eqrr 1 4 1
+addr 1 3 3
+addi 3 1 3
+addr 5 0 0
+addi 2 1 2
+gtrr 2 4 1
+addr 3 1 3
+seti 2 5 3
+addi 5 1 5
+gtrr 5 4 1
+addr 1 3 3
+seti 1 2 3
+mulr 3 3 3
+addi 4 2 4
+mulr 4 4 4
+mulr 3 4 4
+muli 4 11 4
+addi 1 6 1
+mulr 1 3 1
+addi 1 21 1
+addr 4 1 4
+addr 3 0 3
+seti 0 3 3
+setr 3 4 1
+mulr 1 3 1
+addr 3 1 1
+mulr 3 1 1
+muli 1 14 1
+mulr 1 3 1
+addr 4 1 4
+seti 0 3 0
+seti 0 7 3
 "#;
-        assert_eq!(day19(&input), (6, 0));
+        assert_eq!(day19(&input), (1056, 10915260));
     }
 
 }
