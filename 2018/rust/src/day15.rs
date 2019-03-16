@@ -31,7 +31,7 @@ struct Entity {
 }
 
 #[derive(Clone, PartialEq, Debug)]
-struct World {
+pub struct World {
     world: Vec<Entity>,
     xsize: usize,
     ysize: usize,
@@ -282,7 +282,7 @@ impl Display for Entity {
     }
 }
 
-fn parse_input(input: &str) -> Box<World> {
+pub fn parse_input(input: &str) -> Box<World> {
     const WIDTH: usize = 32;
     const HEIGHT: usize = 32;
     let mut grid = vec![Entity::nothing(); WIDTH * HEIGHT];
@@ -315,7 +315,7 @@ fn parse_input(input: &str) -> Box<World> {
     });
 }
 
-fn part1(input: &World) -> usize {
+pub fn part1(input: &World) -> usize {
     let mut world = input.clone();
     let mut rounds = 0;
     'game: loop {
@@ -328,7 +328,7 @@ fn part1(input: &World) -> usize {
     return rounds * hp_remaining as usize;
 }
 
-fn part2(input: &World) -> usize {
+pub fn part2(input: &World) -> usize {
     let initial_elves_count = input.elves;
 
     let starting_ap = 4_usize;

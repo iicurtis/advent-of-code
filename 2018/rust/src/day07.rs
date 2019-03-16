@@ -70,7 +70,7 @@ mod parsers {
     }
 }
 
-fn parse_input(input: &str) -> Vec<Instruction> {
+pub fn parse_input(input: &str) -> Vec<Instruction> {
     let instructions = input
         .trim()
         .lines()
@@ -80,7 +80,7 @@ fn parse_input(input: &str) -> Vec<Instruction> {
     return instructions;
 }
 
-fn part1(input: &Vec<Instruction>) -> String {
+pub fn part1(input: &Vec<Instruction>) -> String {
     let mut finished: Vec<char> = Vec::new();
     let mut dependents = HashMap::new();
     let mut precursors: HashMap<char, HashSet<char>> = HashMap::new();
@@ -123,7 +123,7 @@ fn part1(input: &Vec<Instruction>) -> String {
     return finished.into_iter().collect();
 }
 
-fn part2(input: &Vec<Instruction>) -> i32 {
+pub fn part2(input: &Vec<Instruction>) -> i32 {
     let mut dependents = HashMap::new();
     let mut precursors: HashMap<char, HashSet<char>> = HashMap::new();
     // Build dependency tree

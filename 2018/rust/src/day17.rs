@@ -20,9 +20,7 @@ type Error = Box<std::error::Error>;
 
 pub fn solve(input: &str) -> Result<String, Error> {
     let input = parse_input(input);
-    let soln1 = part1(&input);
-    // let soln2 = part2(&input);
-    let soln2 = "Day 17 part2 not solved yet";
+    let (soln1, soln2) = day17(&input);
     Ok(format!("Part 1: {}\nPart 2: {}", soln1, soln2))
 }
 
@@ -42,31 +40,59 @@ enum Element {
 }
 
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-struct World {
+pub struct World {
     world: Vec<Element>,
     x_offset: usize,
+    y_offset: usize,
     x_dim: usize,
     y_dim: usize,
 }
 
 impl World {
-    fn new(points: Vec<Point>, y_max: usize, x_max: usize, x_min: usize) -> World {
+    fn new(points: Vec<Point>, y_max: usize, y_min: usize, x_max: usize, x_min: usize) -> World {
         let x_dim = x_max - x_min + 1;
-        let y_dim = y_max + 1;
+        let y_dim = y_max - y_min + 1;
         let mut world = vec![Element::SAND; y_dim * x_dim];
         for point in points.iter() {
             let x = point.x - x_min;
-            let y = point.y;
+            let y = point.y - y_min;
             let index = x + y * x_dim;
             world[index] = Element::CLAY;
         }
-        world[500 - x_min] = Element::WATER;
         World {
             world,
             x_offset: x_min,
+            y_offset: y_min,
             x_dim,
             y_dim,
         }
+    }
+
+    fn at(&self, x: isize, y: isize) -> Element {
+        if (x < self.x_dim as isize) & (y < self.y_dim as isize) {
+            return self.world[x as usize + (y as usize * self.x_dim)];
+        } else {
+            return Element::VOID;
+        }
+    }
+
+    fn set(&mut self, x: isize, y: isize, element: Element) {
+        if (x < self.x_dim as isize) & (y < self.y_dim as isize) {
+            self.world[x as usize + (y as usize * self.x_dim)] = element;
+        }
+    }
+
+    fn count_water(&self, part2: bool) -> usize {
+        let mut water_count = 0;
+        for x in 0..self.x_dim {
+            for y in 0..self.y_dim {
+                let tile = self.at(x as isize, y as isize);
+                if tile == Element::WATER || (part2 && tile == Element::FLOW) {
+                    water_count += 1;
+                }
+            }
+        }
+        return water_count;
     }
 }
 
@@ -75,7 +101,7 @@ impl Display for Element {
         match self {
             Element::SAND => write!(f, "."),
             Element::CLAY => write!(f, "#"),
-            Element::WATER => write!(f, "+"),
+            Element::WATER => write!(f, "~"),
             Element::FLOW => write!(f, "|"),
             _ => write!(f, "%"),
         }
@@ -94,11 +120,12 @@ impl Display for World {
     }
 }
 
-fn parse_input(input: &str) -> World {
+pub fn parse_input(input: &str) -> World {
     let mut points = Vec::new();
     let mut x_min = 500; // 500 is where the spring is
     let mut x_max = 0;
     let mut y_max = 0;
+    let mut y_min = 1 << 20;
     for line in input.trim().lines() {
         let mut coords = line.split(", ");
 
@@ -121,6 +148,8 @@ fn parse_input(input: &str) -> World {
                     }
                     if y > y_max {
                         y_max = y;
+                    } else if y < y_min {
+                        y_min = y;
                     }
                     points.push(Point { x: coord, y: y });
                 }
@@ -129,6 +158,8 @@ fn parse_input(input: &str) -> World {
                 for x in range_start..=range_end {
                     if coord > y_max {
                         y_max = coord;
+                    } else if coord < y_min {
+                        y_min = coord;
                     }
                     if x > x_max {
                         x_max = x;
@@ -141,13 +172,54 @@ fn parse_input(input: &str) -> World {
             invalid => unreachable!("Invalid coord {}", invalid),
         }
     }
-    println!("Parse complete");
-    World::new(points, y_max, x_max, x_min)
+    World::new(points, y_max, y_min, x_max, x_min)
 }
 
-fn part1(input: &World) -> usize {
-    println!("{}", input);
-    return 0;
+fn fill(world: &mut World, x: isize, y: isize, dir: isize) {
+    if world.at(x, y) == Element::FLOW {
+        fill(world, x + dir, y, dir);
+        world.set(x, y, Element::WATER);
+    }
+}
+
+fn flow(world: &mut World, x: isize, y: isize, dir: isize) -> bool {
+    let point = world.at(x, y);
+    if point != Element::SAND {
+        return (point != Element::CLAY) && (point != Element::WATER);
+    }
+
+    world.set(x, y, Element::FLOW);
+
+    // Try to flow down
+    let mut leaky = flow(world, x, y + 1, 0);
+    if leaky {
+        return true;
+    }
+
+    // Down is not leaky, flow laterally
+    leaky = (dir <= 0) && flow(world, x - 1, y, -1);
+    leaky |= (dir >= 0) && flow(world, x + 1, y, 1);
+    if leaky {
+        return true;
+    }
+
+    if dir == 0 {
+        // Entire layer is watertight, fill up
+        fill(world, x, y, -1);
+        fill(world, x + 1, y, 1);
+    }
+
+    return false;
+}
+
+pub fn day17(input: &World) -> (usize, usize) {
+    let mut input = input.clone();
+    let spring_x = 500 - input.x_offset as isize;
+    let spring_y = std::cmp::max(0, 0 - input.y_offset as isize);
+    flow(&mut input, spring_x, spring_y, 0);
+    let soln1 = input.count_water(true);
+    let soln2 = input.count_water(false);
+    return (soln1, soln2);
 }
 
 #[cfg(test)]
@@ -166,6 +238,6 @@ x=498, y=10..13
 x=504, y=10..13
 y=13, x=498..504
 "#;
-        assert_eq!(part1(&parse_input(input)), 27730);
+        assert_eq!(day17(&parse_input(input)), (57, 29));
     }
 }

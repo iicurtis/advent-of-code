@@ -35,7 +35,7 @@ struct Sample {
 }
 
 #[derive(Debug, Clone)]
-struct Input {
+pub struct Input {
     instructions: Vec<[usize; 4]>,
     samples: Vec<Sample>,
 }
@@ -89,7 +89,7 @@ do_parse!(
     ( Input{ samples, instructions } )
     ));
 
-fn parse_input(input: &str) -> Input {
+pub fn parse_input(input: &str) -> Input {
     let (_incomplete, parsed) = instr(CompleteStr(input)).expect("Couldn't parse input");
     return parsed;
 }
@@ -113,7 +113,7 @@ const OPS: [fn(&mut [usize; 4], usize, usize, usize); 16] = [
     |r: &mut [usize; 4], a, b, c| if r[a] == r[b] { r[c] = 1 } else { r[c] = 0 }, //eqrr
 ];
 
-fn part1(input: &Input) -> usize {
+pub fn part1(input: &Input) -> usize {
     let mut three_or_more = 0;
     for i in input.samples.iter() {
         let a = i.instr[1];
@@ -135,7 +135,7 @@ fn part1(input: &Input) -> usize {
     return three_or_more;
 }
 
-fn part2(input: &Input) -> usize {
+pub fn part2(input: &Input) -> usize {
     let mut possibles = [65535u32; 16];
     let mut solutions = [16usize; 16];
     for sample in input.samples.iter() {

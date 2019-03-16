@@ -119,7 +119,7 @@ mod parsers {
     }
 }
 
-fn parse_input(input: &str) -> Vec<Event> {
+pub fn parse_input(input: &str) -> Vec<Event> {
     let mut events = input
         .lines()
         .map(|line| line.trim().parse())
@@ -164,7 +164,7 @@ fn get_sleepmin(input: &Vec<Event>) -> SleepMin {
     return guards;
 }
 
-fn part1(input: &Vec<Event>) -> usize {
+pub fn part1(input: &Vec<Event>) -> usize {
     let guards_sleepmin = get_sleepmin(input);
     let (guard_id, sleep_sched) = guards_sleepmin
         .into_iter()
@@ -180,7 +180,7 @@ fn part1(input: &Vec<Event>) -> usize {
     return mostmin * guard_id;
 }
 
-fn part2(input: &Vec<Event>) -> usize {
+pub fn part2(input: &Vec<Event>) -> usize {
     let guards_sleepmin = get_sleepmin(input);
 
     let (freqsleep, freqmin) = guards_sleepmin

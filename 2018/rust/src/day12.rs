@@ -25,7 +25,7 @@ pub fn solve(input: &str) -> Result<String, Error> {
     Ok(format!("Part 1: {}\nPart 2: {}", soln1, soln2))
 }
 
-fn parse_input(input: &str) -> Box<(Vec<bool>, [bool; 32])> {
+pub fn parse_input(input: &str) -> Box<(Vec<bool>, [bool; 32])> {
     let mut lines = input.trim().lines();
     let plants = lines.next().unwrap()[15..]
         .chars()
@@ -45,7 +45,7 @@ fn parse_input(input: &str) -> Box<(Vec<bool>, [bool; 32])> {
     Box::new((plants, rules))
 }
 
-fn part1((initial, rules): &(Vec<bool>, [bool; 32])) -> i32 {
+pub fn part1((initial, rules): &(Vec<bool>, [bool; 32])) -> i32 {
     let generations = 20;
     let mut state = initial.clone();
 
@@ -70,7 +70,7 @@ fn part1((initial, rules): &(Vec<bool>, [bool; 32])) -> i32 {
         .sum()
 }
 
-fn part2((initial, rules): &(Vec<bool>, [bool; 32])) -> i64 {
+pub fn part2((initial, rules): &(Vec<bool>, [bool; 32])) -> i64 {
     let generations: usize = 50_000_000_000;
     let mut state = initial.clone();
     let mut seen = HashMap::new();

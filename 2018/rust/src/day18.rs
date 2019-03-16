@@ -21,7 +21,7 @@ enum Ground {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
-struct World {
+pub struct World {
     grid: Vec<Ground>,
     width: isize,
     height: isize,
@@ -50,7 +50,7 @@ impl Display for Ground {
     }
 }
 
-fn parse_input(input: &str) -> Box<World> {
+pub fn parse_input(input: &str) -> Box<World> {
     let mut width = 0;
     let mut height = 0;
     let mut grid = Vec::new();
@@ -155,13 +155,13 @@ impl World {
     }
 }
 
-fn part1(input: &World) -> usize {
+pub fn part1(input: &World) -> usize {
     let mut world = input.clone();
     let ans = world.run_steps(10);
     return ans;
 }
 
-fn part2(input: &World) -> usize {
+pub fn part2(input: &World) -> usize {
     let mut world = input.clone();
     let ans = world.run_steps(1_000_000_000);
     return ans;

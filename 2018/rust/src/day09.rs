@@ -43,7 +43,7 @@ fn play_game(players: &mut [Player], marbles: usize) {
     }
 }
 
-fn parse_input(input: &str) -> Box<(usize, usize)> {
+pub fn parse_input(input: &str) -> Box<(usize, usize)> {
     let mut words = input.trim().split(' ');
     Box::new((
         words.next().unwrap().parse().unwrap(),
@@ -51,13 +51,13 @@ fn parse_input(input: &str) -> Box<(usize, usize)> {
     ))
 }
 
-fn part1(input: &(usize, usize)) -> usize {
+pub fn part1(input: &(usize, usize)) -> usize {
     let mut players = vec![Player::default(); input.0];
     play_game(&mut players, input.1);
     return players.iter().map(|p| p.points).max().unwrap();
 }
 
-fn part2(input: &(usize, usize)) -> usize {
+pub fn part2(input: &(usize, usize)) -> usize {
     let mut players = vec![Player::default(); input.0];
     play_game(&mut players, input.1 * 100);
     return players.iter().map(|p| p.points).max().unwrap();

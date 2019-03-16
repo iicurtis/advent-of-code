@@ -37,7 +37,7 @@ fn to_node(input: &mut impl Iterator<Item = usize>) -> Node {
     }
 }
 
-fn parse_input(input: &str) -> Box<Node> {
+pub fn parse_input(input: &str) -> Box<Node> {
     Box::new(to_node(
         &mut input
             .trim()
@@ -46,7 +46,7 @@ fn parse_input(input: &str) -> Box<Node> {
     ))
 }
 
-fn part1(input: &Node) -> usize {
+pub fn part1(input: &Node) -> usize {
     // want: sum of all metadata entries
     let mut metadata = input.metadata.iter().sum();
     for n in input.children.iter() {
@@ -55,7 +55,7 @@ fn part1(input: &Node) -> usize {
     return metadata;
 }
 
-fn part2(input: &Node) -> usize {
+pub fn part2(input: &Node) -> usize {
     // want: sum of all metadata entries
     let mut value = 0;
     if input.children.is_empty() {

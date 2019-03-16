@@ -25,7 +25,7 @@ pub fn solve(input: &str) -> Result<String, Error> {
     Ok(format!("Part 1: {}\nPart 2: {}", soln1, soln2))
 }
 
-fn parse_input(input: &str) -> Vec<u8> {
+pub fn parse_input(input: &str) -> Vec<u8> {
     let chars: Vec<u8> = input.trim().as_bytes().to_owned();
     return chars;
 }
@@ -43,13 +43,13 @@ fn collapse(input: &mut Vec<u8>) -> usize {
     return new_len;
 }
 
-fn part1(input: &Vec<u8>) -> usize {
+pub fn part1(input: &Vec<u8>) -> usize {
     let mut input = input.clone();
     let len = collapse(&mut input);
     return len;
 }
 
-fn part2(input: &Vec<u8>) -> usize {
+pub fn part2(input: &Vec<u8>) -> usize {
     let mut input = input.clone();
     let reduced_len = collapse(&mut input);
     // I was using for loops before I stole this style from CryZe

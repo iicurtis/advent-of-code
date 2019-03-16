@@ -24,12 +24,11 @@ type Error = Box<std::error::Error>;
 pub fn solve(input: &str) -> Result<String, Error> {
     let input = parse_input(input);
     let soln1 = part1(&input);
-    // let soln2 = part2(&input);
-    let soln2 = "No SIMD available currently";
+    let soln2 = part2(&input);
     Ok(format!("Part 1: {}\nPart 2: {}", soln1, soln2))
 }
 
-fn parse_input(input: &str) -> Vec<Point> {
+pub fn parse_input(input: &str) -> Vec<Point> {
     let mut input_vec = input
         .trim()
         .lines()
@@ -72,7 +71,7 @@ impl Display for Point {
     }
 }
 
-fn part1(input: &Vec<Point>) -> usize {
+pub fn part1(input: &Vec<Point>) -> usize {
     let max_x = input.iter().max_by_key(|k| k.x).unwrap().x;
     let max_y = input.iter().max_by_key(|k| k.y).unwrap().y;
     let min_x = input.iter().min_by_key(|k| k.x).unwrap().x;
@@ -124,6 +123,30 @@ fn part1(input: &Vec<Point>) -> usize {
         .unwrap()
 }
 
+pub fn part2(input: &Vec<Point>) -> usize {
+    const MAX_DIST: i32 = 10_000;
+    let max_x = input.iter().max_by_key(|k| k.x).unwrap().x;
+    let max_y = input.iter().max_by_key(|k| k.y).unwrap().y;
+    let min_x = input.iter().min_by_key(|k| k.x).unwrap().x;
+    let min_y = input.iter().min_by_key(|k| k.y).unwrap().y;
+    (min_x..max_x + 1)
+        .into_par_iter()
+        .map(|x| {
+            let mut count = 0;
+            for y in min_y..=max_y {
+                let mut dist = 0;
+                for k in input {
+                    dist += Point { x, y }.l1dist(*k);
+                }
+                if dist < MAX_DIST {
+                    count += 1;
+                }
+            }
+            count
+        })
+        .sum::<u32>() as usize
+}
+
 // fn simd_dist_l1(x1: i32x16, y1: i32x16, x2: i32x16, y2: i32x16) -> i32x16 {
     // abs_s(x1 - x2) + abs_s(y1 - y2)
 // }
@@ -133,7 +156,7 @@ fn part1(input: &Vec<Point>) -> usize {
     // (vec + mask) ^ mask
 // }
 
-// fn part2(input: &Vec<Point>) -> usize {
+// fn part2_simd(input: &Vec<Point>) -> usize {
     // const MAX_DIST: i32x16 = i32x16::splat(10_000);
     // const ONES: i32x16 = i32x16::splat(1);
     // const ZEROS: i32x16 = i32x16::splat(0);

@@ -51,7 +51,7 @@ struct Cart {
 }
 
 #[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Debug)]
-struct Point {
+pub struct Point {
     y: usize,
     x: usize,
 }
@@ -172,7 +172,7 @@ impl Display for Grid {
     }
 }
 
-fn parse_input(input: &str) -> Box<Grid> {
+pub fn parse_input(input: &str) -> Box<Grid> {
     const WIDTH: usize = 150;
     const HEIGHT: usize = 150;
     let mut grid = vec![Track::Blank; WIDTH * HEIGHT];
@@ -212,7 +212,7 @@ fn parse_input(input: &str) -> Box<Grid> {
     });
 }
 
-fn part1(input: &Grid) -> Point {
+pub fn part1(input: &Grid) -> Point {
     let mut track = input.clone();
     loop {
         if let Some(crash) = track.step() {
@@ -221,7 +221,7 @@ fn part1(input: &Grid) -> Point {
     }
 }
 
-fn part2(input: &Grid) -> Point {
+pub fn part2(input: &Grid) -> Point {
     let mut track = input.clone();
     loop {
         track.step();

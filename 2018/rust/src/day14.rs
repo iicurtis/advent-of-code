@@ -30,7 +30,7 @@ fn get_digits(input: u8, recipes: &mut Vec<u8>) {
     recipes.push(input % 10);
 }
 
-fn part1(input: &str) -> String {
+pub fn part1(input: &str) -> String {
     let input = input.trim().parse::<usize>().unwrap();
     let mut recipes = vec![3, 7];
     let (mut a, mut b) = (0, 1);
@@ -46,7 +46,7 @@ fn part1(input: &str) -> String {
         .collect()
 }
 
-fn part2(input: &str) -> usize {
+pub fn part2(input: &str) -> usize {
     let goal = input.bytes().map(|b| b - b'0').collect::<Vec<u8>>();
     let mut recipes = vec![3, 7];
     let (mut a, mut b) = (0, 1);

@@ -42,6 +42,7 @@ const SOLUTIONS: &[Soln] = &[
     day16::solve,
     day17::solve,
     day18::solve,
+    day19::solve,
 ];
 
 fn runday(d: usize, soln: Soln) -> Result<(), Error> {
@@ -54,7 +55,7 @@ fn runday(d: usize, soln: Soln) -> Result<(), Error> {
     let before = Instant::now();
     let result = soln(&input).map_err(|e| e.to_string())?;
     writeln!(io::stdout(), "{}", result)?;
-    println!("Time: {}μs", before.elapsed().as_micros());
+    println!("[{:4}μs]", before.elapsed().as_micros());
     Ok(())
 }
 

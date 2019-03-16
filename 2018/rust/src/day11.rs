@@ -46,7 +46,7 @@ fn power_level(x: i32, y: i32, serial: i32) -> i32 {
     return power;
 }
 
-fn part1(input: &str) -> Point {
+pub fn part1(input: &str) -> Point {
     let serial: i32 = input.trim().parse().unwrap();
     const WIDTH: usize = 300;
     const HEIGHT: usize = 300;
@@ -84,7 +84,7 @@ fn part1(input: &str) -> Point {
     return best;
 }
 
-fn part2(input: &str) -> Point {
+pub fn part2(input: &str) -> Point {
     let serial: i32 = input.trim().parse().unwrap();
     const WIDTH: usize = 301;
     const HEIGHT: usize = 301;

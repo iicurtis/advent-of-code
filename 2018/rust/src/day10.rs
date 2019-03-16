@@ -132,7 +132,7 @@ mod parsers {
     }
 }
 
-fn parse_input(input: &str) -> Vec<Point> {
+pub fn parse_input(input: &str) -> Vec<Point> {
     let instructions = input
         .trim()
         .lines()
@@ -142,7 +142,7 @@ fn parse_input(input: &str) -> Vec<Point> {
     return instructions;
 }
 
-fn part1(input: &Vec<Point>) -> usize {
+pub fn part1(input: &Vec<Point>) -> usize {
     let mut input = input.clone();
     let time = find_final_time(&input);
     to_time(&mut input, time as i32);
@@ -151,7 +151,7 @@ fn part1(input: &Vec<Point>) -> usize {
     return time;
 }
 
-fn part2(input: &Vec<Point>) -> usize {
+pub fn part2(input: &Vec<Point>) -> usize {
     let input = input.clone();
     let time = find_final_time(&input);
     return time;
