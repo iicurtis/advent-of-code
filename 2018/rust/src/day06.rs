@@ -19,7 +19,7 @@ use rayon::prelude::*;
 use std::fmt::{self, Display};
 use std::i32;
 
-type Error = Box<std::error::Error>;
+type Error = Box<dyn std::error::Error>;
 
 pub fn solve(input: &str) -> Result<String, Error> {
     let input = parse_input(input);

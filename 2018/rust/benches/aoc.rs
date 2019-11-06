@@ -207,13 +207,13 @@ fn day19(c: &mut Criterion) {
 } 
 
 criterion_group!(benches,
-    day01, day02, day03, day04, day05, day06, day07, day08, day09, day10,
+    day01, day02, day03, day04, day05, day06, day07, day08, day10,
     day11, day12, day13, day16, day17, day19
 );
 
 criterion_group!{
     name = slower_benches;
     config = Criterion::default().sample_size(10);
-    targets = day14, day15, day18
+    targets = day09, day14, day15, day18
 }
 criterion_main!(benches, slower_benches);

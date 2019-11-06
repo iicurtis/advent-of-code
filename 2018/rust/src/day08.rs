@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-type Error = Box<std::error::Error>;
+type Error = Box<dyn std::error::Error>;
 
 pub fn solve(input: &str) -> Result<String, Error> {
     let input = parse_input(input);

@@ -17,7 +17,7 @@
 // use packed_simd::u16x32;
 use std::str;
 
-type Error = Box<std::error::Error>;
+type Error = Box<dyn std::error::Error>;
 
 pub fn solve(input: &str) -> Result<String, Error> {
     let input = parse_input(input);

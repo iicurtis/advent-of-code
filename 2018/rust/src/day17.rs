@@ -16,7 +16,7 @@
 
 use std::fmt::{self, Display};
 
-type Error = Box<std::error::Error>;
+type Error = Box<dyn std::error::Error>;
 
 pub fn solve(input: &str) -> Result<String, Error> {
     let input = parse_input(input);
@@ -70,7 +70,7 @@ impl World {
 
     fn at(&self, x: isize, y: isize) -> Element {
         if (x < self.x_dim as isize) & (y < self.y_dim as isize) {
-            return self.world[x as usize + (y as usize * self.x_dim)];
+            return self.world[(x as usize).wrapping_add(y as usize * self.x_dim)];
         } else {
             return Element::VOID;
         }
@@ -78,7 +78,7 @@ impl World {
 
     fn set(&mut self, x: isize, y: isize, element: Element) {
         if (x < self.x_dim as isize) & (y < self.y_dim as isize) {
-            self.world[x as usize + (y as usize * self.x_dim)] = element;
+            self.world[(x as usize).wrapping_add(y as usize * self.x_dim)] = element;
         }
     }
 

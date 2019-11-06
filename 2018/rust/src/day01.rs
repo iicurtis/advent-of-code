@@ -16,7 +16,7 @@
 
 use hashbrown;
 
-type Error = Box<std::error::Error>;
+type Error = Box<dyn std::error::Error>;
 
 pub fn solve(input: &str) -> Result<String, Error> {
     let input: Vec<_> = parse_input(input);

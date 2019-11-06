@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-type Error = Box<std::error::Error>;
+type Error = Box<dyn std::error::Error>;
 
 const MEMOIZED_STATE: [u8; 20] = [3,7,1,0,1,0,1,2,4,5,1,5,8,9,1,6,7,7,9,2];
 const MEMOIZED_INIT: (usize, usize) = (8, 4);

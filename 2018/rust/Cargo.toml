@@ -6,8 +6,8 @@ edition = "2018"
 
 [dependencies]
 clap = "2"
-itertools = "0.7"
-hashbrown = "0.1"
+itertools = "0.8"
+hashbrown = "0.6"
 # packed_simd = "0.3"
 simdeez = "0.5"
 rayon = "1"

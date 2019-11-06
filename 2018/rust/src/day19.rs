@@ -1,7 +1,7 @@
 // Advent of Code
 // Copyright (C) 2018  Isaac Curtis
 
-type Error = Box<std::error::Error>;
+type Error = Box<dyn std::error::Error>;
 
 pub fn solve(input: &str) -> Result<String, Error> {
     let (soln1, soln2) = day19(&input);

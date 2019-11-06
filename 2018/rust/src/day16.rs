@@ -18,7 +18,7 @@ use nom::types::CompleteStr;
 use nom::*;
 use std::str::FromStr;
 
-type Error = Box<std::error::Error>;
+type Error = Box<dyn std::error::Error>;
 
 pub fn solve(input: &str) -> Result<String, Error> {
     let input = parse_input(input);

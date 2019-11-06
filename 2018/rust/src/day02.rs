@@ -16,7 +16,7 @@
 
 use std::str;
 
-type Error = Box<std::error::Error>;
+type Error = Box<dyn std::error::Error>;
 
 pub fn solve(input: &str) -> Result<String, Error> {
     let soln1 = part1(&input);
