@@ -67,11 +67,11 @@ pub fn parse_input(input: &str) -> Box<World> {
         }
     }
 
-    return Box::new(World {
+    Box::new(World {
         grid,
         width,
         height,
-    });
+    })
 }
 
 impl World {
@@ -151,20 +151,18 @@ impl World {
             i += 1;
         }
         let (lumber, trees) = self.total_count();
-        return lumber * trees;
+        lumber * trees
     }
 }
 
 pub fn part1(input: &World) -> usize {
     let mut world = input.clone();
-    let ans = world.run_steps(10);
-    return ans;
+    world.run_steps(10)
 }
 
 pub fn part2(input: &World) -> usize {
     let mut world = input.clone();
-    let ans = world.run_steps(1_000_000_000);
-    return ans;
+    world.run_steps(1_000_000_000)
 }
 
 #[cfg(test)]

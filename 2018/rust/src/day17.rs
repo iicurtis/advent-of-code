@@ -72,7 +72,7 @@ impl World {
         if (x < self.x_dim as isize) & (y < self.y_dim as isize) {
             return self.world[(x as usize).wrapping_add(y as usize * self.x_dim)];
         } else {
-            return Element::VOID;
+            Element::VOID
         }
     }
 
@@ -92,7 +92,7 @@ impl World {
                 }
             }
         }
-        return water_count;
+        water_count
     }
 }
 
@@ -209,7 +209,7 @@ fn flow(world: &mut World, x: isize, y: isize, dir: isize) -> bool {
         fill(world, x + 1, y, 1);
     }
 
-    return false;
+    false
 }
 
 pub fn day17(input: &World) -> (usize, usize) {
@@ -219,7 +219,7 @@ pub fn day17(input: &World) -> (usize, usize) {
     flow(&mut input, spring_x, spring_y, 0);
     let soln1 = input.count_water(true);
     let soln2 = input.count_water(false);
-    return (soln1, soln2);
+    (soln1, soln2)
 }
 
 #[cfg(test)]

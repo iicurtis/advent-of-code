@@ -59,7 +59,7 @@ pub fn day19(input: &str) -> (usize, usize) {
 
     soln[*part] = divisor_sum(soln[*part]);
     }
-    return (soln[0], soln[1]);
+    (soln[0], soln[1])
 }
 
 fn try_factor(n: &mut usize, f: &usize, d_sum: &mut usize) {
@@ -84,7 +84,7 @@ fn divisor_sum(n: usize) -> usize {
         try_factor(&mut n, f, &mut d_sum);
     }
 
-    let mut step = 0x62642424;
+    let mut step = 0x6264_2424;
     let mut f = 7;
     while f * f <= n {
         try_factor(&mut n, &f, &mut d_sum);
@@ -96,7 +96,7 @@ fn divisor_sum(n: usize) -> usize {
         d_sum *= n + 1;
     }
 
-    return d_sum;
+    d_sum
 }
 
 #[cfg(test)]

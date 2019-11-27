@@ -51,7 +51,7 @@ impl Point {
 }
 
 impl std::str::FromStr for Point {
-    type Err = Box<std::error::Error>;
+    type Err = Box<dyn std::error::Error>;
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         let point = input

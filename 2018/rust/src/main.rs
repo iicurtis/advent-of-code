@@ -20,7 +20,7 @@ use advent2018::*;
 use clap::{App, Arg};
 use std::io::{self, Write};
 
-type Error = Box<std::error::Error>;
+type Error = Box<dyn std::error::Error>;
 type Soln = fn(&str) -> Result<String, Error>;
 
 const SOLUTIONS: &[Soln] = &[
@@ -43,6 +43,7 @@ const SOLUTIONS: &[Soln] = &[
     day17::solve,
     day18::solve,
     day19::solve,
+    day20::solve,
 ];
 
 fn runday(d: usize, soln: Soln) -> Result<(), Error> {
