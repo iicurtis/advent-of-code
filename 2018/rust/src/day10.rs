@@ -198,5 +198,4 @@ position=<-3,  6> velocity=< 2, -1>
 "#;
         assert_eq!(part2(&parse_input(input)), 3);
     }
-
 }

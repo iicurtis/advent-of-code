@@ -253,5 +253,4 @@ mod test {
 [1518-11-05 00:55] wakes up"#;
         assert_eq!(part2(&parse_input(input)), 4455);
     }
-
 }

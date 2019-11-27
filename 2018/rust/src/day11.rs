@@ -190,5 +190,4 @@ mod test {
     fn test_power_4() {
         assert_eq!(power_level(23 as i32, 63 as i32, 42), 4);
     }
-
 }

@@ -89,5 +89,4 @@ mod test {
 "#;
         assert_eq!(part2(&parse_input(input)), 66);
     }
-
 }

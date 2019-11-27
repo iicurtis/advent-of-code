@@ -178,4 +178,3 @@ pub fn part2(input: &Input) -> usize {
     }
     return reg[0];
 }
-

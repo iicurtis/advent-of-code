@@ -45,7 +45,7 @@ impl Goldfish {
     }
 
     fn new() -> Self {
-        Self{
+        Self {
             xcoord: VecDeque::from(vec![0u8; 16]),
             ycoord: VecDeque::from(vec![0u8; 16]),
             value: 0,
@@ -58,16 +58,19 @@ pub fn day20(input: &str) -> (usize, usize) {
     let mut part1 = 0;
     let mut part2 = 0;
     let mut stack = Vec::with_capacity(300);
-    let mut state = State{cell: 0x8080, dist:0};
+    let mut state = State {
+        cell: 0x8080,
+        dist: 0,
+    };
     let mut goldfish = Goldfish::new();
-    for dir in inputiter{
+    for dir in inputiter {
         match dir {
             b'N' => {
                 state.cell = state.cell.wrapping_add(0x0100);
                 if !goldfish.remember(&mut state) {
                     state.dist += 1;
                     part1 = std::cmp::max(part1, state.dist);
-                    part2 += if state.dist >= 1000 {1} else {0};
+                    part2 += if state.dist >= 1000 { 1 } else { 0 };
                 }
             }
             b'S' => {
@@ -75,7 +78,7 @@ pub fn day20(input: &str) -> (usize, usize) {
                 if !goldfish.remember(&mut state) {
                     state.dist += 1;
                     part1 = std::cmp::max(part1, state.dist);
-                    part2 += if state.dist >= 1000 {1} else {0};
+                    part2 += if state.dist >= 1000 { 1 } else { 0 };
                 }
             }
             b'E' => {
@@ -83,7 +86,7 @@ pub fn day20(input: &str) -> (usize, usize) {
                 if !goldfish.remember(&mut state) {
                     state.dist += 1;
                     part1 = std::cmp::max(part1, state.dist);
-                    part2 += if state.dist >= 1000 {1} else {0};
+                    part2 += if state.dist >= 1000 { 1 } else { 0 };
                 }
             }
             b'W' => {
@@ -91,12 +94,16 @@ pub fn day20(input: &str) -> (usize, usize) {
                 if !goldfish.remember(&mut state) {
                     state.dist += 1;
                     part1 = std::cmp::max(part1, state.dist);
-                    part2 += if state.dist >= 1000 {1} else {0};
+                    part2 += if state.dist >= 1000 { 1 } else { 0 };
                 }
             }
             b'(' => stack.push(state.clone()),
-            b'|' => { state = stack.last().cloned().unwrap(); }
-            b')' => { state = stack.pop().unwrap(); }
+            b'|' => {
+                state = stack.last().cloned().unwrap();
+            }
+            b')' => {
+                state = stack.pop().unwrap();
+            }
             b'^' => continue,
             b'$' => break,
             _ => unreachable!(),
@@ -114,5 +121,4 @@ mod test {
         let input = r#"^ENNWSWW(NEWS|)SSSEEN(WNSE|)EE(SWEN|)NNN$"#;
         assert_eq!(day20(&input).0, 18);
     }
-
 }

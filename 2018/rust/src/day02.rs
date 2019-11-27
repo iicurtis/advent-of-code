@@ -46,42 +46,42 @@ pub fn part1(input: &str) -> u32 {
 }
 
 // pub fn part2_simd<'a>(input: &'a str) -> String {
-    // use packed_simd::u8x32;
-    // use std::hint::unreachable_unchecked;
-    // let lines = input.lines();
+// use packed_simd::u8x32;
+// use std::hint::unreachable_unchecked;
+// let lines = input.lines();
 
-    // #[repr(align(32))]
-    // #[derive(Copy, Clone)]
-    // struct Line([u8; 32]);
+// #[repr(align(32))]
+// #[derive(Copy, Clone)]
+// struct Line([u8; 32]);
 
-    // let mut storage = [u8x32::splat(0); 250];
-    // let mut buf = Line([0; 32]);
-    // for (storage, line) in storage.iter_mut().zip(lines) {
-        // let line = line.trim_end();
-        // buf.0[..line.len()].copy_from_slice(line.as_bytes());
-        // *storage = u8x32::from_slice_aligned(&buf.0);
-    // }
+// let mut storage = [u8x32::splat(0); 250];
+// let mut buf = Line([0; 32]);
+// for (storage, line) in storage.iter_mut().zip(lines) {
+// let line = line.trim_end();
+// buf.0[..line.len()].copy_from_slice(line.as_bytes());
+// *storage = u8x32::from_slice_aligned(&buf.0);
+// }
 
-    // for (i, &a) in storage.iter().enumerate() {
-        // for &b in &storage[i + 1..] {
-            // if a.eq(b)
-                // .select(u8x32::splat(1), u8x32::splat(0))
-                // .wrapping_sum()
-                // == 31
-            // {
-                // let mut buf = String::with_capacity(25);
-                // let a: [u8; 32] = a.into();
-                // let b: [u8; 32] = b.into();
-                // for (&a, &b) in a.iter().zip(&b) {
-                    // if a == b && a != 0 {
-                        // buf.push(a as char);
-                    // }
-                // }
-                // return buf;
-            // }
-        // }
-    // }
-    // unsafe { unreachable_unchecked() };
+// for (i, &a) in storage.iter().enumerate() {
+// for &b in &storage[i + 1..] {
+// if a.eq(b)
+// .select(u8x32::splat(1), u8x32::splat(0))
+// .wrapping_sum()
+// == 31
+// {
+// let mut buf = String::with_capacity(25);
+// let a: [u8; 32] = a.into();
+// let b: [u8; 32] = b.into();
+// for (&a, &b) in a.iter().zip(&b) {
+// if a == b && a != 0 {
+// buf.push(a as char);
+// }
+// }
+// return buf;
+// }
+// }
+// }
+// unsafe { unreachable_unchecked() };
 // }
 
 pub fn part2<'a>(input: &'a str) -> String {
@@ -96,7 +96,7 @@ pub fn part2<'a>(input: &'a str) -> String {
             if !parts.insert((left, right)) {
                 let left_str = std::str::from_utf8(left).unwrap();
                 let right_str = std::str::from_utf8(right).unwrap();
-                return format!("{}{}", left_str, right_str)
+                return format!("{}{}", left_str, right_str);
             }
         }
     }
@@ -107,39 +107,39 @@ pub fn part2<'a>(input: &'a str) -> String {
 // #[cfg(target_arch = "x86_64")]
 // #[target_feature(enable = "avx2")]
 // pub unsafe fn part2_unsafe<'a>(input: &'a str) -> String {
-    // #[cfg(target_arch = "x86_64")]
-    // use std::arch::x86_64::*;
-    // let lines = input.lines();
+// #[cfg(target_arch = "x86_64")]
+// use std::arch::x86_64::*;
+// let lines = input.lines();
 
-    // #[repr(align(32))]
-    // #[derive(Copy, Clone)]
-    // struct Line([u8; 32]);
+// #[repr(align(32))]
+// #[derive(Copy, Clone)]
+// struct Line([u8; 32]);
 
-    // let mut storage: [__m256i; 250] = [_mm256_setzero_si256(); 250];
-    // let mut buf = Line([0; 32]);
-    // for (storage, line) in storage.iter_mut().zip(lines) {
-        // let line = line.trim_end();
-        // buf.0[..line.len()].copy_from_slice(line.as_bytes());
-        // *storage = _mm256_load_si256(std::mem::transmute::<&[u8], &__m256i>(&buf.0));
-    // }
+// let mut storage: [__m256i; 250] = [_mm256_setzero_si256(); 250];
+// let mut buf = Line([0; 32]);
+// for (storage, line) in storage.iter_mut().zip(lines) {
+// let line = line.trim_end();
+// buf.0[..line.len()].copy_from_slice(line.as_bytes());
+// *storage = _mm256_load_si256(std::mem::transmute::<&[u8], &__m256i>(&buf.0));
+// }
 
-    // for (i, &a) in storage.iter().enumerate() {
-        // for &b in &storage[i + 1..] {
-            // let cmp_ne = !_mm256_movemask_epi8(_mm256_cmpeq_epi8(a, b));
-            // let diff1 = _blsi_u32(cmp_ne);
-            // if (diff1 == cmp_ne) {
-                // let mut buf = String::with_capacity(25);
-                // let a: [u8; 32] = a.into();
-                // let b: [u8; 32] = b.into();
-                // for (&a, &b) in a.iter().zip(&b) {
-                    // if a == b && a != 0 {
-                        // buf.push(a as char);
-                    // }
-                // }
-                // return buf;
-            // }
-        // }
-    // }
+// for (i, &a) in storage.iter().enumerate() {
+// for &b in &storage[i + 1..] {
+// let cmp_ne = !_mm256_movemask_epi8(_mm256_cmpeq_epi8(a, b));
+// let diff1 = _blsi_u32(cmp_ne);
+// if (diff1 == cmp_ne) {
+// let mut buf = String::with_capacity(25);
+// let a: [u8; 32] = a.into();
+// let b: [u8; 32] = b.into();
+// for (&a, &b) in a.iter().zip(&b) {
+// if a == b && a != 0 {
+// buf.push(a as char);
+// }
+// }
+// return buf;
+// }
+// }
+// }
 // }
 
 #[cfg(test)]

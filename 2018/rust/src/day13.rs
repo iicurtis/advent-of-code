@@ -258,5 +258,4 @@ mod test {
   \<->/"#;
         assert_eq!(part2(&parse_input(input)), Point { x: 6, y: 4 });
     }
-
 }

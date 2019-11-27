@@ -16,7 +16,7 @@
 
 type Error = Box<dyn std::error::Error>;
 
-const MEMOIZED_STATE: [u8; 20] = [3,7,1,0,1,0,1,2,4,5,1,5,8,9,1,6,7,7,9,2];
+const MEMOIZED_STATE: [u8; 20] = [3, 7, 1, 0, 1, 0, 1, 2, 4, 5, 1, 5, 8, 9, 1, 6, 7, 7, 9, 2];
 const MEMOIZED_INIT: (usize, usize) = (8, 4);
 
 pub fn solve(input: &str) -> Result<String, Error> {
@@ -51,9 +51,13 @@ pub fn part1(input: &str) -> String {
 pub fn part2(input: &str) -> usize {
     let score_len = input.trim().len();
     let goal = input.trim().bytes().map(|b| b - b'0').collect::<Vec<u8>>();
-    let mut needle = Needle { data: &goal, len: score_len, pos: 0 };
+    let mut needle = Needle {
+        data: &goal,
+        len: score_len,
+        pos: 0,
+    };
 
-    let mut recipes = vec![1; 22 <<  20];
+    let mut recipes = vec![1; 22 << 20];
     let mut count = MEMOIZED_STATE.len();
     recipes[0..count].copy_from_slice(&MEMOIZED_STATE);
     let (mut elf1, mut elf2) = MEMOIZED_INIT;
@@ -62,19 +66,27 @@ pub fn part2(input: &str) -> usize {
         let (move1, move2) = (recipes[elf1] + 1, recipes[elf2] + 1);
         let mut new_recipe = recipes[elf1] + recipes[elf2];
         if new_recipe >= 10 {
-            if needle.find(1) { break count+1 - score_len }
+            if needle.find(1) {
+                break count + 1 - score_len;
+            }
             count += 1;
             new_recipe -= 10;
         }
         recipes[count] = new_recipe;
-        if needle.find(new_recipe) { break count+1 - score_len }
+        if needle.find(new_recipe) {
+            break count + 1 - score_len;
+        }
         count += 1;
 
         elf1 += move1 as usize;
         elf2 += move2 as usize;
 
-        if elf1 >= count { elf1 -= count }
-        if elf2 >= count { elf2 -= count }
+        if elf1 >= count {
+            elf1 -= count
+        }
+        if elf2 >= count {
+            elf2 -= count
+        }
     }
 }
 
@@ -83,7 +95,6 @@ struct Needle<'a, T> {
     len: usize,
     pos: usize,
 }
-
 
 impl<'a, T: Eq> Needle<'a, T> {
     fn find(&mut self, t: T) -> bool {
@@ -127,20 +138,20 @@ mod test {
 
     // #[test]
     // fn test_part2() {
-        // let input = "51589";
-        // assert_eq!(part2(input), 9);
+    // let input = "51589";
+    // assert_eq!(part2(input), 9);
     // }
 
     // #[test]
     // fn test_part2_1() {
-        // let input = "01245";
-        // assert_eq!(part2(input), 5);
+    // let input = "01245";
+    // assert_eq!(part2(input), 5);
     // }
 
     // #[test]
     // fn test_part2_2() {
-        // let input = "92510";
-        // assert_eq!(part2(input), 18);
+    // let input = "92510";
+    // assert_eq!(part2(input), 18);
     // }
 
     #[test]
@@ -148,5 +159,4 @@ mod test {
         let input = "59414";
         assert_eq!(part2(input), 2018);
     }
-
 }

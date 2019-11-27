@@ -71,5 +71,4 @@ mod tests {
         assert_eq!(part2(&[-6, 3, 8, 5, -6]), 5);
         assert_eq!(part2(&[7, 7, -2, -7, -4]), 14);
     }
-
 }

@@ -14,26 +14,28 @@ pub fn day19(input: &str) -> (usize, usize) {
     let ip_reg = inputiter.next().unwrap().as_bytes()[4] - b'0';
 
     // parse instructions
-    let instructions: Vec<[i8; 4]> = inputiter.map(|line| {
-        let mut current_instr = [0; 4];
-        let mut tokens = line.split(' ');
-        let mnemonic = tokens.next().unwrap();
-        current_instr[0] = match mnemonic {
-            "addi" => -7,
-            "addr" => 2,
-            "eqrr" => 66,
-            "muli" => -51,
-            "mulr" => -42,
-            "seti" => 77,
-            "setr" => 86,
-            "gtrr" => 4,
-            invalid => panic!("Invalid op code: {:?}", invalid)
-        };
-        current_instr[1] = tokens.next().unwrap().parse::<i8>().unwrap();
-        current_instr[2] = tokens.next().unwrap().parse::<i8>().unwrap();
-        current_instr[3] = tokens.next().unwrap().parse::<i8>().unwrap();
-        current_instr
-    }).collect();
+    let instructions: Vec<[i8; 4]> = inputiter
+        .map(|line| {
+            let mut current_instr = [0; 4];
+            let mut tokens = line.split(' ');
+            let mnemonic = tokens.next().unwrap();
+            current_instr[0] = match mnemonic {
+                "addi" => -7,
+                "addr" => 2,
+                "eqrr" => 66,
+                "muli" => -51,
+                "mulr" => -42,
+                "seti" => 77,
+                "setr" => 86,
+                "gtrr" => 4,
+                invalid => panic!("Invalid op code: {:?}", invalid),
+            };
+            current_instr[1] = tokens.next().unwrap().parse::<i8>().unwrap();
+            current_instr[2] = tokens.next().unwrap().parse::<i8>().unwrap();
+            current_instr[3] = tokens.next().unwrap().parse::<i8>().unwrap();
+            current_instr
+        })
+        .collect();
 
     let mut soln = [0, 0];
     for part in [0, 1].iter() {
@@ -45,35 +47,38 @@ pub fn day19(input: &str) -> (usize, usize) {
             let instr_b = instr[2] as usize;
             let instr_c = instr[3] as usize;
             match instr[0] {
-                -7 => register[instr_c & 7] = register[instr_a & 7] + instr_b,                  // addi
-                2 => register[instr_c & 7] = register[instr_a & 7] + register[instr_b & 7] ,    // addr
-                66 => { soln[*part] = register[instr_b & 7]; break; },                                // eqrr
-                -51 => register[instr_c & 7] = register[instr_a & 7] * instr_b,                 // muli
-                -42 => register[instr_c & 7] = register[instr_a & 7] * register[instr_b & 7],   // mulr
-                77 =>  register[instr_c & 7] = instr_a,                                          // seti
-                86 =>  register[instr_c & 7] = register[instr_a & 7],                            // setr
-                _ => panic!("Impossible instruction")
+                -7 => register[instr_c & 7] = register[instr_a & 7] + instr_b, // addi
+                2 => register[instr_c & 7] = register[instr_a & 7] + register[instr_b & 7], // addr
+                66 => {
+                    soln[*part] = register[instr_b & 7];
+                    break;
+                } // eqrr
+                -51 => register[instr_c & 7] = register[instr_a & 7] * instr_b, // muli
+                -42 => register[instr_c & 7] = register[instr_a & 7] * register[instr_b & 7], // mulr
+                77 => register[instr_c & 7] = instr_a, // seti
+                86 => register[instr_c & 7] = register[instr_a & 7], // setr
+                _ => panic!("Impossible instruction"),
             }
             register[ip_reg as usize] += 1;
         }
 
-    soln[*part] = divisor_sum(soln[*part]);
+        soln[*part] = divisor_sum(soln[*part]);
     }
     (soln[0], soln[1])
 }
 
 fn try_factor(n: &mut usize, f: &usize, d_sum: &mut usize) {
-        if *n % f != 0 {
-            return;
-        }
-        let mut mult = 1;
-        let mut fk = 1;
-        while *n % f == 0 {
-            *n /= f;
-            fk *= f;
-            mult += fk;
-        }
-        *d_sum *= mult;
+    if *n % f != 0 {
+        return;
+    }
+    let mut mult = 1;
+    let mut fk = 1;
+    while *n % f == 0 {
+        *n /= f;
+        fk *= f;
+        mult += fk;
+    }
+    *d_sum *= mult;
 }
 
 fn divisor_sum(n: usize) -> usize {
@@ -146,5 +151,4 @@ seti 0 7 3
 "#;
         assert_eq!(day19(&input), (1056, 10915260));
     }
-
 }

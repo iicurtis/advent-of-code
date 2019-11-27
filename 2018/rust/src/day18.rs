@@ -185,5 +185,4 @@ mod test {
 "#;
         assert_eq!(part1(&parse_input(input)), 1147);
     }
-
 }

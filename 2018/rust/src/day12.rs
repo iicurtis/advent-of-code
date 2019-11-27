@@ -136,5 +136,4 @@ initial state: #..#.#..##......###...###
     fn test_part1() {
         assert_eq!(part1(&parse_input(INPUT)), 325);
     }
-
 }
