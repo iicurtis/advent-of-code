@@ -43,30 +43,30 @@ fn collapse(input: &mut Vec<u8>) -> usize {
     return new_len;
 }
 
-pub fn part1(input: &Vec<u8>) -> usize {
-    let mut input = input.clone();
+pub fn part1(input: &[u8]) -> usize {
+    let mut input = input.to_owned();
     let len = collapse(&mut input);
     return len;
 }
 
-pub fn part2(input: &Vec<u8>) -> usize {
-    let mut input = input.clone();
+pub fn part2(input: &[u8]) -> usize {
+    let mut input = input.to_owned();
     let reduced_len = collapse(&mut input);
     // I was using for loops before I stole this style from CryZe
-    (b'a'..b'z' + 1)
+    (b'a'..=b'z')
         .into_par_iter()
         .map(|letter| {
             let mut new_len = 0;
             let mut input_clone = [0; 1 << 16];
-            for i in 0..reduced_len {
-                if input[i] | 0x20 == letter {
+            for item in input.iter().take(reduced_len) {
+                if item | 0x20 == letter {
                     continue;
                 }
 
-                if new_len > 0 && input_clone[new_len - 1] ^ 0x20 == input[i] {
+                if new_len > 0 && input_clone[new_len - 1] ^ 0x20 == *item {
                     new_len -= 1;
                 } else {
-                    input_clone[new_len] = input[i];
+                    input_clone[new_len] = *item;
                     new_len += 1;
                 }
             }

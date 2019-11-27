@@ -54,7 +54,7 @@ pub fn parse_input(input: &str) -> Vec<LandClaim> {
         let mask0 = mask << shift;
         let mask1 = if shift != 0 { mask >> (64 - shift) } else { 0 };
         input_vec.push(LandClaim {
-            id: id,
+            id,
             idx,
             y,
             h,
@@ -68,8 +68,8 @@ pub fn parse_input(input: &str) -> Vec<LandClaim> {
     return input_vec;
 }
 
-pub fn day03(input: &Vec<LandClaim>) -> (usize, usize) {
-    let mut input = input.clone();
+pub fn day03(input: &[LandClaim]) -> (usize, usize) {
+    let mut input = input.to_owned();
     let mut part1: usize = 0;
     let mut part2: usize = 0;
 
@@ -77,7 +77,7 @@ pub fn day03(input: &Vec<LandClaim>) -> (usize, usize) {
     // checking for collisions between claims
     let mut row: [u64; 17];
     let mut collide: [u64; 17];
-    'outer: while !input.is_empty() {
+    while !input.is_empty() {
         row = [0; 17];
         collide = [0; 17];
 
@@ -103,13 +103,11 @@ pub fn day03(input: &Vec<LandClaim>) -> (usize, usize) {
                 break; // break out if we've left the row
             }
             let idx = input[cidx].idx as usize;
-            if input[cidx].no_collision {
-                if ((collide[idx] & input[cidx].mask0) != 0)
-                    || ((collide[idx + 1] & input[cidx].mask1) != 0)
+            if input[cidx].no_collision && (((collide[idx] & input[cidx].mask0) != 0)
+                    || ((collide[idx + 1] & input[cidx].mask1) != 0))
                 {
                     input[cidx].no_collision = false;
                 }
-            }
 
             input[cidx].y += 1;
             input[cidx].h -= 1;

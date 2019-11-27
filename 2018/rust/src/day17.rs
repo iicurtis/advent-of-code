@@ -114,7 +114,7 @@ impl Display for World {
             for x in 0..self.x_dim {
                 write!(f, "{}", self.world[x + y * self.x_dim])?;
             }
-            write!(f, "\n")?;
+            writeln!(f)?;
         }
         Ok(())
     }
@@ -151,7 +151,7 @@ pub fn parse_input(input: &str) -> World {
                     } else if y < y_min {
                         y_min = y;
                     }
-                    points.push(Point { x: coord, y: y });
+                    points.push(Point { x: coord, y });
                 }
             }
             b'y' => {
@@ -166,7 +166,7 @@ pub fn parse_input(input: &str) -> World {
                     } else if x < x_min {
                         x_min = x;
                     }
-                    points.push(Point { x: x, y: coord });
+                    points.push(Point { x, y: coord });
                 }
             }
             invalid => unreachable!("Invalid coord {}", invalid),

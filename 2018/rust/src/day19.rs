@@ -67,7 +67,7 @@ pub fn day19(input: &str) -> (usize, usize) {
     (soln[0], soln[1])
 }
 
-fn try_factor(n: &mut usize, f: &usize, d_sum: &mut usize) {
+fn try_factor(n: &mut usize, f: usize, d_sum: &mut usize) {
     if *n % f != 0 {
         return;
     }
@@ -86,13 +86,13 @@ fn divisor_sum(n: usize) -> usize {
     let mut d_sum = 1;
 
     for f in [2, 3, 5].iter() {
-        try_factor(&mut n, f, &mut d_sum);
+        try_factor(&mut n, *f, &mut d_sum);
     }
 
     let mut step = 0x6264_2424;
     let mut f = 7;
     while f * f <= n {
-        try_factor(&mut n, &f, &mut d_sum);
+        try_factor(&mut n, f, &mut d_sum);
         f += step & 15;
         step = (step << 28) | (step >> 4);
     }

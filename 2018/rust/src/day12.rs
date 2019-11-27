@@ -57,7 +57,7 @@ pub fn part1((initial, rules): &(Vec<bool>, [bool; 32])) -> i32 {
             .chain(&vec![false; 4])
             .scan(0usize, |s, p| {
                 *s = (((*s as usize) << 1) & 0x1f) | *p as usize;
-                Some(rules[*s] == true)
+                Some(rules[*s])
             })
             .collect();
         start += 2;
@@ -78,17 +78,17 @@ pub fn part2((initial, rules): &(Vec<bool>, [bool; 32])) -> i64 {
     let mut start = 0;
     let mut i = 0;
     while i < generations {
-        let skip = state.iter().position(|&p| p == true).unwrap_or(0);
+        let skip = state.iter().position(|&p| p).unwrap_or(0);
         let rskip = state
             .iter()
-            .rposition(|&p| p == true)
+            .rposition(|&p| p)
             .unwrap_or_else(|| state.len() - 1);
         state = state[skip..=rskip]
             .iter()
             .chain(&vec![false; 4])
             .scan(0usize, |s, p| {
                 *s = (((*s as usize) << 1) & 0x1f) | *p as usize;
-                Some(rules[*s] == true)
+                Some(rules[*s])
             })
             .collect();
         start += 2 - skip as i64;

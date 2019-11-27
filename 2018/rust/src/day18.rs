@@ -34,7 +34,7 @@ impl Display for World {
                 let idx = (x + y * self.width) as usize;
                 write!(f, "{}", self.grid[idx])?;
             }
-            write!(f, "\n")?;
+            writeln!(f)?;
         }
         Ok(())
     }

@@ -28,8 +28,8 @@ pub fn solve(input: &str) -> Result<String, Error> {
 #[derive(Clone, Copy, Debug)]
 enum Track {
     Blank,
-    TrackVertical,
-    TrackHorizontal,
+    Vertical,
+    Horizontal,
     TurnCounter,
     TurnClock,
     Intersection,
@@ -159,14 +159,14 @@ impl Display for Grid {
                     match self.get(Point { x, y }) {
                         Track::Blank => write!(f, " ")?,
                         Track::Intersection => write!(f, "+")?,
-                        Track::TrackVertical => write!(f, "|")?,
-                        Track::TrackHorizontal => write!(f, "-")?,
+                        Track::Vertical => write!(f, "|")?,
+                        Track::Horizontal => write!(f, "-")?,
                         Track::TurnClock => write!(f, "/")?,
                         Track::TurnCounter => write!(f, "\\")?,
                     };
                 }
             }
-            write!(f, "\n")?
+            writeln!(f)?
         }
         Ok(())
     }
@@ -181,8 +181,8 @@ pub fn parse_input(input: &str) -> Box<Grid> {
     for (y, line) in lines.enumerate() {
         for (x, c) in line.chars().enumerate() {
             grid[x + y * WIDTH] = match c {
-                '|' => Track::TrackVertical,
-                '-' => Track::TrackHorizontal,
+                '|' => Track::Vertical,
+                '-' => Track::Horizontal,
                 '/' => Track::TurnClock,
                 '\\' => Track::TurnCounter,
                 '+' => Track::Intersection,
@@ -197,7 +197,7 @@ pub fn parse_input(input: &str) -> Box<Grid> {
                         },
                         turning: 0,
                     });
-                    Track::TrackVertical
+                    Track::Vertical
                 }
                 _ => Track::Blank,
             };

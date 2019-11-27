@@ -46,10 +46,10 @@ fn to_time(input: &mut Vec<Point>, time: i32) {
     }
 }
 
-fn find_final_time(input: &Vec<Point>) -> usize {
+fn find_final_time(input: &[Point]) -> usize {
     // Change center of mass to be fixed at origin
     // Galilean transform: lazy mode
-    let mut input = input.clone();
+    let mut input = input.to_owned();
     let mut mean_x: f32 = input.iter().map(|p| p.x_pos as f32).sum();
     let mut mean_y: f32 = input.iter().map(|p| p.y_pos as f32).sum();
     let mut mean_xv: f32 = input.iter().map(|p| p.x_vel as f32).sum();
@@ -72,7 +72,7 @@ fn find_final_time(input: &Vec<Point>) -> usize {
     return (-(numerator / denominator)).round() as usize;
 }
 
-fn print_points(points: &Vec<Point>) -> String {
+fn print_points(points: &[Point]) -> String {
     let minx = points.iter().map(|p| p.x_pos).min().unwrap();
     let maxx = points.iter().map(|p| p.x_pos).max().unwrap();
     let miny = points.iter().map(|p| p.y_pos).min().unwrap();
@@ -142,8 +142,8 @@ pub fn parse_input(input: &str) -> Vec<Point> {
     return instructions;
 }
 
-pub fn part1(input: &Vec<Point>) -> usize {
-    let mut input = input.clone();
+pub fn part1(input: &[Point]) -> usize {
+    let mut input = input.to_owned();
     let time = find_final_time(&input);
     to_time(&mut input, time as i32);
     let ans = print_points(&input);
@@ -151,8 +151,8 @@ pub fn part1(input: &Vec<Point>) -> usize {
     return time;
 }
 
-pub fn part2(input: &Vec<Point>) -> usize {
-    let input = input.clone();
+pub fn part2(input: &[Point]) -> usize {
+    let input = input.to_owned();
     let time = find_final_time(&input);
     return time;
 }

@@ -59,7 +59,7 @@ impl Display for World {
             for e in entities.iter() {
                 write!(f, "{}({})", e, e.hp)?;
             }
-            write!(f, "\n")?;
+            writeln!(f)?;
         }
         Ok(())
     }
@@ -85,49 +85,43 @@ impl World {
         }
     }
 
-    fn target_in_range(&mut self, pos: &usize) -> Option<usize> {
-        let enemy_class = self.world[*pos].enemy();
+    fn target_in_range(&mut self, pos: usize) -> Option<usize> {
+        let enemy_class = self.world[pos].enemy();
         self.get_adjacent(pos)
             .into_iter()
-            .filter_map(|adjacent| {
-                if self.world[adjacent].class == enemy_class {
-                    Some(adjacent)
-                } else {
-                    None
-                }
-            })
+            .filter(|&adjacent| { self.world[adjacent].class == enemy_class })
             .min_by_key(|p| self.world[*p].hp)
     }
 
-    fn attack(&mut self, unit: &usize, target: &usize) {
-        self.world[*target].hp -= self.world[*unit].attack;
-        if self.world[*target].hp <= 0 {
-            match self.world[*target].class {
+    fn attack(&mut self, unit: usize, target: usize) {
+        self.world[target].hp -= self.world[unit].attack;
+        if self.world[target].hp <= 0 {
+            match self.world[target].class {
                 EntityClass::Elf => self.elves -= 1,
                 EntityClass::Goblin => self.goblins -= 1,
                 _ => (),
             };
-            self.world[*target] = Entity::nothing();
+            self.world[target] = Entity::nothing();
         }
     }
 
-    fn get_adjacent(&self, p: &usize) -> Vec<usize> {
+    fn get_adjacent(&self, p: usize) -> Vec<usize> {
         let mut valid = Vec::new();
         for delta in [-(self.xsize as i32), -1, 1, self.xsize as i32].iter() {
-            valid.push((*p as i32 + *delta) as usize);
+            valid.push((p as i32 + delta) as usize);
         }
         return valid;
     }
 
-    fn move_to(&mut self, unit: &usize, target: &usize) {
-        if self.world[*target].class != EntityClass::Nothing {
+    fn move_to(&mut self, unit: usize, target: usize) {
+        if self.world[target].class != EntityClass::Nothing {
             panic!(
                 "WE CAN'T MOVE HERE: {:?} cannot move over {:?}",
-                self.world[*unit].class, self.world[*target].class
+                self.world[unit].class, self.world[target].class
             );
         } else {
-            let moved_unit = std::mem::replace(&mut self.world[*unit], Entity::nothing());
-            self.world[*target] = moved_unit;
+            let moved_unit = std::mem::replace(&mut self.world[unit], Entity::nothing());
+            self.world[target] = moved_unit;
         }
     }
 
@@ -144,15 +138,15 @@ impl World {
             };
 
             // Check if in range already
-            if let Some(target) = self.target_in_range(&u) {
-                self.attack(&u, &target);
+            if let Some(target) = self.target_in_range(u) {
+                self.attack(u, target);
             } else {
                 // Else search for best place to move to
                 if let Some(valid_pos) = self.move_toward_enemy(u) {
-                    self.move_to(&u, &valid_pos);
+                    self.move_to(u, valid_pos);
                     processed.insert(valid_pos);
-                    if let Some(target) = self.target_in_range(&valid_pos) {
-                        self.attack(&valid_pos, &target);
+                    if let Some(target) = self.target_in_range(valid_pos) {
+                        self.attack(valid_pos, target);
                     }
                 } else if self.elves == 0 || self.goblins == 0 {
                     return RoundResult::Incomplete;
@@ -179,7 +173,7 @@ impl World {
 
         visited.insert(unit);
 
-        for position in self.get_adjacent(&unit) {
+        for position in self.get_adjacent(unit) {
             if self.world[position].class == EntityClass::Nothing {
                 visited.insert(position);
                 open_set.push_back(Node {
@@ -200,7 +194,7 @@ impl World {
                 break;
             }
 
-            for adjacent_pos in self.get_adjacent(&position) {
+            for adjacent_pos in self.get_adjacent(position) {
                 if visited.contains(&adjacent_pos) {
                     continue;
                 }
@@ -334,7 +328,7 @@ pub fn part2(input: &World) -> usize {
     let starting_ap = 4_usize;
     let ending_ap = 200;
 
-    (starting_ap..ending_ap + 1)
+    (starting_ap..=ending_ap)
         .into_par_iter()
         .filter_map(|ap| {
             let mut world = input.clone();

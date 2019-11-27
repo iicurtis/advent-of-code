@@ -71,12 +71,12 @@ impl Display for Point {
     }
 }
 
-pub fn part1(input: &Vec<Point>) -> usize {
+pub fn part1(input: &[Point]) -> usize {
     let max_x = input.iter().max_by_key(|k| k.x).unwrap().x;
     let max_y = input.iter().max_by_key(|k| k.y).unwrap().y;
     let min_x = input.iter().min_by_key(|k| k.x).unwrap().x;
     let min_y = input.iter().min_by_key(|k| k.y).unwrap().y;
-    (min_x..max_x + 1)
+    (min_x..=max_x)
         .into_par_iter()
         .fold(
             || vec![0; input.len()],
@@ -96,7 +96,7 @@ pub fn part1(input: &Vec<Point>) -> usize {
                             eq = true;
                         }
                     }
-                    if eq == false {
+                    if !eq {
                         count[idx] += 1;
                         if x == min_x || x == max_x || y == min_y || y == max_y {
                             infinite.push(idx);
@@ -123,13 +123,13 @@ pub fn part1(input: &Vec<Point>) -> usize {
         .unwrap()
 }
 
-pub fn part2(input: &Vec<Point>) -> usize {
+pub fn part2(input: &[Point]) -> usize {
     const MAX_DIST: i32 = 10_000;
     let max_x = input.iter().max_by_key(|k| k.x).unwrap().x;
     let max_y = input.iter().max_by_key(|k| k.y).unwrap().y;
     let min_x = input.iter().min_by_key(|k| k.x).unwrap().x;
     let min_y = input.iter().min_by_key(|k| k.y).unwrap().y;
-    (min_x..max_x + 1)
+    (min_x..=max_x)
         .into_par_iter()
         .map(|x| {
             let mut count = 0;

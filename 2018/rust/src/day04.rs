@@ -137,7 +137,7 @@ struct Guard {
 
 type SleepMin = HashMap<usize, Guard>;
 
-fn get_sleepmin(input: &Vec<Event>) -> SleepMin {
+fn get_sleepmin(input: &[Event]) -> SleepMin {
     let mut guards = SleepMin::new();
     let mut sleepstart = 0;
     let mut guard = 0;
@@ -164,7 +164,7 @@ fn get_sleepmin(input: &Vec<Event>) -> SleepMin {
     return guards;
 }
 
-pub fn part1(input: &Vec<Event>) -> usize {
+pub fn part1(input: &[Event]) -> usize {
     let guards_sleepmin = get_sleepmin(input);
     let (guard_id, sleep_sched) = guards_sleepmin
         .into_iter()
@@ -180,7 +180,7 @@ pub fn part1(input: &Vec<Event>) -> usize {
     return mostmin * guard_id;
 }
 
-pub fn part2(input: &Vec<Event>) -> usize {
+pub fn part2(input: &[Event]) -> usize {
     let guards_sleepmin = get_sleepmin(input);
 
     let (freqsleep, freqmin) = guards_sleepmin

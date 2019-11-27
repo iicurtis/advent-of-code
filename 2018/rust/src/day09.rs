@@ -129,7 +129,7 @@ impl Game {
     }
 
     fn remove(&mut self, id: usize) {
-        let Marble { id: _, prev, next } = self.marbles[id];
+        let Marble { prev, next, .. } = self.marbles[id];
         self.marbles[prev].next = next;
         self.marbles[next].prev = prev;
     }

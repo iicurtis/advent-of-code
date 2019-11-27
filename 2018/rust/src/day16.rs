@@ -121,7 +121,7 @@ pub fn part1(input: &Input) -> usize {
         let c = i.instr[3];
         let mut possibles = 0;
         for f in OPS.iter() {
-            let mut reg = i.before.clone();
+            let mut reg = i.before;
             f(&mut reg, a, b, c);
             if reg == i.after {
                 possibles += 1;
@@ -151,7 +151,7 @@ pub fn part2(input: &Input) -> usize {
                 i += 1;
                 continue;
             }
-            let mut reg = sample.before.clone();
+            let mut reg = sample.before;
             OPS[i](&mut reg, a, b, c);
             if reg == sample.after {
                 possible_ops |= 1 << i;

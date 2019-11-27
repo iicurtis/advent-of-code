@@ -41,7 +41,7 @@ pub fn part2(input: &[isize]) -> isize {
     let mut sum = 0;
     seen.insert(sum);
 
-    for freq in input.into_iter().cycle() {
+    for freq in input.iter().cycle() {
         sum += freq;
         if !seen.insert(sum) {
             break;
