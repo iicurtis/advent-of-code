@@ -103,11 +103,12 @@ pub fn day03(input: &[LandClaim]) -> (usize, usize) {
                 break; // break out if we've left the row
             }
             let idx = input[cidx].idx as usize;
-            if input[cidx].no_collision && (((collide[idx] & input[cidx].mask0) != 0)
+            if input[cidx].no_collision
+                && (((collide[idx] & input[cidx].mask0) != 0)
                     || ((collide[idx + 1] & input[cidx].mask1) != 0))
-                {
-                    input[cidx].no_collision = false;
-                }
+            {
+                input[cidx].no_collision = false;
+            }
 
             input[cidx].y += 1;
             input[cidx].h -= 1;

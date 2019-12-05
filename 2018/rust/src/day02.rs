@@ -84,7 +84,7 @@ pub fn part1(input: &str) -> u32 {
 // unsafe { unreachable_unchecked() };
 // }
 
-pub fn part2(input: & str) -> String {
+pub fn part2(input: &str) -> String {
     let lines: Vec<&str> = input.lines().collect();
     let line_len = 26;
     let mut parts = hashbrown::HashSet::with_capacity(250);

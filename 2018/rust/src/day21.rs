@@ -23,8 +23,8 @@ pub fn day21(input: &str) -> (usize, usize) {
     println!("Input: {}", inputval);
 
     let x = 0x1016B;
-    let x2 = (x*x) & 0xffffff;
-    let x3 = (x2*x) & 0xffffff;
+    let x2 = (x * x) & 0xffffff;
+    let x3 = (x2 * x) & 0xffffff;
     let mut prev_r5;
     let mut r5 = 0;
     let mut seen = std::collections::HashSet::new();
@@ -46,7 +46,6 @@ pub fn day21(input: &str) -> (usize, usize) {
 
     (soln1, soln2)
 }
-
 
 #[cfg(test)]
 mod test {

@@ -89,7 +89,7 @@ impl World {
         let enemy_class = self.world[pos].enemy();
         self.get_adjacent(pos)
             .into_iter()
-            .filter(|&adjacent| { self.world[adjacent].class == enemy_class })
+            .filter(|&adjacent| self.world[adjacent].class == enemy_class)
             .min_by_key(|p| self.world[*p].hp)
     }
 
