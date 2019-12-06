@@ -234,9 +234,27 @@ fn day19(c: &mut Criterion) {
     c.bench_function("day19", move |b| b.iter(|| day19::day19(&input)));
 }
 
+fn day20(c: &mut Criterion) {
+    use advent2018::day20;
+    let input = fs::read_to_string("../inputs/day20.txt").expect("Couldn't find file");
+    c.bench_function("day20", move |b| b.iter(|| day20::day20(&input)));
+}
+
+fn day21(c: &mut Criterion) {
+    use advent2018::day21;
+    let input = fs::read_to_string("../inputs/day21.txt").expect("Couldn't find file");
+    c.bench_function("day21", move |b| b.iter(|| day21::day21(&input)));
+}
+
+fn day22(c: &mut Criterion) {
+    use advent2018::day22;
+    let input = fs::read_to_string("../inputs/day22.txt").expect("Couldn't find file");
+    c.bench_function("day22 p1", move |b| b.iter(|| day22::day22(&input)));
+}
+
 criterion_group!(
     benches, day01, day02, day03, day04, day05, day06, day07, day08, day10, day11, day12, day13,
-    day16, day17, day19
+    day16, day17, day19, day20, day21, day22
 );
 
 criterion_group! {
