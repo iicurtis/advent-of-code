@@ -22,6 +22,7 @@ enum Terrain {
 struct Region {
     terrain: Terrain,
     erosion_level: usize,
+    tool_done: u8,
 }
 
 impl Region {
@@ -32,7 +33,7 @@ impl Region {
             2 => Terrain::Narrow,
             _ => unreachable!()
         };
-        Self{ terrain, erosion_level }
+        Self{ terrain, erosion_level, tool_done: 0 }
     }
 }
 
@@ -43,18 +44,14 @@ pub struct Map {
     height: usize,
 }
 
-enum Tool {
-    Neither = 0,
-    Gear = 1,
-    Torch = 2,
-}
-
 struct Node {
     cost: usize,
     x: usize,
     y: usize,
-    tool: Tool,
+    tool: u8,
 }
+
+const TORCH: u8 = 2;
 
 impl Node {
     fn check_neighbor(
@@ -62,11 +59,22 @@ impl Node {
         x: usize,
         y: usize,
         away: isize,
-        valid_tool: usize,
-    ) -> Option<Node> {
-        let neighbor = Node { x, y, cost, tool };
-        let neighbor_terrain =
-        if neighbor_terrain
+        tool: u8,
+        region: Region,
+    ) -> Option<(usize, Node)> {
+        let mut neighbor = Node { x, y, cost: self.cost, tool: self.tool };
+        let mut delta = away * 2;
+        if region.terrain as u8 == self.tool {
+            neighbor.tool ^= tool;
+            neighbor.cost += 7;
+            delta += 7 & if self.tool == TORCH { -1 } else { 0 };
+            delta += 7 & if neighbor.tool != TORCH { -1 } else {0};
+        }
+        if (region.tool_done & neighbor.tool) == 0 {
+            Some((delta as usize, neighbor))
+        } else {
+            None
+        }
     }
 }
 
@@ -117,7 +125,11 @@ pub fn day22(input: &str) -> (usize, usize) {
 
     // Part 2 - A* search
     let mut queue = [Vec::with_capacity(2048); 17];
+    queue[0].push( Node { cost: 0, x: 0, y: 0, tool: TORCH } );
 
+    loop {
+        let mut top = queue[0];
+    }
     // if Some(check_neighbor) -> queue[delta].push(check_neighbor)
 
     let soln2 = 0;
