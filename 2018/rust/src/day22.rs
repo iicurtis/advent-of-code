@@ -1,21 +1,22 @@
 // Advent of Code
 // Copyright (C) 2018  Isaac Curtis
 
-use hashbrown::HashMap;
 use std::fmt::{self, Display};
 
 type Error = Box<dyn std::error::Error>;
 
 pub fn solve(input: &str) -> Result<String, Error> {
-    let (soln1, soln2) = day22(&input);
+    let map = parse(&input);
+    let soln1 = part1(&map);
+    let soln2 = part2(&map);
     Ok(format!("Part 1: {}\nPart 2: {}", soln1, soln2))
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Terrain {
-    Rocky = 0,
-    Wet = 1,
-    Narrow = 2,
+    Rocky = 1,
+    Wet = 2,
+    Narrow = 4,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -42,8 +43,11 @@ pub struct Map {
     grid: Vec<Region>,
     width: usize,
     height: usize,
+    tx: usize,
+    ty: usize,
 }
 
+#[derive(Clone, Debug, PartialEq, Eq)]
 struct Node {
     cost: usize,
     x: usize,
@@ -55,15 +59,15 @@ const TORCH: u8 = 2;
 
 impl Node {
     fn check_neighbor(
-        self,
+        &self,
         x: usize,
         y: usize,
-        away: isize,
+        away: bool,
         tool: u8,
-        region: Region,
+        region: &Region,
     ) -> Option<(usize, Node)> {
-        let mut neighbor = Node { x, y, cost: self.cost, tool: self.tool };
-        let mut delta = away * 2;
+        let mut neighbor = Node { x, y, cost: self.cost + 1, tool: self.tool };
+        let mut delta = if away { 2 } else { 0 };
         if region.terrain as u8 == self.tool {
             neighbor.tool ^= tool;
             neighbor.cost += 7;
@@ -79,7 +83,7 @@ impl Node {
 }
 
 
-pub fn day22(input: &str) -> (usize, usize) {
+pub fn parse(input: &str) -> Map {
     let xmax: usize = 80;
 
     let mut input = input.trim().lines();
@@ -113,27 +117,77 @@ pub fn day22(input: &str) -> (usize, usize) {
         x0 += 7905;
         x0 %= EROSION_MOD;
     }
+    Map { grid, width: xmax, height: ymax, tx, ty }
 
+}
 
-    // Part 1
+pub fn part1(input: &Map) -> usize {
     let mut soln1 = 0;
-    for idy in 0..=ty {
-        for idx in 0..=tx {
-            soln1 += grid[idx+idy*xmax].terrain as usize;
+    for idy in 0..=input.ty {
+        for idx in 0..=input.tx {
+            soln1 += (input.grid[idx+idy*input.width].terrain as usize) >> 1;
         }
     }
+    soln1
+}
 
+pub fn part2(input: &Map) -> usize {
     // Part 2 - A* search
-    let mut queue = [Vec::with_capacity(2048); 17];
+    let mut input = input.to_owned();
+    let soln2;
+    let mut queue = vec![Vec::with_capacity(2048); 17];
     queue[0].push( Node { cost: 0, x: 0, y: 0, tool: TORCH } );
 
-    loop {
-        let mut top = queue[0];
-    }
-    // if Some(check_neighbor) -> queue[delta].push(check_neighbor)
+    'main: loop {
+        while let Some(current_node) = queue[0].pop() {
+            let valid_tool;
+            {
+                let cur_region = &mut input.grid[current_node.x+current_node.y*input.width];
+                if (cur_region.tool_done & current_node.tool) != 0 {
+                    continue;
+                }
+                cur_region.tool_done |= current_node.tool;
+                valid_tool = 7 ^ cur_region.terrain as u8;
+            }
 
-    let soln2 = 0;
-    (soln1, soln2)
+            if (current_node.x == input.tx) & (current_node.y ==input.ty) {
+                soln2 = if current_node.tool == TORCH { current_node.cost } else { current_node.cost + 7 };
+                break 'main;
+            }
+
+            if current_node.x.wrapping_sub(1) < input.width {
+                let neigh_reg = &input.grid[current_node.x + current_node.y*input.width - 1];
+                if let Some((delta, neighbor)) = current_node.check_neighbor(current_node.x - 1, current_node.y, current_node.x <= input.tx, valid_tool, neigh_reg)
+                {
+                    queue[delta].push(neighbor);
+                }
+            }
+            if current_node.x.wrapping_add(1) < input.width {
+                let neigh_reg = &input.grid[current_node.x + current_node.y*input.width + 1];
+                if let Some((delta, neighbor)) = current_node.check_neighbor(current_node.x + 1, current_node.y, current_node.x >= input.tx, valid_tool, neigh_reg)
+                {
+                    queue[delta].push(neighbor);
+                }
+            }
+            if current_node.y.wrapping_sub(1) < input.height {
+                let neigh_reg = &input.grid[current_node.x + (current_node.y-1)*input.width];
+                if let Some((delta, neighbor)) = current_node.check_neighbor(current_node.x, current_node.y - 1, current_node.y <=input.ty, valid_tool, neigh_reg)
+                {
+                    queue[delta].push(neighbor);
+                }
+            }
+            if current_node.y.wrapping_add(1) < input.height {
+                let neigh_reg = &input.grid[current_node.x + (current_node.y+1)*input.width];
+                if let Some((delta, neighbor)) = current_node.check_neighbor(current_node.x, current_node.y + 1, current_node.y >=input.ty, valid_tool, neigh_reg)
+                {
+                    queue[delta].push(neighbor);
+                }
+            }
+        }
+        queue.rotate_left(1);
+    }
+
+    soln2
 }
 
 impl Display for Map {
@@ -169,6 +223,33 @@ mod test {
 depth: 510
 target: 10,10
 "#;
-        assert_eq!(day22(input), (114, 45));
+        assert_eq!(part1(&parse(input)), 114);
+    }
+
+    #[test]
+    fn test_part2_0() {
+        let input = r#"
+depth: 510
+target: 10,10
+"#;
+        assert_eq!(part2(&parse(input)), 45);
+    }
+
+    #[test]
+    fn test_part1_1() {
+        let input = r#"
+depth: 10914
+target: 9,739
+"#;
+        assert_eq!(part1(&parse(input)), 7380);
+    }
+
+    #[test]
+    fn test_part2_1() {
+        let input = r#"
+depth: 10914
+target: 9,739
+"#;
+        assert_eq!(part2(&parse(input)), 1013);
     }
 }

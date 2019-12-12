@@ -14,8 +14,7 @@ pub fn day21(input: &str) -> (usize, usize) {
         .next()
         .unwrap()
         .split(' ')
-        .skip(1)
-        .next()
+        .nth(1)
         .unwrap()
         .parse::<usize>()
         .unwrap();
@@ -23,8 +22,8 @@ pub fn day21(input: &str) -> (usize, usize) {
     println!("Input: {}", inputval);
 
     let x = 0x1016B;
-    let x2 = (x * x) & 0xffffff;
-    let x3 = (x2 * x) & 0xffffff;
+    let x2 = (x * x) & 0xff_ffff;
+    let x3 = (x2 * x) & 0xff_ffff;
     let mut prev_r5;
     let mut r5 = 0;
     let mut seen = std::collections::HashSet::new();
@@ -34,7 +33,7 @@ pub fn day21(input: &str) -> (usize, usize) {
     loop {
         prev_r5 = r5;
         r5 = (((r5 >> 16) | 1) * x + ((r5 >> 8) & 0xff) * x2 + ((r5 & 0xff) + inputval) * x3)
-            & 0xffffff;
+            & 0xff_ffff;
         if seen.is_empty() {
             soln1 = r5;
         }

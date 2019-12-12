@@ -116,13 +116,13 @@ const OPS: [fn(&mut [usize; 4], usize, usize, usize); 16] = [
 pub fn part1(input: &Input) -> usize {
     let mut three_or_more = 0;
     for i in input.samples.iter() {
-        let a = i.instr[1];
-        let b = i.instr[2];
-        let c = i.instr[3];
+        let ia = i.instr[1];
+        let ib = i.instr[2];
+        let ic = i.instr[3];
         let mut possibles = 0;
         for f in OPS.iter() {
             let mut reg = i.before;
-            f(&mut reg, a, b, c);
+            f(&mut reg, ia, ib, ic);
             if reg == i.after {
                 possibles += 1;
                 if possibles >= 3 {
@@ -139,9 +139,9 @@ pub fn part2(input: &Input) -> usize {
     let mut possibles = [65535u32; 16];
     let mut solutions = [16usize; 16];
     for sample in input.samples.iter() {
-        let a = sample.instr[1];
-        let b = sample.instr[2];
-        let c = sample.instr[3];
+        let ia = sample.instr[1];
+        let ib = sample.instr[2];
+        let ic = sample.instr[3];
         let mut map = possibles[sample.instr[0]];
         let mut possible_ops = 0u32;
         let mut i = 0;
@@ -152,7 +152,7 @@ pub fn part2(input: &Input) -> usize {
                 continue;
             }
             let mut reg = sample.before;
-            OPS[i](&mut reg, a, b, c);
+            OPS[i](&mut reg, ia, ib, ic);
             if reg == sample.after {
                 possible_ops |= 1 << i;
             }
@@ -171,10 +171,10 @@ pub fn part2(input: &Input) -> usize {
 
     let mut reg = [0, 0, 0, 0];
     for prog in input.instructions.iter() {
-        let a = prog[1];
-        let b = prog[2];
-        let c = prog[3];
-        OPS[solutions[prog[0]]](&mut reg, a, b, c);
+        let ia = prog[1];
+        let ib = prog[2];
+        let ic = prog[3];
+        OPS[solutions[prog[0]]](&mut reg, ia,ib, ic);
     }
     return reg[0];
 }
