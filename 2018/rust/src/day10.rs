@@ -39,11 +39,16 @@ impl Display for Point {
     }
 }
 
-fn to_time(input: &mut Vec<Point>, time: i32) {
+fn to_time(input: &mut Vec<Point>, time: i32) -> (i32, i32) {
+    let mut left_bound = i32::max_value();
+    let mut upper_bound = i32::max_value();
     for p in input.iter_mut() {
         p.x_pos += p.x_vel * time;
         p.y_pos += p.y_vel * time;
+        left_bound = std::cmp::min(left_bound, p.x_pos);
+        upper_bound = std::cmp::min(upper_bound, p.y_pos);
     }
+    (left_bound, upper_bound)
 }
 
 fn find_final_time(input: &[Point]) -> usize {
@@ -142,13 +147,38 @@ pub fn parse_input(input: &str) -> Vec<Point> {
     return instructions;
 }
 
-pub fn part1(input: &[Point]) -> usize {
+pub fn part1(input: &[Point]) -> String {
+	let glyphs: hashbrown::HashMap<u64, char> = [
+		( 0x861861fe186148c, 'A' ),
+		( 0x7e186185f86185f, 'B' ),
+		( 0x7a104104104185e, 'C' ),
+		( 0xfc104105f04107f, 'E' ),
+		( 0x04104105f04107f, 'F' ),
+		( 0xbb1861e4104185e, 'G' ),
+		( 0x86186187f861861, 'H' ),
+		( 0x391450410410438, 'J' ),
+		( 0x8512450c3149461, 'K' ),
+		( 0xfc1041041041041, 'L' ),
+		( 0x871c69a659638e1, 'N' ),
+		( 0x04104105f86185f, 'P' ),
+		( 0x86145125f86185f, 'R' ),
+		( 0x86149230c492861, 'X' ),
+		( 0xfc104210842083f, 'Z' ),
+	].iter().cloned().collect();
     let mut input = input.to_owned();
     let time = find_final_time(&input);
-    to_time(&mut input, time as i32);
-    let ans = print_points(&input);
-    println!("{}", ans);
-    return time;
+    let (left_bound, upper_bound) = to_time(&mut input, time as i32);
+    let mut text: [u64; 8] = [0; 8];
+    for p in input.iter_mut() {
+        p.x_pos -= left_bound;
+        p.y_pos -= upper_bound;
+        text[(p.x_pos as usize / 8) % 8] |= 0x1 << (6 * p.y_pos + p.x_pos % 8);
+    }
+    let mut soln1 = "".to_string();
+    for n in text.iter() {
+        soln1.push(glyphs[n]);
+    }
+    return soln1;
 }
 
 pub fn part2(input: &[Point]) -> usize {
