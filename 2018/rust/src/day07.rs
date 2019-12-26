@@ -71,13 +71,12 @@ mod parsers {
 }
 
 pub fn parse_input(input: &str) -> Vec<Instruction> {
-    let instructions = input
+    input
         .trim()
         .lines()
         .map(|line| line.parse())
         .collect::<Result<Vec<Instruction>, _>>()
-        .unwrap();
-    return instructions;
+        .unwrap()
 }
 
 pub fn part1(input: &[Instruction]) -> String {
@@ -120,7 +119,7 @@ pub fn part1(input: &[Instruction]) -> String {
             }
         }
     }
-    return finished.into_iter().collect();
+    finished.into_iter().collect()
 }
 
 pub fn part2(input: &[Instruction]) -> i32 {
@@ -171,7 +170,7 @@ pub fn part2(input: &[Instruction]) -> i32 {
             }
         }
     }
-    return -time;
+    -time
 }
 
 #[cfg(test)]

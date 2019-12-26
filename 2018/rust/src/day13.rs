@@ -102,7 +102,7 @@ impl Cart {
 
 impl Grid {
     fn get(&self, pos: Point) -> Track {
-        return self.grid[pos.x + pos.y * self.xsize];
+        self.grid[pos.x + pos.y * self.xsize]
     }
 
     fn last_cart(&self) -> Option<Point> {
@@ -204,12 +204,12 @@ pub fn parse_input(input: &str) -> Box<Grid> {
         }
     }
 
-    return Box::new(Grid {
+    Box::new(Grid {
         grid,
         xsize: WIDTH,
         ysize: HEIGHT,
         carts,
-    });
+    })
 }
 
 pub fn part1(input: &Grid) -> Point {

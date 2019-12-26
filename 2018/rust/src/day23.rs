@@ -19,8 +19,6 @@ struct Position {
     z: isize,
 }
 
-
-
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Nanobot {
     pos: Position,
@@ -30,7 +28,7 @@ pub struct Nanobot {
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
 struct Cuboid(Position, Position);
 
-const ORIGIN: Position = Position{x: 0, y: 0, z: 0};
+const ORIGIN: Position = Position { x: 0, y: 0, z: 0 };
 
 impl Cuboid {
     fn corners(self) -> [Position; 8] {
@@ -47,14 +45,23 @@ impl Cuboid {
     }
 
     fn distance_to_origin(self) -> usize {
-        self.corners().iter().map(|c| c.manhatten(ORIGIN)).min().unwrap()
+        self.corners()
+            .iter()
+            .map(|c| c.manhatten(ORIGIN))
+            .min()
+            .unwrap()
     }
 
     fn subdivide(self) -> impl Iterator<Item = Cuboid> {
         let (a, b) = (self.0, self.1);
         let midpoint = (self.0 + self.1) / 2;
         if a == midpoint || b == midpoint {
-            return self.corners().iter().map(|&c| Cuboid(c, c)).collect::<Vec<_>>().into_iter();
+            return self
+                .corners()
+                .iter()
+                .map(|&c| Cuboid(c, c))
+                .collect::<Vec<_>>()
+                .into_iter();
         }
         vec![
             Cuboid(Position::new(a.x, a.y, a.z), midpoint),
@@ -65,7 +72,8 @@ impl Cuboid {
             Cuboid(Position::new(b.x, b.y, b.z), midpoint),
             Cuboid(Position::new(b.x, a.y, b.z), midpoint),
             Cuboid(Position::new(b.x, b.y, a.z), midpoint),
-        ].into_iter()
+        ]
+        .into_iter()
     }
 
     fn intersects(self, bot: Nanobot) -> bool {
@@ -83,14 +91,18 @@ impl Cuboid {
 }
 
 fn clamp(pos: isize, a: isize, b: isize) -> isize {
-    use std::cmp::{min, max};
+    use std::cmp::{max, min};
     let (min_p, max_p) = (min(a, b), max(a, b));
-    if pos < min_p { min_p }
-    else if pos > max_p { max_p }
-    else { pos }
+    if pos < min_p {
+        min_p
+    } else if pos > max_p {
+        max_p
+    } else {
+        pos
+    }
 }
 
-impl<'a, T: IntoIterator<Item =&'a Nanobot>> From<T> for Cuboid{
+impl<'a, T: IntoIterator<Item = &'a Nanobot>> From<T> for Cuboid {
     fn from(bots: T) -> Cuboid {
         let mut max = 0;
         for bot in bots {
@@ -106,23 +118,33 @@ impl<'a, T: IntoIterator<Item =&'a Nanobot>> From<T> for Cuboid{
     }
 }
 
-
 pub fn parse(input: &str) -> Vec<Nanobot> {
-    input.lines().map(|line| {
-        let mut split_line = line[5..].split(">, r=");
-        let mut pos_str = split_line.next().unwrap().split(",");
-        let radius = split_line.next().unwrap().parse().unwrap();
-        let x = pos_str.next().unwrap().parse().unwrap();
-        let y = pos_str.next().unwrap().parse().unwrap();
-        let z = pos_str.next().unwrap().parse().unwrap();
+    input
+        .lines()
+        .map(|line| {
+            let mut split_line = line[5..].split(">, r=");
+            let mut pos_str = split_line.next().unwrap().split(',');
+            let radius = split_line.next().unwrap().parse().unwrap();
+            let x = pos_str.next().unwrap().parse().unwrap();
+            let y = pos_str.next().unwrap().parse().unwrap();
+            let z = pos_str.next().unwrap().parse().unwrap();
 
-        Nanobot{ pos: Position { x, y, z } , radius }
-    }).collect()
+            Nanobot {
+                pos: Position { x, y, z },
+                radius,
+            }
+        })
+        .collect()
 }
 
 pub fn part1(nanobots: &[Nanobot]) -> usize {
-    let largest_nanobot = nanobots.iter().max_by_key(|x| x.radius).expect("No nanobots");
-    nanobots.iter().filter(|x| x.pos.manhatten(largest_nanobot.pos) <= largest_nanobot.radius)
+    let largest_nanobot = nanobots
+        .iter()
+        .max_by_key(|x| x.radius)
+        .expect("No nanobots");
+    nanobots
+        .iter()
+        .filter(|x| x.pos.manhatten(largest_nanobot.pos) <= largest_nanobot.radius)
         .count()
 }
 
@@ -135,7 +157,10 @@ pub fn part2(nanobots: &[Nanobot]) -> usize {
         if cuboid.0 == cuboid.1 {
             return cuboid.0.manhatten(ORIGIN);
         }
-        queue.extend(cuboid.subdivide().map(|c| (c.num_bots_intersecting(nanobots), Reverse(c))),
+        queue.extend(
+            cuboid
+                .subdivide()
+                .map(|c| (c.num_bots_intersecting(nanobots), Reverse(c))),
         );
     }
     unreachable!()
@@ -164,11 +189,13 @@ impl Nanobot {
 
 impl Position {
     fn new(x: isize, y: isize, z: isize) -> Self {
-        Position{ x, y, z }
+        Position { x, y, z }
     }
 
     fn manhatten(&self, other: Self) -> usize {
-        (self.x - other.x).abs() as usize + (self.y - other.y).abs() as usize + (self.z - other.z).abs() as usize
+        (self.x - other.x).abs() as usize
+            + (self.y - other.y).abs() as usize
+            + (self.z - other.z).abs() as usize
     }
 }
 
@@ -188,7 +215,7 @@ impl Div<isize> for Position {
     type Output = Self;
 
     fn div(self, scalar: isize) -> Self {
-        Position{
+        Position {
             x: self.x / scalar,
             y: self.y / scalar,
             z: self.z / scalar,

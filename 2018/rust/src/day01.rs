@@ -33,7 +33,7 @@ pub fn parse_input(input: &str) -> Vec<isize> {
 }
 
 pub fn part1(input: &[isize]) -> isize {
-    return input.iter().sum();
+    input.iter().sum()
 }
 
 pub fn part2(input: &[isize]) -> isize {
@@ -48,7 +48,7 @@ pub fn part2(input: &[isize]) -> isize {
         }
     }
 
-    return sum;
+    sum
 }
 
 #[cfg(test)]

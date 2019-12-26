@@ -43,7 +43,7 @@ fn power_level(x: i32, y: i32, serial: i32) -> i32 {
     let rack_id = x + 10;
     let mut power = (rack_id * y + serial) * rack_id;
     power = power / 100 % 10 - 5;
-    return power;
+    power
 }
 
 pub fn part1(input: &str) -> Point {
@@ -81,7 +81,7 @@ pub fn part1(input: &str) -> Point {
         }
     }
 
-    return best;
+    best
 }
 
 pub fn part2(input: &str) -> Point {
@@ -106,7 +106,7 @@ pub fn part2(input: &str) -> Point {
         }
     }
 
-    let best = (1..WIDTH)
+    (1..WIDTH)
         .into_par_iter()
         .map(|x| {
             let mut best = Point {
@@ -134,9 +134,7 @@ pub fn part2(input: &str) -> Point {
             best
         })
         .max_by_key(|b| b.p)
-        .unwrap();
-
-    return best;
+        .unwrap()
 }
 
 #[cfg(test)]

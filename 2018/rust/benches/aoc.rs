@@ -250,9 +250,11 @@ fn day22(c: &mut Criterion) {
     use advent2018::day22;
     let input = fs::read_to_string("../inputs/day22.txt").expect("Couldn't find file");
     c.bench_function("day22 parse", move |b| b.iter(|| day22::parse(&input)));
-    let input = day22::parse(&fs::read_to_string("../inputs/day22.txt").expect("Couldn't find file"));
+    let input =
+        day22::parse(&fs::read_to_string("../inputs/day22.txt").expect("Couldn't find file"));
     c.bench_function("day22 p1", move |b| b.iter(|| day22::part1(&input)));
-    let input = day22::parse(&fs::read_to_string("../inputs/day22.txt").expect("Couldn't find file"));
+    let input =
+        day22::parse(&fs::read_to_string("../inputs/day22.txt").expect("Couldn't find file"));
     c.bench_function("day22 p2", move |b| b.iter(|| day22::part2(&input)));
 }
 

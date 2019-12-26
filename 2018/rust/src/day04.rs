@@ -126,7 +126,7 @@ pub fn parse_input(input: &str) -> Vec<Event> {
         .collect::<Result<Vec<Event>, _>>()
         .unwrap();
     events.sort_by_key(|event| event.date);
-    return events;
+    events
 }
 
 #[derive(Clone, Copy)]
@@ -161,7 +161,7 @@ fn get_sleepmin(input: &[Event]) -> SleepMin {
             }
         };
     }
-    return guards;
+    guards
 }
 
 pub fn part1(input: &[Event]) -> usize {
@@ -177,14 +177,13 @@ pub fn part1(input: &[Event]) -> usize {
         .max_by_key(|&(_, v)| v)
         .map(|(i, _)| i)
         .expect("No max found");
-    return mostmin * guard_id;
+    mostmin * guard_id
 }
 
 pub fn part2(input: &[Event]) -> usize {
     let guards_sleepmin = get_sleepmin(input);
 
     let (freqsleep, freqmin) = guards_sleepmin
-        .clone()
         .into_iter()
         .map(|(id, guard)| {
             (
@@ -202,7 +201,7 @@ pub fn part2(input: &[Event]) -> usize {
         .max_by_key(|&(_, c)| c)
         .expect("We couldn't get the freq");
 
-    return freqsleep * freqmin;
+    freqsleep * freqmin
 }
 
 #[cfg(test)]

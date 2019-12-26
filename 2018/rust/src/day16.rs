@@ -91,7 +91,7 @@ do_parse!(
 
 pub fn parse_input(input: &str) -> Input {
     let (_incomplete, parsed) = instr(CompleteStr(input)).expect("Couldn't parse input");
-    return parsed;
+    parsed
 }
 
 const OPS: [fn(&mut [usize; 4], usize, usize, usize); 16] = [
@@ -132,7 +132,7 @@ pub fn part1(input: &Input) -> usize {
             }
         }
     }
-    return three_or_more;
+    three_or_more
 }
 
 pub fn part2(input: &Input) -> usize {
@@ -174,7 +174,7 @@ pub fn part2(input: &Input) -> usize {
         let ia = prog[1];
         let ib = prog[2];
         let ic = prog[3];
-        OPS[solutions[prog[0]]](&mut reg, ia,ib, ic);
+        OPS[solutions[prog[0]]](&mut reg, ia, ib, ic);
     }
-    return reg[0];
+    reg[0]
 }

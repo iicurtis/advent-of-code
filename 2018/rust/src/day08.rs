@@ -52,7 +52,7 @@ pub fn part1(input: &Node) -> usize {
     for n in input.children.iter() {
         metadata += part1(n);
     }
-    return metadata;
+    metadata
 }
 
 pub fn part2(input: &Node) -> usize {
@@ -67,7 +67,7 @@ pub fn part2(input: &Node) -> usize {
             }
         }
     }
-    return value;
+    value
 }
 
 #[cfg(test)]

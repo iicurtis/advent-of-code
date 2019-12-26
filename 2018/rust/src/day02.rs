@@ -42,7 +42,7 @@ pub fn part1(input: &str) -> u32 {
             threes += 1;
         }
     }
-    return twos * threes;
+    twos * threes
 }
 
 // pub fn part2_simd<'a>(input: &'a str) -> String {

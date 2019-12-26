@@ -54,13 +54,13 @@ pub fn parse_input(input: &str) -> Box<(usize, usize)> {
 pub fn part1(input: &(usize, usize)) -> usize {
     let mut players = vec![Player::default(); input.0];
     play_game(&mut players, input.1);
-    return players.iter().map(|p| p.points).max().unwrap();
+    players.iter().map(|p| p.points).max().unwrap()
 }
 
 pub fn part2(input: &(usize, usize)) -> usize {
     let mut players = vec![Player::default(); input.0];
     play_game(&mut players, input.1 * 100);
-    return players.iter().map(|p| p.points).max().unwrap();
+    players.iter().map(|p| p.points).max().unwrap()
 }
 
 struct Game {
@@ -107,7 +107,7 @@ impl Game {
     fn add_marble(&mut self) -> usize {
         let id = self.marbles.len();
         self.marbles.push(Marble::new(self.turn));
-        return id;
+        id
     }
 
     fn clockwise(&mut self, mut num: usize) -> usize {
@@ -116,7 +116,7 @@ impl Game {
             id = self.marbles[id].next;
             num -= 1;
         }
-        return id;
+        id
     }
 
     fn counter_clockwise(&mut self, mut num: usize) -> usize {
@@ -125,7 +125,7 @@ impl Game {
             id = self.marbles[id].prev;
             num -= 1;
         }
-        return id;
+        id
     }
 
     fn remove(&mut self, id: usize) {

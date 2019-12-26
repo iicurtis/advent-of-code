@@ -74,25 +74,7 @@ fn find_final_time(input: &[Point]) -> usize {
         numerator += xp * xv + yp * yv;
         denominator += xv * xv + yv * yv;
     }
-    return (-(numerator / denominator)).round() as usize;
-}
-
-fn print_points(points: &[Point]) -> String {
-    let minx = points.iter().map(|p| p.x_pos).min().unwrap();
-    let maxx = points.iter().map(|p| p.x_pos).max().unwrap();
-    let miny = points.iter().map(|p| p.y_pos).min().unwrap();
-    let maxy = points.iter().map(|p| p.y_pos).max().unwrap();
-    let mut sky = vec![vec![' '; (maxx - minx + 1) as usize]; (maxy - miny + 1) as usize];
-    for point in points {
-        sky[(point.y_pos - miny) as usize][(point.x_pos - minx) as usize] = '▓';
-    }
-    format!(
-        "\n\n{}\n",
-        sky.into_iter()
-            .map(|line| line.into_iter().collect())
-            .collect::<Vec<String>>()
-            .join("\n")
-    )
+    (-(numerator / denominator)).round() as usize
 }
 
 mod parsers {
@@ -138,33 +120,35 @@ mod parsers {
 }
 
 pub fn parse_input(input: &str) -> Vec<Point> {
-    let instructions = input
+    input
         .trim()
         .lines()
         .map(|line| line.parse())
         .collect::<Result<Vec<Point>, _>>()
-        .unwrap();
-    return instructions;
+        .unwrap()
 }
 
 pub fn part1(input: &[Point]) -> String {
-	let glyphs: hashbrown::HashMap<u64, char> = [
-		( 0x861861fe186148c, 'A' ),
-		( 0x7e186185f86185f, 'B' ),
-		( 0x7a104104104185e, 'C' ),
-		( 0xfc104105f04107f, 'E' ),
-		( 0x04104105f04107f, 'F' ),
-		( 0xbb1861e4104185e, 'G' ),
-		( 0x86186187f861861, 'H' ),
-		( 0x391450410410438, 'J' ),
-		( 0x8512450c3149461, 'K' ),
-		( 0xfc1041041041041, 'L' ),
-		( 0x871c69a659638e1, 'N' ),
-		( 0x04104105f86185f, 'P' ),
-		( 0x86145125f86185f, 'R' ),
-		( 0x86149230c492861, 'X' ),
-		( 0xfc104210842083f, 'Z' ),
-	].iter().cloned().collect();
+    let glyphs: hashbrown::HashMap<u64, char> = [
+        (0x861_861f_e186_148c, 'A'),
+        (0x7e1_8618_5f86_185f, 'B'),
+        (0x7a1_0410_4104_185e, 'C'),
+        (0xfc1_0410_5f04_107f, 'E'),
+        (0x041_0410_5f04_107f, 'F'),
+        (0xbb1_861e_4104_185e, 'G'),
+        (0x861_8618_7f86_1861, 'H'),
+        (0x391_4504_1041_0438, 'J'),
+        (0x851_2450_c314_9461, 'K'),
+        (0xfc1_0410_4104_1041, 'L'),
+        (0x871_c69a_6596_38e1, 'N'),
+        (0x041_0410_5f86_185f, 'P'),
+        (0x861_4512_5f86_185f, 'R'),
+        (0x861_4923_0c49_2861, 'X'),
+        (0xfc1_0421_0842_083f, 'Z'),
+    ]
+    .iter()
+    .cloned()
+    .collect();
     let mut input = input.to_owned();
     let time = find_final_time(&input);
     let (left_bound, upper_bound) = to_time(&mut input, time as i32);
@@ -178,13 +162,12 @@ pub fn part1(input: &[Point]) -> String {
     for n in text.iter() {
         soln1.push(glyphs[n]);
     }
-    return soln1;
+    soln1
 }
 
 pub fn part2(input: &[Point]) -> usize {
     let input = input.to_owned();
-    let time = find_final_time(&input);
-    return time;
+    find_final_time(&input)
 }
 
 #[cfg(test)]

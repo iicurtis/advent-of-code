@@ -16,6 +16,7 @@
 
 // use packed_simd::i32x16;
 use rayon::prelude::*;
+use std::cmp::Ordering;
 use std::fmt::{self, Display};
 use std::i32;
 
@@ -88,12 +89,14 @@ pub fn part1(input: &[Point]) -> usize {
                     let mut idx = 0;
                     for (i, k) in input.iter().enumerate() {
                         let dist = Point { x, y }.l1dist(*k);
-                        if dist < mindist {
-                            mindist = dist;
-                            eq = false;
-                            idx = i;
-                        } else if dist == mindist {
-                            eq = true;
+                        match dist.cmp(&mindist) {
+                            Ordering::Less => {
+                                mindist = dist;
+                                eq = false;
+                                idx = i;
+                            }
+                            Ordering::Equal => eq = true,
+                            _ => (),
                         }
                     }
                     if !eq {

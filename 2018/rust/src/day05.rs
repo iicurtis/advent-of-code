@@ -26,8 +26,7 @@ pub fn solve(input: &str) -> Result<String, Error> {
 }
 
 pub fn parse_input(input: &str) -> Vec<u8> {
-    let chars: Vec<u8> = input.trim().as_bytes().to_owned();
-    return chars;
+    input.trim().as_bytes().to_owned()
 }
 
 fn collapse(input: &mut Vec<u8>) -> usize {
@@ -40,13 +39,12 @@ fn collapse(input: &mut Vec<u8>) -> usize {
             new_len += 1;
         }
     }
-    return new_len;
+    new_len
 }
 
 pub fn part1(input: &[u8]) -> usize {
     let mut input = input.to_owned();
-    let len = collapse(&mut input);
-    return len;
+    collapse(&mut input)
 }
 
 pub fn part2(input: &[u8]) -> usize {

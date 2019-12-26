@@ -74,7 +74,7 @@ impl World {
                 health += unit.hp;
             }
         }
-        return health;
+        health
     }
 
     fn convert_elf_ap(&mut self, ap: usize) {
@@ -110,7 +110,7 @@ impl World {
         for delta in [-(self.xsize as i32), -1, 1, self.xsize as i32].iter() {
             valid.push((p as i32 + delta) as usize);
         }
-        return valid;
+        valid
     }
 
     fn move_to(&mut self, unit: usize, target: usize) {
@@ -300,13 +300,13 @@ pub fn parse_input(input: &str) -> Box<World> {
         }
     }
 
-    return Box::new(World {
+    Box::new(World {
         world: grid,
         xsize: WIDTH,
         ysize: HEIGHT,
         goblins: gobcount,
         elves: elfcount,
-    });
+    })
 }
 
 pub fn part1(input: &World) -> usize {
@@ -319,7 +319,7 @@ pub fn part1(input: &World) -> usize {
         rounds += 1;
     }
     let hp_remaining = world.get_units_hp();
-    return rounds * hp_remaining as usize;
+    rounds * hp_remaining as usize
 }
 
 pub fn part2(input: &World) -> usize {

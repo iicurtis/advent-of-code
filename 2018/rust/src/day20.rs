@@ -41,7 +41,7 @@ impl Goldfish {
         self.xcoord.pop_back();
         self.ycoord.pop_back();
         self.value = (self.value << 2) | (state.dist & 3) as u32;
-        return false;
+        false
     }
 
     fn new() -> Self {

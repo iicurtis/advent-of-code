@@ -70,7 +70,7 @@ impl World {
 
     fn at(&self, x: isize, y: isize) -> Element {
         if (x < self.x_dim as isize) & (y < self.y_dim as isize) {
-            return self.world[(x as usize).wrapping_add(y as usize * self.x_dim)];
+            self.world[(x as usize).wrapping_add(y as usize * self.x_dim)]
         } else {
             Element::VOID
         }

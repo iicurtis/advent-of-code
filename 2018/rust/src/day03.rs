@@ -65,7 +65,7 @@ pub fn parse_input(input: &str) -> Vec<LandClaim> {
     }
     // reverse sort
     input_vec.sort_unstable_by(|a, b| b.cmp(a));
-    return input_vec;
+    input_vec
 }
 
 pub fn day03(input: &[LandClaim]) -> (usize, usize) {
@@ -127,7 +127,7 @@ pub fn day03(input: &[LandClaim]) -> (usize, usize) {
         }
     }
 
-    return (part1, part2);
+    (part1, part2)
 }
 
 // This is GALAXY BRAIN MODE
