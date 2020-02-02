@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+use hashbrown::HashSet;
 use std::str;
 
 type Error = Box<dyn std::error::Error>;
@@ -87,7 +88,7 @@ pub fn part1(input: &str) -> u32 {
 pub fn part2(input: &str) -> String {
     let lines: Vec<&str> = input.lines().collect();
     let line_len = 26;
-    let mut parts = hashbrown::HashSet::with_capacity(250);
+    let mut parts = HashSet::with_capacity(250);
 
     for split in 0..line_len {
         for line in lines.clone() {

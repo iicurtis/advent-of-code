@@ -79,30 +79,36 @@ fn find_final_time(input: &[Point]) -> usize {
 
 mod parsers {
     use super::Point;
-    use nom::*;
+    use nom::{
+        bytes::complete::tag,
+        character::complete::digit1,
+        combinator::{map_res, opt, recognize},
+        sequence::{pair, separated_pair},
+        IResult,
+    };
     use std::str::FromStr;
 
-    named!(number(&str) -> i32,
-    map_res!(recognize!(pair!(opt!(tag!("-")), digit)), i32::from_str));
+    fn number(s: &str) -> IResult<&str, i32> {
+        let (s, _) = opt(tag(" "))(s)?;
+        map_res(recognize(pair(opt(tag("-")), digit1)), i32::from_str)(s)
+    }
 
-    named!(point(&str) -> Point,
-    do_parse!(
-        tag!("position=<") >>
-        opt!(tag!(" ")) >>
-        x_pos: number >>
-        tag!(", ") >>
-        opt!(tag!(" ")) >>
-        y_pos: number >>
-        tag!("> velocity=<") >>
-        opt!(tag!(" ")) >>
-        x_vel: number >>
-        tag!(", ") >>
-        opt!(tag!(" ")) >>
-        y_vel: number >>
-        tag!(">") >>
-        (Point { x_pos, y_pos, x_vel, y_vel })
-        )
-    );
+    fn point(s: &str) -> IResult<&str, Point> {
+        let (s, _) = tag("position=<")(s)?;
+        let (s, (x_pos, y_pos)) = separated_pair(number, tag(", "), number)(s)?;
+        let (s, _) = tag("> velocity=<")(s)?;
+        let (s, (x_vel, y_vel)) = separated_pair(number, tag(", "), number)(s)?;
+        let (s, _) = tag(">")(s)?;
+        Ok((
+            s,
+            Point {
+                x_pos,
+                y_pos,
+                x_vel,
+                y_vel,
+            },
+        ))
+    }
 
     #[derive(Debug, Clone)]
     pub struct ParseError;

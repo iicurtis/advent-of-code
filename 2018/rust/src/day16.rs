@@ -14,8 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-use nom::types::CompleteStr;
-use nom::*;
+use nom::{
+    bytes::complete::tag,
+    character::complete::digit1,
+    combinator::{map_res, opt, recognize},
+    multi::many1,
+    sequence::{preceded, terminated},
+    IResult,
+};
 use std::str::FromStr;
 
 type Error = Box<dyn std::error::Error>;
@@ -40,57 +46,67 @@ pub struct Input {
     samples: Vec<Sample>,
 }
 
-named!(number(CompleteStr) -> usize, map_res!(recognize!(digit), |CompleteStr(s)| usize::from_str(s)));
+fn number(s: &str) -> IResult<&str, usize> {
+    map_res(recognize(digit1), usize::from_str)(s)
+}
 
-named!(before(CompleteStr) -> [usize; 4], do_parse!( tag!("Before: [") >>
-                                                     reg0: number >> tag!(", ") >> reg1: number >> tag!(", ") >> reg2: number >>
-                                                     tag!(", ") >> reg3: number >> tag!("]\n") >>
-                                                     ([reg0, reg1, reg2, reg3])));
+fn before(s: &str) -> IResult<&str, [usize; 4]> {
+    let (s, reg0) = preceded(tag("Before: ["), number)(s)?;
+    let (s, reg1) = preceded(tag(", "), number)(s)?;
+    let (s, reg2) = preceded(tag(", "), number)(s)?;
+    let (s, reg3) = preceded(tag(", "), number)(s)?;
+    let (s, _) = tag("]\n")(s)?;
+    Ok((s, [reg0, reg1, reg2, reg3]))
+}
 
-named!(after(CompleteStr) -> [usize; 4],
-do_parse!(
-    tag!("After:  [") >>
-    reg0: number >>
-    tag!(", ") >>
-    reg1: number >>
-    tag!(", ") >>
-    reg2: number >>
-    tag!(", ") >>
-    reg3: number >>
-    tag!("]\n") >>
-    ([reg0, reg1, reg2, reg3])));
+fn after(s: &str) -> IResult<&str, [usize; 4]> {
+    let (s, reg0) = preceded(tag("After:  ["), number)(s)?;
+    let (s, reg1) = preceded(tag(", "), number)(s)?;
+    let (s, reg2) = preceded(tag(", "), number)(s)?;
+    let (s, reg3) = preceded(tag(", "), number)(s)?;
+    let (s, _) = tag("]\n")(s)?;
+    Ok((s, [reg0, reg1, reg2, reg3]))
+}
 
-named!(instruction(CompleteStr) -> [usize; 4],
-do_parse!(
-    op: number >>
-    tag!(" ") >>
-    a: number >>
-    tag!(" ") >>
-    b: number >>
-    tag!(" ") >>
-    c: number >>
-    opt!(tag!("\n")) >>
-    ([op, a, b, c])));
+fn instruction(s: &str) -> IResult<&str, [usize; 4]> {
+    let (s, op) = terminated(number, tag(" "))(s)?;
+    let (s, a) = terminated(number, tag(" "))(s)?;
+    let (s, b) = terminated(number, tag(" "))(s)?;
+    let (s, c) = number(s)?;
+    let (s, _) = opt(tag("\n"))(s)?;
+    Ok((s, [op, a, b, c]))
+}
 
-named!(sample(CompleteStr) -> Sample,
-do_parse!(
-    before: before >>
-    instr: instruction >>
-    after: after >>
-    tag!("\n") >>
-    (Sample {before, instr, after})
-    ));
+fn sample(s: &str) -> IResult<&str, Sample> {
+    let (s, before) = before(s)?;
+    let (s, instr) = instruction(s)?;
+    let (s, after) = after(s)?;
+    let (s, _) = tag("\n")(s)?;
+    Ok((
+        s,
+        Sample {
+            before,
+            instr,
+            after,
+        },
+    ))
+}
 
-named!(instr(CompleteStr) -> Input,
-do_parse!(
-    samples: many1!( sample ) >>
-    tag!("\n\n") >>
-    instructions: many1!( instruction ) >>
-    ( Input{ samples, instructions } )
-    ));
+fn instr(s: &str) -> IResult<&str, Input> {
+    let (s, samples) = many1(sample)(s)?;
+    let (s, _) = tag("\n\n")(s)?;
+    let (s, instructions) = many1(instruction)(s)?;
+    Ok((
+        s,
+        Input {
+            samples,
+            instructions,
+        },
+    ))
+}
 
 pub fn parse_input(input: &str) -> Input {
-    let (_incomplete, parsed) = instr(CompleteStr(input)).expect("Couldn't parse input");
+    let (_incomplete, parsed) = instr(input).expect("Couldn't parse input");
     parsed
 }
 

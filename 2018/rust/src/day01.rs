@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-use hashbrown;
+use hashbrown::HashSet;
 
 type Error = Box<dyn std::error::Error>;
 
@@ -37,7 +37,7 @@ pub fn part1(input: &[isize]) -> isize {
 }
 
 pub fn part2(input: &[isize]) -> isize {
-    let mut seen = hashbrown::HashSet::with_capacity(input.len());
+    let mut seen = HashSet::with_capacity(input.len());
     let mut sum = 0;
     seen.insert(sum);
 

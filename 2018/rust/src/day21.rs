@@ -1,6 +1,8 @@
 // Advent of Code
 // Copyright (C) 2018  Isaac Curtis
 
+use hashbrown::HashSet;
+
 type Error = Box<dyn std::error::Error>;
 
 pub fn solve(input: &str) -> Result<String, Error> {
@@ -19,14 +21,12 @@ pub fn day21(input: &str) -> (usize, usize) {
         .parse::<usize>()
         .unwrap();
 
-    println!("Input: {}", inputval);
-
     let x = 0x1016B;
     let x2 = (x * x) & 0xff_ffff;
     let x3 = (x2 * x) & 0xff_ffff;
     let mut prev_r5;
     let mut r5 = 0;
-    let mut seen = std::collections::HashSet::new();
+    let mut seen = HashSet::new();
     let mut soln1 = 0;
     let soln2;
 

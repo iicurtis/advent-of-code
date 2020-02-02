@@ -7,13 +7,17 @@ edition = "2018"
 [dependencies]
 clap = "2"
 itertools = "0.8"
-hashbrown = "0.6"
+hashbrown = "0.7"
 # simdeez = "0.5"
 rayon = "1"
-nom = "4"
+nom = "5"
 
 [dev-dependencies]
 criterion = "*"
+
+[profile.bench]
+codegen-units = 1
+lto = true
 
 [[bench]]
 name = 'aoc'

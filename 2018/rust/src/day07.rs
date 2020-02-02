@@ -41,19 +41,18 @@ impl Display for Instruction {
 
 mod parsers {
     use super::Instruction;
-    use nom::*;
+    use nom::{bytes::complete::tag, character::complete::alpha1, combinator::map_res, IResult};
     use std::str::FromStr;
 
-    named!(instruction(&str) -> Instruction,
-    do_parse!(
-        tag!("Step ") >>
-        a: map_res!(alpha, char::from_str) >>
-        tag!(" must be finished before step ") >>
-        b: map_res!(alpha, char::from_str) >>
-        tag!(" can begin.") >>
-        (Instruction { a, b })
-        )
-    );
+    fn instruction(input: &str) -> IResult<&str, Instruction> {
+        let (input, _) = tag("Step ")(input)?;
+        let (input, a) = map_res(alpha1, char::from_str)(input)?;
+        let (input, _) = tag(" must be finished before step ")(input)?;
+        let (input, b) = map_res(alpha1, char::from_str)(input)?;
+        let (input, _) = tag(" can begin.")(input)?;
+
+        Ok((input, Instruction { a, b }))
+    }
 
     #[derive(Debug, Clone)]
     pub struct ParseError;

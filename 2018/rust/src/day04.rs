@@ -60,49 +60,60 @@ impl Display for Date {
 
 mod parsers {
     use super::{Action, Date, Event};
-    use nom::*;
+    use nom::{
+        branch::alt,
+        bytes::complete::tag,
+        character::complete::digit1,
+        combinator::{map, map_res, value},
+        sequence::delimited,
+        IResult,
+    };
     use std::str::FromStr;
 
-    named!(date(&str) -> Date,
-    do_parse!(
-        tag!("[") >>
-        year: map_res!(digit, usize::from_str) >>
-        tag!("-") >>
-        month: map_res!(digit, usize::from_str) >>
-        tag!("-") >>
-        day: map_res!(digit, usize::from_str) >>
-        tag!(" ") >>
-        hour: map_res!(digit, usize::from_str) >>
-        tag!(":") >>
-        min: map_res!(digit, usize::from_str) >>
-        tag!("]") >>
-        (Date { year, month, day, hour, min })
-        )
-    );
+    fn date(input: &str) -> IResult<&str, Date> {
+        let (input, _) = tag("[")(input)?;
+        let (input, year) = map_res(digit1, usize::from_str)(input)?;
+        let (input, _) = tag("-")(input)?;
+        let (input, month) = map_res(digit1, usize::from_str)(input)?;
+        let (input, _) = tag("-")(input)?;
+        let (input, day) = map_res(digit1, usize::from_str)(input)?;
+        let (input, _) = tag(" ")(input)?;
+        let (input, hour) = map_res(digit1, usize::from_str)(input)?;
+        let (input, _) = tag(":")(input)?;
+        let (input, min) = map_res(digit1, usize::from_str)(input)?;
+        let (input, _) = tag("]")(input)?;
 
-    named!(guard_id(&str) -> usize,
-    do_parse!(
-        tag!("#") >>
-        id: map_res!(digit, usize::from_str) >>
-        (id)
-        )
-    );
+        Ok((
+            input,
+            Date {
+                year,
+                month,
+                day,
+                hour,
+                min,
+            },
+        ))
+    }
 
-    named!(event(&str) -> Event,
-    do_parse!(
-        date: date >>
-        tag!(" ") >>
-        action: alt!(
-            value!(Action::Asleep, tag!("falls asleep")) |
-            value!(Action::Wake, tag!("wakes up")) |
-            map!(
-                delimited!(tag!("Guard "), guard_id, tag!(" begins shift")),
-                Action::ShiftStart
-                )
-            ) >>
-        (Event { date, action })
-        )
-    );
+    fn guard_id(input: &str) -> IResult<&str, usize> {
+        let (input, _) = tag("#")(input)?;
+        let (input, id) = map_res(digit1, usize::from_str)(input)?;
+        Ok((input, id))
+    }
+
+    fn event(input: &str) -> IResult<&str, Event> {
+        let (input, date) = date(input)?;
+        let (input, _) = tag(" ")(input)?;
+        let (input, action) = alt((
+            value(Action::Asleep, tag("falls asleep")),
+            value(Action::Wake, tag("wakes up")),
+            map(
+                delimited(tag("Guard "), guard_id, tag(" begins shift")),
+                Action::ShiftStart,
+            ),
+        ))(input)?;
+        Ok((input, Event { date, action }))
+    }
 
     #[derive(Debug, Clone)]
     pub struct ParseError;
