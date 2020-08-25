@@ -2,224 +2,280 @@
 // Copyright (C) 2018  Isaac Curtis
 
 type Error = Box<dyn std::error::Error>;
-use std::cmp::{Ordering, Reverse};
-use std::ops::{Add, Div};
+use std::cmp::Reverse;
+use std::collections::HashSet;
+use std::fmt::{self, Display};
 
 pub fn solve(input: &str) -> Result<String, Error> {
-    let nanobots = parse(&input);
-    let soln1 = part1(&nanobots);
-    let soln2 = part2(&nanobots);
+    let (immune, infection) = parse(&input);
+    let soln1 = part1(&immune, &infection);
+    let soln2 = part2(&immune, &infection);
     Ok(format!("Part 1: {}\nPart 2: {}", soln1, soln2))
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-struct Position {
-    x: isize,
-    y: isize,
-    z: isize,
+pub fn part1(immune: &[Group], infection: &[Group]) -> u32 {
+    match fight(immune, infection, 0) {
+        FightResult::WinningArmy(_, units_remain) => units_remain,
+        _ => panic!("The fight never ended."),
+    }
 }
 
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
-pub struct Nanobot {
-    pos: Position,
-    radius: usize,
-}
-
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
-struct Cuboid(Position, Position);
-
-const ORIGIN: Position = Position { x: 0, y: 0, z: 0 };
-
-impl Cuboid {
-    fn corners(self) -> [Position; 8] {
-        [
-            Position::new(self.0.x, self.0.y, self.0.z),
-            Position::new(self.1.x, self.0.y, self.0.z),
-            Position::new(self.0.x, self.1.y, self.0.z),
-            Position::new(self.0.x, self.0.y, self.1.z),
-            Position::new(self.1.x, self.1.y, self.0.z),
-            Position::new(self.1.x, self.0.y, self.1.z),
-            Position::new(self.0.x, self.1.y, self.1.z),
-            Position::new(self.1.x, self.1.y, self.1.z),
-        ]
-    }
-
-    fn distance_to_origin(self) -> usize {
-        self.corners()
-            .iter()
-            .map(|c| c.manhatten(ORIGIN))
-            .min()
-            .unwrap()
-    }
-
-    fn subdivide(self) -> impl Iterator<Item = Cuboid> {
-        let (a, b) = (self.0, self.1);
-        let midpoint = (self.0 + self.1) / 2;
-        if a == midpoint || b == midpoint {
-            return self
-                .corners()
-                .iter()
-                .map(|&c| Cuboid(c, c))
-                .collect::<Vec<_>>()
-                .into_iter();
+pub fn part2(immune: &Vec<Group>, infection: &Vec<Group>) -> u32 {
+    for boost in 1..1 << 10 {
+        if let Some(result) = match fight(immune, infection, boost) {
+            FightResult::WinningArmy(Army::Immune, units_remain) => Some(units_remain),
+            _ => None,
+        } {
+            return result;
         }
-        vec![
-            Cuboid(Position::new(a.x, a.y, a.z), midpoint),
-            Cuboid(Position::new(b.x, a.y, a.z), midpoint),
-            Cuboid(Position::new(a.x, b.y, a.z), midpoint),
-            Cuboid(Position::new(a.x, a.y, b.z), midpoint),
-            Cuboid(Position::new(a.x, b.y, b.z), midpoint),
-            Cuboid(Position::new(b.x, b.y, b.z), midpoint),
-            Cuboid(Position::new(b.x, a.y, b.z), midpoint),
-            Cuboid(Position::new(b.x, b.y, a.z), midpoint),
-        ]
-        .into_iter()
     }
-
-    fn intersects(self, bot: Nanobot) -> bool {
-        let closest_pos = Position {
-            x: clamp(bot.pos.x, self.0.x, self.1.x),
-            y: clamp(bot.pos.y, self.0.y, self.1.y),
-            z: clamp(bot.pos.z, self.0.z, self.1.z),
-        };
-        bot.within_range(closest_pos)
-    }
-
-    fn num_bots_intersecting(self, bots: &[Nanobot]) -> usize {
-        bots.iter().filter(|&&bot| self.intersects(bot)).count()
-    }
+    return 0;
 }
 
-fn clamp(pos: isize, a: isize, b: isize) -> isize {
-    use std::cmp::{max, min};
-    let (min_p, max_p) = (min(a, b), max(a, b));
-    if pos < min_p {
-        min_p
-    } else if pos > max_p {
-        max_p
-    } else {
-        pos
-    }
-}
+fn fight(immune: &[Group], infection: &[Group], boost: u32) -> FightResult {
+    let mut immune = immune.to_vec();
+    let mut infection = infection.to_vec();
 
-impl<'a, T: IntoIterator<Item = &'a Nanobot>> From<T> for Cuboid {
-    fn from(bots: T) -> Cuboid {
-        let mut max = 0;
-        for bot in bots {
-            max = std::cmp::max(max, bot.pos.x.abs() + bot.radius as isize);
-            max = std::cmp::max(max, bot.pos.y.abs() + bot.radius as isize);
-            max = std::cmp::max(max, bot.pos.z.abs() + bot.radius as isize);
-        }
-        let mut i = 1;
-        while i < max {
-            i *= 2;
-        }
-        Cuboid(Position::new(-i, -i, -i), Position::new(i, i, i))
-    }
-}
+    immune.iter_mut().for_each(|group| group.dmg += boost);
 
-pub fn parse(input: &str) -> Vec<Nanobot> {
-    input
-        .lines()
-        .map(|line| {
-            let mut split_line = line[5..].split(">, r=");
-            let mut pos_str = split_line.next().unwrap().split(',');
-            let radius = split_line.next().unwrap().parse().unwrap();
-            let x = pos_str.next().unwrap().parse().unwrap();
-            let y = pos_str.next().unwrap().parse().unwrap();
-            let z = pos_str.next().unwrap().parse().unwrap();
+    loop {
+        // target selection
+        immune.sort_by_key(|group| (Reverse(group.effective_power()), Reverse(group.initiative)));
+        infection
+            .sort_by_key(|group| (Reverse(group.effective_power()), Reverse(group.initiative)));
 
-            Nanobot {
-                pos: Position { x, y, z },
-                radius,
+        let mut fights = Vec::new();
+        let mut immune_target = HashSet::new();
+
+        for (attacking_idx, attacking_group) in immune.iter().enumerate() {
+            let available_targets =
+                infection
+                    .iter()
+                    .enumerate()
+                    .filter(|(defending_idx, defending_group)| {
+                        !immune_target.contains(defending_idx)
+                            && attacking_group.effective_damage(defending_group) > 0
+                    });
+            let target = available_targets.max_by_key(|(_, defending_group)| {
+                (
+                    attacking_group.effective_damage(defending_group),
+                    defending_group.effective_power(),
+                    defending_group.initiative,
+                )
+            });
+            if let Some((defending_idx, _)) = target {
+                fights.push((
+                    attacking_idx,
+                    defending_idx,
+                    attacking_group.initiative,
+                    Army::Immune,
+                ));
+                immune_target.insert(defending_idx);
             }
-        })
-        .collect()
-}
-
-pub fn part1(nanobots: &[Nanobot]) -> usize {
-    let largest_nanobot = nanobots
-        .iter()
-        .max_by_key(|x| x.radius)
-        .expect("No nanobots");
-    nanobots
-        .iter()
-        .filter(|x| x.pos.manhatten(largest_nanobot.pos) <= largest_nanobot.radius)
-        .count()
-}
-
-pub fn part2(nanobots: &[Nanobot]) -> usize {
-    use std::collections::BinaryHeap;
-    let mut queue = BinaryHeap::with_capacity(5000);
-    let universe = Cuboid::from(nanobots);
-    queue.push((nanobots.len(), Reverse(universe)));
-    while let Some((_, Reverse(cuboid))) = queue.pop() {
-        if cuboid.0 == cuboid.1 {
-            return cuboid.0.manhatten(ORIGIN);
         }
-        queue.extend(
-            cuboid
-                .subdivide()
-                .map(|c| (c.num_bots_intersecting(nanobots), Reverse(c))),
-        );
-    }
-    unreachable!()
-}
 
-impl Ord for Cuboid {
-    fn cmp(&self, other: &Self) -> Ordering {
-        match self.0.manhatten(self.1).cmp(&other.0.manhatten(other.1)) {
-            Ordering::Equal => self.distance_to_origin().cmp(&other.distance_to_origin()),
-            x => x,
+        let mut infection_target = HashSet::new();
+
+        for (attacking_idx, attacking_group) in infection.iter().enumerate() {
+            let available_targets =
+                immune
+                    .iter()
+                    .enumerate()
+                    .filter(|(defending_idx, defending_group)| {
+                        !infection_target.contains(defending_idx)
+                            && attacking_group.effective_damage(defending_group) > 0
+                    });
+            let target = available_targets.max_by_key(|(_, defending_group)| {
+                (
+                    attacking_group.effective_damage(defending_group),
+                    defending_group.effective_power(),
+                    defending_group.initiative,
+                )
+            });
+            if let Some((defending_idx, _)) = target {
+                fights.push((
+                    attacking_idx,
+                    defending_idx,
+                    attacking_group.initiative,
+                    Army::Infection,
+                ));
+                infection_target.insert(defending_idx);
+            }
         }
-    }
-}
 
-impl PartialOrd for Cuboid {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
+        // attack
+        fights.sort_by_key(|&(_, _, initiative, _)| Reverse(initiative));
+        let mut total_deaths = 0;
 
-impl Nanobot {
-    fn within_range(self, pos: Position) -> bool {
-        pos.manhatten(self.pos) <= self.radius
-    }
-}
+        for (attacking_group_idx, defending_group_idx, _, army) in fights {
+            let (attacking_group, defending_group) = match army {
+                Army::Immune => (
+                    &immune[attacking_group_idx],
+                    &mut infection[defending_group_idx],
+                ),
+                Army::Infection => (
+                    &infection[attacking_group_idx],
+                    &mut immune[defending_group_idx],
+                ),
+            };
 
-impl Position {
-    fn new(x: isize, y: isize, z: isize) -> Self {
-        Position { x, y, z }
-    }
+            let deaths = attacking_group.effective_damage(defending_group) / defending_group.hp;
+            total_deaths += deaths;
+            defending_group.units = defending_group.units.saturating_sub(deaths);
+        }
 
-    fn manhatten(&self, other: Self) -> usize {
-        (self.x - other.x).abs() as usize
-            + (self.y - other.y).abs() as usize
-            + (self.z - other.z).abs() as usize
-    }
-}
+        if total_deaths == 0 {
+            break FightResult::Draw;
+        }
 
-impl Add for Position {
-    type Output = Self;
+        immune.retain(|group| group.units > 0);
+        infection.retain(|group| group.units > 0);
 
-    fn add(self, other: Self) -> Self {
-        Position {
-            x: self.x + other.x,
-            y: self.y + other.y,
-            z: self.z + other.z,
+        let remaining_immune = immune.iter().map(|group| group.units).sum();
+        let remaining_infection = infection.iter().map(|group| group.units).sum();
+
+        if remaining_immune == 0 {
+            break FightResult::WinningArmy(Army::Infection, remaining_infection);
+        } else if remaining_infection == 0 {
+            break FightResult::WinningArmy(Army::Immune, remaining_immune);
         }
     }
 }
 
-impl Div<isize> for Position {
-    type Output = Self;
+pub enum Army {
+    Infection,
+    Immune,
+}
 
-    fn div(self, scalar: isize) -> Self {
-        Position {
-            x: self.x / scalar,
-            y: self.y / scalar,
-            z: self.z / scalar,
+pub enum FightResult {
+    WinningArmy(Army, u32),
+    Draw,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Ord, PartialOrd)]
+pub struct Group {
+    initiative: u32,
+    units: u32,
+    hp: u32,
+    weak: Vec<AttackType>,
+    immune: Vec<AttackType>,
+    dmg: u32,
+    atktype: AttackType,
+}
+
+impl Group {
+    fn effective_power(&self) -> u32 {
+        self.units * self.dmg
+    }
+
+    fn effective_damage(&self, other: &Group) -> u32 {
+        let is_immune = other.immune.contains(&self.atktype);
+        let is_weak = other.weak.contains(&self.atktype);
+
+        let modifier = match (is_immune, is_weak) {
+            (true, _) => 0,
+            (_, true) => 2,
+            _ => 1,
+        };
+
+        self.effective_power() * modifier
+    }
+}
+
+impl Display for Group {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "Group({} units, {} hp, {:?} immune, {:?} {} atk, {} initiative",
+            self.units, self.hp, self.immune, self.atktype, self.dmg, self.initiative
+        )
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+enum AttackType {
+    Bludgeoning,
+    Cold,
+    Fire,
+    Radiation,
+    Slashing,
+}
+
+impl From<&str> for AttackType {
+    fn from(input: &str) -> Self {
+        match input {
+            "bludgeoning" => AttackType::Bludgeoning,
+            "cold" => AttackType::Cold,
+            "fire" => AttackType::Fire,
+            "radiation" => AttackType::Radiation,
+            "slashing" => AttackType::Slashing,
+            unknown => panic!("Unknown attack type: '{}'", unknown),
         }
+    }
+}
+
+pub fn parse(input: &str) -> (Vec<Group>, Vec<Group>) {
+    let mut armies = input.split("\n\n");
+    let immune = armies
+        .next()
+        .unwrap()
+        .trim()
+        .lines()
+        .skip(1)
+        .map(|line| parse_group(line))
+        .collect::<Vec<Group>>();
+    let infection = armies
+        .next()
+        .unwrap()
+        .trim()
+        .lines()
+        .skip(1)
+        .map(|line| parse_group(line))
+        .collect::<Vec<Group>>();
+    (immune, infection)
+}
+
+fn parse_group(input: &str) -> Group {
+    let mut s = input.split(" units each with ");
+    let units = s.next().unwrap().parse().unwrap();
+
+    let mut s = s.next().unwrap().split(" hit points ");
+    let hp = s.next().unwrap().parse().unwrap();
+
+    let mut s = s.next().unwrap().split("with an attack that does ");
+    let resistances = s.next().unwrap();
+
+    let mut weak = Vec::new();
+    let mut immune = Vec::new();
+
+    if resistances.starts_with("(") {
+        let mut resistances = resistances[1..resistances.len() - 2].split("; ");
+
+        while let Some(resistance) = resistances.next() {
+            if resistance.starts_with("immune") {
+                immune.extend(resistance[10..].split(", ").map(AttackType::from));
+            } else {
+                weak.extend(resistance[8..].split(", ").map(AttackType::from));
+            }
+        }
+    }
+
+    let mut s = s.next().unwrap().split(" damage at initiative ");
+    let mut attack_str = s.next().unwrap().split(' ');
+
+    let dmg = attack_str.next().unwrap().parse().unwrap();
+    let atktype = attack_str.next().unwrap().into();
+
+    let initiative = s.next().unwrap().parse().unwrap();
+
+    Group {
+        units,
+        hp,
+        immune,
+        weak,
+        dmg,
+        atktype,
+        initiative,
     }
 }
 
@@ -228,31 +284,18 @@ mod test {
     use super::*;
 
     static EXAMPLE0: &str = r#"
-pos=<0,0,0>, r=4
-pos=<1,0,0>, r=1
-pos=<4,0,0>, r=3
-pos=<0,2,0>, r=1
-pos=<0,5,0>, r=3
-pos=<0,0,3>, r=1
-pos=<1,1,1>, r=1
-pos=<1,1,2>, r=1
-pos=<1,3,1>, r=1"#;
+Immune System:
+17 units each with 5390 hit points (weak to radiation, bludgeoning) with an attack that does 4507 fire damage at initiative 2
+989 units each with 1274 hit points (immune to fire; weak to bludgeoning, slashing) with an attack that does 25 slashing damage at initiative 3
 
-    static EXAMPLE1: &str = r#"
-pos=<10,12,12>, r=2
-pos=<12,14,12>, r=2
-pos=<16,12,12>, r=4
-pos=<14,14,14>, r=6
-pos=<50,50,50>, r=200
-pos=<10,10,10>, r=5"#;
+Infection:
+801 units each with 4706 hit points (weak to radiation) with an attack that does 116 bludgeoning damage at initiative 1
+4485 units each with 2961 hit points (immune to radiation; weak to fire, cold) with an attack that does 12 slashing damage at initiative 4
+"#;
 
     #[test]
     fn test_part1_0() {
-        assert_eq!(part1(&parse(EXAMPLE0)), 7);
-    }
-
-    #[test]
-    fn test_part2_0() {
-        assert_eq!(part2(&parse(EXAMPLE1)), 36);
+        let (immune, infection) = parse(EXAMPLE0);
+        assert_eq!(part1(&immune, &infection), 5216);
     }
 }

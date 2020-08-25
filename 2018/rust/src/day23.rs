@@ -120,6 +120,7 @@ impl<'a, T: IntoIterator<Item = &'a Nanobot>> From<T> for Cuboid {
 
 pub fn parse(input: &str) -> Vec<Nanobot> {
     input
+        .trim()
         .lines()
         .map(|line| {
             let mut split_line = line[5..].split(">, r=");

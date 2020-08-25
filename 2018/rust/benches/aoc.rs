@@ -258,6 +258,18 @@ fn day22(c: &mut Criterion) {
     c.bench_function("day22 p2", move |b| b.iter(|| day22::part2(&input)));
 }
 
+fn day24(c: &mut Criterion) {
+    use advent2018::day24;
+    let input = fs::read_to_string("../inputs/day24.txt").expect("Couldn't find file");
+    c.bench_function("day24 parse", move |b| b.iter(|| day24::parse(&input)));
+    let (immune, infection) =
+        day24::parse(&fs::read_to_string("../inputs/day24.txt").expect("Couldn't find file"));
+    c.bench_function("day24 p1", move |b| b.iter(|| day24::part1(&immune, &infection)));
+    let (immune, infection) =
+        day24::parse(&fs::read_to_string("../inputs/day24.txt").expect("Couldn't find file"));
+    c.bench_function("day24 p2", move |b| b.iter(|| day24::part2(&immune, &infection)));
+}
+
 criterion_group!(
     benches, day01, day02, day03, day04, day05, day06, day07, day08, day10, day11, day12, day13,
     day16, day17, day19, day20, day21, day22
@@ -266,6 +278,6 @@ criterion_group!(
 criterion_group! {
     name = slower_benches;
     config = Criterion::default().sample_size(10);
-    targets = day09, day14, day15, day18
+    targets = day09, day14, day15, day18, day24
 }
 criterion_main!(benches, slower_benches);
