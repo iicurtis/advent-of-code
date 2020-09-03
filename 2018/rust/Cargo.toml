@@ -1,13 +1,13 @@
 [package]
 name = "advent2018"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Isaac Curtis <iicurtis@outlook.com>"]
 edition = "2018"
 
 [dependencies]
 clap = "2"
-itertools = "0.8"
-hashbrown = "0.7"
+itertools = "0.9"
+hashbrown = "0.8"
 # simdeez = "0.5"
 rayon = "1"
 nom = "5"

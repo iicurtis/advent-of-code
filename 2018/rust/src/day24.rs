@@ -20,7 +20,7 @@ pub fn part1(immune: &[Group], infection: &[Group]) -> u32 {
     }
 }
 
-pub fn part2(immune: &Vec<Group>, infection: &Vec<Group>) -> u32 {
+pub fn part2(immune: &[Group], infection: &[Group]) -> u32 {
     for boost in 1..1 << 10 {
         if let Some(result) = match fight(immune, infection, boost) {
             FightResult::WinningArmy(Army::Immune, units_remain) => Some(units_remain),
@@ -29,7 +29,7 @@ pub fn part2(immune: &Vec<Group>, infection: &Vec<Group>) -> u32 {
             return result;
         }
     }
-    return 0;
+    0
 }
 
 fn fight(immune: &[Group], infection: &[Group], boost: u32) -> FightResult {
@@ -248,10 +248,10 @@ fn parse_group(input: &str) -> Group {
     let mut weak = Vec::new();
     let mut immune = Vec::new();
 
-    if resistances.starts_with("(") {
-        let mut resistances = resistances[1..resistances.len() - 2].split("; ");
+    if resistances.starts_with('(') {
+        let resistances = resistances[1..resistances.len() - 2].split("; ");
 
-        while let Some(resistance) = resistances.next() {
+        for resistance in resistances {
             if resistance.starts_with("immune") {
                 immune.extend(resistance[10..].split(", ").map(AttackType::from));
             } else {

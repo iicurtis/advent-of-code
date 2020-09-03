@@ -335,12 +335,11 @@ pub fn part2(input: &World) -> usize {
             world.convert_elf_ap(ap);
 
             let end_turn = (0..)
-                .skip_while(|_| {
+                .find(|_| {
                     let is_complete = world.step() == RoundResult::Complete;
                     let had_elf_casualties = world.elves < initial_elves_count;
-                    is_complete && !had_elf_casualties
+                    !is_complete || had_elf_casualties
                 })
-                .next()
                 .unwrap();
 
             if world.elves == initial_elves_count {

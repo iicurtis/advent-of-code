@@ -264,15 +264,28 @@ fn day24(c: &mut Criterion) {
     c.bench_function("day24 parse", move |b| b.iter(|| day24::parse(&input)));
     let (immune, infection) =
         day24::parse(&fs::read_to_string("../inputs/day24.txt").expect("Couldn't find file"));
-    c.bench_function("day24 p1", move |b| b.iter(|| day24::part1(&immune, &infection)));
+    c.bench_function("day24 p1", move |b| {
+        b.iter(|| day24::part1(&immune, &infection))
+    });
     let (immune, infection) =
         day24::parse(&fs::read_to_string("../inputs/day24.txt").expect("Couldn't find file"));
-    c.bench_function("day24 p2", move |b| b.iter(|| day24::part2(&immune, &infection)));
+    c.bench_function("day24 p2", move |b| {
+        b.iter(|| day24::part2(&immune, &infection))
+    });
+}
+
+fn day25(c: &mut Criterion) {
+    use advent2018::day25;
+    let input = fs::read_to_string("../inputs/day25.txt").expect("Couldn't find file");
+    c.bench_function("day25 parse", move |b| b.iter(|| day25::parse(&input)));
+    let input =
+        day25::parse(&fs::read_to_string("../inputs/day25.txt").expect("Couldn't find file"));
+    c.bench_function("day25 p1", move |b| b.iter(|| day25::part1(&input)));
 }
 
 criterion_group!(
     benches, day01, day02, day03, day04, day05, day06, day07, day08, day10, day11, day12, day13,
-    day16, day17, day19, day20, day21, day22
+    day16, day17, day19, day20, day21, day22, day25
 );
 
 criterion_group! {
