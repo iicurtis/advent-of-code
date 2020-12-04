@@ -12,14 +12,10 @@ pub fn solve(input: &str) -> Result<String, Error> {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Point(i32, i32, i32, i32);
 
-struct Set {
-    parent: usize,
-    rank: usize,
-}
-
 pub struct DisjointSet {
-    set: Vec<Set>,
-    trees: usize,
+    id: Vec<usize>,
+    size: Vec<usize>,
+    count: usize,
 }
 
 pub fn parse(input: &str) -> Vec<Point> {
@@ -47,7 +43,7 @@ pub fn part1(input: &[Point]) -> usize {
             }
         }
     }
-    constellations.trees
+    constellations.count
 }
 
 impl Point {
@@ -59,43 +55,33 @@ impl Point {
     }
 }
 
-impl Set {
-    fn new(id: usize) -> Set {
-        Set {
-            rank: 0,
-            parent: id,
-        }
-    }
-}
-
 impl DisjointSet {
-    fn new(trees: usize) -> DisjointSet {
-        let set = (0..trees).map(Set::new).collect();
-        DisjointSet { set, trees }
+    fn new(count: usize) -> DisjointSet {
+        let id = (0..count).collect();
+        let size = vec![1; count];
+        DisjointSet { id, count, size }
     }
 
     fn find(&mut self, idx: usize) -> usize {
-        let mut idx = idx;
-        while self.set[idx].parent != idx {
-            idx = self.set[idx].parent;
-            self.set[idx].parent = self.set[self.set[idx].parent].parent;
+        let mut root = idx;
+        while self.id[root] != root {
+            root = self.id[root];
         }
-        idx
+        root
     }
 
     fn union(&mut self, idx: usize, idy: usize) {
         let x = self.find(idx);
         let y = self.find(idy);
         if x != y {
-            self.trees -= 1;
-            if self.set[x].rank < self.set[y].rank {
-                self.set[x].parent = y;
+            if self.size[idx] < self.size[idy] {
+                self.id[idx] = idy;
+                self.size[idy] += self.size[idx];
             } else {
-                self.set[y].parent = x;
-                if self.set[x].rank == self.set[y].rank {
-                    self.set[x].rank += 1
-                };
+                self.id[idy] = idx;
+                self.size[idx] += self.size[idy];
             }
+            self.count -= 1;
         }
     }
 }
