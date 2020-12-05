@@ -1,9 +1,9 @@
 // Advent of Code
 // Copyright (C) 2020  Isaac Curtis
 
+use std::cmp::Ordering;
+
 type Error = Box<dyn std::error::Error>;
-use std::collections::HashSet;
-use std::iter::FromIterator;
 
 pub fn solve(input: &str) -> Result<String, Error> {
     let input = parse_input(input);
@@ -12,49 +12,51 @@ pub fn solve(input: &str) -> Result<String, Error> {
     Ok(format!("Part 1: {}\nPart 2: {}", soln1, soln2))
 }
 
-pub fn parse_input(input: &str) -> HashSet<usize> {
-    let input: Vec<usize> = input.trim().lines().map(|line| line.parse().unwrap()).collect();
-    HashSet::from_iter(input)
+pub fn parse_input(input: &str) -> Vec<usize> {
+    let mut input: Vec<usize> = input
+        .trim()
+        .lines()
+        .map(|line| line.parse().unwrap())
+        .collect();
+    // sort and remove inputs larger than target
+    input.sort_unstable();
+    let smallest = *input.first().unwrap();
+    input.retain(move |&n| n == smallest || n + smallest <= 2020);
+    input
 }
 
-pub fn part1(input: &HashSet<usize>) -> usize {
+pub fn part1(input: &[usize]) -> usize {
     let target = 2020;
-    for x in input {
-        if let Some(y) = find_sum(&input, target, *x) {
-            return x * y
+    for (i, &x0) in input.iter().enumerate() {
+        let other = target - x0;
+        for &x1 in input.iter().skip(i + 1) {
+            if x1 == other {
+                return x0 * x1;
+            }
         }
     }
     0
 }
 
-pub fn part2(input: &HashSet<usize>) -> usize {
+pub fn part2(input: &[usize]) -> usize {
     let target = 2020;
-    for x in input {
-        if let Some((y, z)) = find_triple_sum(&input, target, *x) {
-            return x * y * z
+    for (i, &x0) in input.iter().enumerate() {
+        let sum_x1_x2 = target - x0;
+        for (j, &x1) in input.iter().enumerate().skip(i + 1) {
+            if x1 > sum_x1_x2 {
+                break;
+            }
+            let value2 = sum_x1_x2 - x1;
+            for &x2 in input.iter().skip(j + 1) {
+                match x2.cmp(&value2) {
+                    Ordering::Greater => break,
+                    Ordering::Equal => return x1 * x0 * x2,
+                    _ => (),
+                }
+            }
         }
     }
     0
-}
-
-fn find_triple_sum(input: &HashSet<usize>, target: usize, num: usize) -> Option<(usize, usize)> {
-    let other = target - num;
-    for x in input {
-        if x > &other { continue }
-        if let Some(y) = find_sum(&input, other, *x) {
-            return Some((*x, y))
-        }
-    }
-    None
-}
-
-fn find_sum(input: &HashSet<usize>, target: usize, num: usize) -> Option<usize> {
-    // if target - num exists: return multiple; else don't
-    let other = target - num;
-    if input.contains(&other) {
-        return Some(other)
-    }
-    None
 }
 
 #[cfg(test)]
