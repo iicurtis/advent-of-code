@@ -15,6 +15,10 @@ Be sure to check out the Rust Discord! We are on there every day.
 * [Jonathan Paulson YouTube](https://www.youtube.com/watch?v=R19aQppUh-M) python
 * [AsamK/AdventOfCode](https://github.com/AsamK/AdventOfCode) nom
 
+## 2015
+
+- [petertseng/adventofcode-rs-2015](https://github.com/petertseng/adventofcode-rs-2015)
+
 ## 2018
 
 * [Voltara/advent2018-fast](https://github.com/Voltara/advent2018-fast) c++
@@ -35,3 +39,9 @@ Be sure to check out the Rust Discord! We are on there every day.
 ## 2019
 
 - [ttencate/aoc2019](https://github.com/ttencate/aoc2019) good intcode
+- [petertseng/adventofcode-rs-2019](https://github.com/petertseng/adventofcode-rs-2019)
+
+## 2020
+
+- [cariolinus/adventofcode-2020](https://github.com/coriolinus/adventofcode-2020)
+- [BartMassey/advent-of-code-2020](https://github.com/BartMassey/advent-of-code-2020)
