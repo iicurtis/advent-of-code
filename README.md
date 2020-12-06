@@ -43,5 +43,8 @@ Be sure to check out the Rust Discord! We are on there every day.
 
 ## 2020
 
-- [cariolinus/adventofcode-2020](https://github.com/coriolinus/adventofcode-2020)
-- [BartMassey/advent-of-code-2020](https://github.com/BartMassey/advent-of-code-2020)
+- [cariolinus/adventofcode-2020](https://github.com/coriolinus/adventofcode-2020) rs
+- [BartMassey/advent-of-code-2020](https://github.com/BartMassey/advent-of-code-2020) rs
+- [KonradBorowski/advent-of-code-2020](https://gitlab.com/KonradBorowski/advent-of-code-2020) rs
+- [ttencate/aoc2020](https://github.com/ttencate/aoc2020) rs
+- [petertseng/adventofcode-rs-2020](https://github.com/petertseng/adventofcode-rs-2020) rs
