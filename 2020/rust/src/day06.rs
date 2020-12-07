@@ -1,7 +1,5 @@
 // Advent of Code
 // Copyright (C) 2020  Isaac Curtis
-use std::collections::HashSet;
-
 type Error = Box<dyn std::error::Error>;
 
 pub fn solve(input: &str) -> Result<String, Error> {
@@ -15,11 +13,11 @@ pub fn part1(input: &str) -> usize {
         .trim()
         .split("\n\n")
         .map(|group| {
-            group
-                .chars()
-                .filter(|c| c.is_alphabetic())
-                .collect::<HashSet<_>>()
-                .len()
+            let mut answers = [false; 26];
+            for line in group.lines() {
+                line.bytes().for_each(|c| answers[(c - b'a') as usize] = true);
+            }
+            answers.iter().map(|x| *x as usize).sum::<usize>()
         })
         .sum()
 }
