@@ -23,7 +23,14 @@ use std::io::{self, Write};
 type Error = Box<dyn std::error::Error>;
 type Soln = fn(&str) -> Result<String, Error>;
 
-const SOLUTIONS: &[Soln] = &[day01::solve, day02::solve, day03::solve, day04::solve];
+const SOLUTIONS: &[Soln] = &[
+    day01::solve,
+    day02::solve,
+    day03::solve,
+    day04::solve,
+    day05::solve,
+    day06::solve,
+];
 
 fn runday(d: usize, soln: Soln) -> Result<(), Error> {
     use std::fs;
