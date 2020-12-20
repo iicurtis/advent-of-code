@@ -15,7 +15,8 @@ pub fn part1(input: &str) -> usize {
         .map(|group| {
             let mut answers = [false; 26];
             for line in group.lines() {
-                line.bytes().for_each(|c| answers[(c - b'a') as usize] = true);
+                line.bytes()
+                    .for_each(|c| answers[(c - b'a') as usize] = true);
             }
             answers.iter().map(|x| *x as usize).sum::<usize>()
         })
@@ -28,12 +29,12 @@ pub fn part2(input: &str) -> usize {
         .split("\n\n")
         .map(|group| {
             let mut group_all_ans = [true; 26];
-            for answers in group.lines() {
-                let mut ans = [false; 26];
+            for line in group.lines() {
+                let mut answers = [false; 26];
+                line.bytes()
+                    .for_each(|c| answers[(c - b'a') as usize] = true);
                 answers
-                    .bytes()
-                    .for_each(|c| ans[(c - b'a') as usize] = true);
-                ans.iter()
+                    .iter()
                     .zip(&mut group_all_ans)
                     .for_each(|(a, b)| *b &= *a);
             }
