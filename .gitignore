@@ -13,3 +13,5 @@ Cargo.lock
 
 create_empty.sh
 .ccls-cache
+tags
+aoc-others/
