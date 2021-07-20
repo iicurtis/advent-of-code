@@ -592,3 +592,4 @@ wavy maroon bags contain 4 vibrant aqua bags, 4 striped bronze bags, 3 dotted si
 drab coral bags contain 1 wavy teal bag, 3 plaid orange bags, 2 posh orange bags, 1 mirrored olive bag.
 bright teal bags contain 2 pale magenta bags.
 bright purple bags contain 4 shiny chartreuse bags, 5 plaid lime bags, 2 dim magenta bags.
+

@@ -48,3 +48,4 @@ Be sure to check out the Rust Discord! We are on there every day.
 - [KonradBorowski/advent-of-code-2020](https://gitlab.com/KonradBorowski/advent-of-code-2020) rs
 - [ttencate/aoc2020](https://github.com/ttencate/aoc2020) rs
 - [petertseng/adventofcode-rs-2020](https://github.com/petertseng/adventofcode-rs-2020) rs
+- [smmalis37/aoc2020](https://github.com/smmalis37/aoc2020/blob/main/src/days/day8.rs) rs
