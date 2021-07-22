@@ -14,60 +14,100 @@ pub fn parse_input(input: &str) -> Vec<Instruction> {
     input
         .trim()
         .lines()
-        .map(|line| {
-            let value = line[4..].parse::<isize>().unwrap();
+        .enumerate()
+        .map(|(i, line)| {
             let op = &line[..3];
+            let value = line[4..].parse::<isize>().unwrap();
+            let mut accumulator = 0;
+            let mut next = i as isize + 1;
+            let mut modified = next;
             match op {
-                "acc" => Instruction::Acc(value),
-                "jmp" => Instruction::Jmp(value),
-                "nop" => Instruction::Nop(value),
+                "acc" => {
+                    accumulator = value;
+                }
+                "jmp" => {
+                    next = next + value - 1;
+                }
+                "nop" => {
+                    modified = next + value - 1;
+                }
                 _ => panic!(),
+            };
+            Instruction {
+                accumulator,
+                next,
+                modified,
+                executed: false,
             }
         })
         .collect()
 }
 
-fn is_loop(input: &[Instruction]) -> (bool, isize) {
-    let mut instr_executed = input.iter().map(|line| (false, line)).collect::<Vec<_>>();
+fn part1(input: &[Instruction]) -> isize {
+    let mut input = input.to_vec();
     let mut accumulator = 0;
     let mut i = 0;
     loop {
-        let (executed, instr) = &mut instr_executed[i as usize];
-        if *executed { break (true, accumulator) }
-        *executed = true;
-        match instr {
-            Instruction::Jmp(val) => i += val,
-            Instruction::Acc(val) => { accumulator += val; i += 1 },
-            _ => i += 1,
+        let instr = &mut input[i as usize];
+        if instr.executed {
+            break accumulator;
         }
-        if i as usize >= input.len() {
-            break (false, accumulator)
-        }
+        instr.executed = true;
+        accumulator += instr.accumulator;
+        i = instr.next;
     }
-}
-
-pub fn part1(input: &[Instruction]) -> isize {
-    is_loop(input).1
 }
 
 pub fn part2(input: &[Instruction]) -> isize {
-    let mut input_modified = input.to_vec();
-    for i in 0..input.len() {
-        let old = input[i];
-        input_modified[i] = match input[i] {
-            Instruction::Jmp(val) => Instruction::Nop(val),
-            Instruction::Nop(val) => Instruction::Jmp(val),
-            _ => input[i]
-        };
-        let result = is_loop(&input_modified);
-        if !result.0 { return result.1 }
-        input_modified[i] = old;
+    let mut input = input.to_vec();
+    let mut accumulator = 0;
+    let mut i = 0;
+    let mut modified_stack = vec![(0, 0)];
+    loop {
+        let instr = &mut input[i as usize];
+        if instr.executed {
+            break;
+        }
+        instr.executed = true;
+        accumulator += instr.accumulator;
+        i = instr.next;
+        if instr.modified != instr.next {
+            modified_stack.push((instr.modified, accumulator));
+        }
     }
-    0
+
+    let mut part2_search = |mut idx, mut acc| -> isize {
+        while idx < input.len() as isize && idx >= 0 {
+            let instr = &mut input[idx as usize];
+            if instr.executed {
+                return 0;
+            }
+            instr.executed = true;
+            acc += instr.accumulator;
+            idx = instr.next;
+        }
+        acc
+    };
+
+    for (i, accumulator) in modified_stack {
+        let accumulator = part2_search(i, accumulator);
+        if accumulator > 0 {
+            return accumulator;
+        }
+    }
+    panic!("Not found")
 }
 
-#[derive(Debug,Clone,Copy)]
-pub enum Instruction {
+#[derive(Debug, Clone, Copy)]
+pub struct Instruction {
+    next: isize,
+    modified: isize,
+    accumulator: isize,
+    executed: bool,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub enum Op {
     Acc(isize),
     Jmp(isize),
     Nop(isize),
@@ -108,6 +148,4 @@ acc +6
 "#;
         assert_eq!(part2(&parse_input(&input)), 8);
     }
-
-
 }
