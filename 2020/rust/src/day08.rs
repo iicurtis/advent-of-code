@@ -43,7 +43,7 @@ pub fn parse_input(input: &str) -> Vec<Instruction> {
         .collect()
 }
 
-fn part1(input: &[Instruction]) -> isize {
+pub fn part1(input: &[Instruction]) -> isize {
     let mut input = input.to_vec();
     let mut accumulator = 0;
     let mut i = 0;
@@ -60,9 +60,11 @@ fn part1(input: &[Instruction]) -> isize {
 
 pub fn part2(input: &[Instruction]) -> isize {
     let mut input = input.to_vec();
+    let mut modified_stack = vec![(0isize, 0)];
     let mut accumulator = 0;
     let mut i = 0;
-    let mut modified_stack = vec![(0, 0)];
+    // loop over original unmodified instructions once
+    // to build stack of modified locations
     loop {
         let instr = &mut input[i as usize];
         if instr.executed {
@@ -71,31 +73,24 @@ pub fn part2(input: &[Instruction]) -> isize {
         instr.executed = true;
         accumulator += instr.accumulator;
         i = instr.next;
-        if instr.modified != instr.next {
+        if instr.next != instr.modified {
             modified_stack.push((instr.modified, accumulator));
         }
     }
 
-    let mut part2_search = |mut idx, mut acc| -> isize {
-        while idx < input.len() as isize && idx >= 0 {
-            let instr = &mut input[idx as usize];
-            if instr.executed {
-                return 0;
-            }
-            instr.executed = true;
-            acc += instr.accumulator;
-            idx = instr.next;
-        }
-        acc
-    };
-
-    for (i, accumulator) in modified_stack {
-        let accumulator = part2_search(i, accumulator);
-        if accumulator > 0 {
+    while let Some((i, mut accumulator)) = modified_stack.pop() {
+        if i as usize >= input.len() {
             return accumulator;
+        };
+        let instr = &mut input[i as usize];
+        if instr.executed {
+            continue;
         }
+        instr.executed = true;
+        accumulator += instr.accumulator;
+        modified_stack.push((instr.next, accumulator));
     }
-    panic!("Not found")
+    panic!("Answer not found in stack")
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -104,13 +99,6 @@ pub struct Instruction {
     modified: isize,
     accumulator: isize,
     executed: bool,
-}
-
-#[derive(Debug, Clone, Copy)]
-pub enum Op {
-    Acc(isize),
-    Jmp(isize),
-    Nop(isize),
 }
 
 #[cfg(test)]

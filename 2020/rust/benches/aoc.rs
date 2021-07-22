@@ -78,6 +78,20 @@ fn day07(c: &mut Criterion) {
     c.bench_function("day07 p2", move |b| b.iter(|| day07::part2(&input)));
 }
 
-criterion_group!(benches, day01, day02, day03, day04, day05, day06, day07);
+fn day08(c: &mut Criterion) {
+    use advent2020::day08;
+    let input = fs::read_to_string("../inputs/day08.txt").expect("Couldn't find file");
+    c.bench_function("day08 parse", move |b| {
+        b.iter(|| day08::parse_input(&input))
+    });
+    let input = fs::read_to_string("../inputs/day08.txt").expect("Couldn't find file");
+    let input = day08::parse_input(&input);
+    c.bench_function("day08 p1", move |b| b.iter(|| day08::part1(&input)));
+    let input = fs::read_to_string("../inputs/day08.txt").expect("Couldn't find file");
+    let input = day08::parse_input(&input);
+    c.bench_function("day08 p2", move |b| b.iter(|| day08::part2(&input)));
+}
+
+criterion_group!(benches, day01, day02, day03, day04, day05, day06, day07, day08);
 
 criterion_main!(benches);
