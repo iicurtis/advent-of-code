@@ -4,7 +4,7 @@ input = f:read("a")
 local count = 1
 local x = 1
 local y = 1
-local visited = {[1] = {[1] = true}}
+visited = {[1] = {[1] = true}}
 
 function have_visited(x, y)
   if not visited[x] then 
@@ -18,7 +18,7 @@ function have_visited(x, y)
   return 0
 end
 
-for idx = 1, #input do
+for idx = 1, #input-1 do
   if input:byte(idx) == string.byte("^") then
     x = x + 1
     count = count + have_visited(x, y)
@@ -32,17 +32,19 @@ for idx = 1, #input do
     y = y - 1
     count = count + have_visited(x, y)
   else
-    print("Char not found: ", input:byte(idx))
+    print("p1Char not found: ", input[idx])
   end
 end
 print("Part 1:", count)
 
  -- part 2
 local soln2 = 1
+local x = 1
+local y = 1
 local x2 = 1
 local y2 = 1
-local visited = {[1] = {[1] = true}}
-for idx = 1, #input, 2 do
+visited = {[1] = {[1] = true}}
+for idx = 1, #input-1, 2 do
   if input:byte(idx) == string.byte("^") then
     x = x + 1
     soln2 = soln2 + have_visited(x, y)
@@ -56,7 +58,7 @@ for idx = 1, #input, 2 do
     y = y - 1
     soln2 = soln2 + have_visited(x, y)
   else
-    print("Char not found: ", input:byte(idx))
+    print("Char not found: ", input[idx], idx)
   end
 
   if input:byte(idx+1) == string.byte("^") then
@@ -72,7 +74,7 @@ for idx = 1, #input, 2 do
     y2 = y2 - 1
     soln2 = soln2 + have_visited(x2, y2)
   else
-    print("Char not found: ", input:byte(idx+1))
+    print("Char not found: ", input[idx+1], idx+1)
   end
 end
 
