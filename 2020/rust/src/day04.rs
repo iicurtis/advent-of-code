@@ -5,8 +5,8 @@ type Error = Box<dyn std::error::Error>;
 
 pub fn solve(input: &str) -> Result<String, Error> {
     //let input = parse_input(input);
-    let soln1 = part1(&input);
-    let soln2 = part2(&input);
+    let soln1 = part1(input);
+    let soln2 = part2(input);
     Ok(format!("Part 1: {}\nPart 2: {}", soln1, soln2))
 }
 

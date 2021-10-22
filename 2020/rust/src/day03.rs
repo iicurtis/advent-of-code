@@ -45,7 +45,7 @@ pub fn part2(input: &World) -> usize {
     let slopes = vec![(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)];
     slopes
         .iter()
-        .map(|(right, down)| count_trees(&input, *down, *right))
+        .map(|(right, down)| count_trees(input, *down, *right))
         .product()
 }
 
