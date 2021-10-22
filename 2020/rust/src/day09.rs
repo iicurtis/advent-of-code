@@ -48,7 +48,7 @@ pub fn part2(input: &str, preamble: usize) -> usize {
         }
         i += 1;
     }
-    sum_vec.make_contiguous().sort();
+    sum_vec.make_contiguous().sort_unstable();
     sum_vec.back().unwrap() + sum_vec.front().unwrap()
 }
 
