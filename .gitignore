@@ -15,3 +15,5 @@ create_empty.sh
 .ccls-cache
 tags
 aoc-others/
+zig-cache/
+zig-out/
