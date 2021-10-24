@@ -92,6 +92,12 @@ fn day08(c: &mut Criterion) {
     c.bench_function("day08 p2", move |b| b.iter(|| day08::part2(&input)));
 }
 
-criterion_group!(benches, day01, day02, day03, day04, day05, day06, day07, day08);
+fn day09(c: &mut Criterion) {
+    use advent2020::day09;
+    let input = fs::read_to_string("../inputs/day09.txt").expect("Couldn't find file");
+    c.bench_function("day09 both", move |b| b.iter(|| day09::solve_both(&input, 25)));
+}
+
+criterion_group!(benches, day01, day02, day03, day04, day05, day06, day07, day08, day09);
 
 criterion_main!(benches);
