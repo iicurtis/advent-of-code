@@ -17,3 +17,6 @@ tags
 aoc-others/
 zig-cache/
 zig-out/
+
+**/cc/build/
+**/cc/subprojects/*/

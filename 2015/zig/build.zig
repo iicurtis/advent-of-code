@@ -6,6 +6,27 @@ pub fn build(b: *std.build.Builder) !void {
     const mode = b.standardReleaseOptions();
     const target = b.standardTargetOptions(.{});
 
+    const build_all_step = b.step("build", "Build executables for all days.");
+    const test_all_step = b.step("test", "Run all tests.");
+    const run_all_step = b.step("run-all", "Run all days.");
+
+    comptime var day = 1;
+    inline while (day <= 25) : (day += 1) {
+        const day = comptime std.fmt.comptimePrint("day{:0>2}", .{day});
+        const src = "src/" ++ day ++ ".zig";
+
+        const exe = b.addExecutable(day, src);
+        exe.setTarget(target);
+        exe.setBuildMode(mode);
+        const tests = b.addTest(src);
+        tests.setTarget(target);
+    }
+}
+
+pub fn build(b: *std.build.Builder) !void {
+    const mode = b.standardReleaseOptions();
+    const target = b.standardTargetOptions(.{});
+
     var days_list = std.ArrayList([]const u8).init(b.allocator);
 
     const cwd = try std.fs.cwd().openDir("src", .{ .iterate = true });
