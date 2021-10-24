@@ -20,3 +20,4 @@ zig-out/
 
 **/cc/build/
 **/cc/subprojects/*/
+.cache/

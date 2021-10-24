@@ -6,27 +6,6 @@ pub fn build(b: *std.build.Builder) !void {
     const mode = b.standardReleaseOptions();
     const target = b.standardTargetOptions(.{});
 
-    const build_all_step = b.step("build", "Build executables for all days.");
-    const test_all_step = b.step("test", "Run all tests.");
-    const run_all_step = b.step("run-all", "Run all days.");
-
-    comptime var day = 1;
-    inline while (day <= 25) : (day += 1) {
-        const day = comptime std.fmt.comptimePrint("day{:0>2}", .{day});
-        const src = "src/" ++ day ++ ".zig";
-
-        const exe = b.addExecutable(day, src);
-        exe.setTarget(target);
-        exe.setBuildMode(mode);
-        const tests = b.addTest(src);
-        tests.setTarget(target);
-    }
-}
-
-pub fn build(b: *std.build.Builder) !void {
-    const mode = b.standardReleaseOptions();
-    const target = b.standardTargetOptions(.{});
-
     var days_list = std.ArrayList([]const u8).init(b.allocator);
 
     const cwd = try std.fs.cwd().openDir("src", .{ .iterate = true });
@@ -34,7 +13,7 @@ pub fn build(b: *std.build.Builder) !void {
     while (try iter.next()) |entry| {
         const name = try b.allocator.dupe(u8, entry.name);
         if (name.len == 9 and std.mem.startsWith(u8, name, "day")) {
-            try days_list.append(name);
+            try days_list.append(name[0..5]);
         }
     }
 
@@ -51,8 +30,9 @@ pub fn build(b: *std.build.Builder) !void {
     const test_all_step = b.step("test", "Run all tests.");
     const run_all_step = b.step("run-all", "Run all days.");
     for (days) |day| {
-        const exe = b.addExecutable(day, try std.fs.path.join(b.allocator, &[_][]const u8{ "src", day }));
-        const tests = b.addTest(try std.fs.path.join(b.allocator, &[_][]const u8{ "src", day }));
+        const src = try std.fmt.allocPrint(b.allocator, "src/{s}.zig", .{day});
+        const exe = b.addExecutable(day, src);
+        const tests = b.addTest(src);
 
         exe.setTarget(target);
         tests.setTarget(target);

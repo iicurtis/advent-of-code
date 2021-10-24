@@ -36,7 +36,6 @@ fmt = subproject('fmt').get_variable('fmt_dep')
 
 src_files = files(
   'src/Advent.cpp',
-  'src/solution.cpp',
   'src/day01.cpp',
   'src/day02.cpp',
   'src/day03.cpp'
