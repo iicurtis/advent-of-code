@@ -26,9 +26,9 @@ pub fn build(b: *std.build.Builder) !void {
     });
     const fmt = b.addFmt(fmt_paths);
 
-    const build_all_step = b.step("build", "Build executables for all days.");
+    const build_all_step = b.step("install", "Build executables for all days.");
     const test_all_step = b.step("test", "Run all tests.");
-    const run_all_step = b.step("run-all", "Run all days.");
+    const run_all_step = b.step("run", "Run all days.");
     for (days) |day| {
         const src = try std.fmt.allocPrint(b.allocator, "src/{s}.zig", .{day});
         const exe = b.addExecutable(day, src);
@@ -114,6 +114,7 @@ pub fn build(b: *std.build.Builder) !void {
     all_step.dependOn(run_all_step);
 
     b.default_step.dependOn(fmt_step);
+    b.default_step = run_all_step;
 }
 
 fn strLessThan(context: void, a: []const u8, b: []const u8) bool {

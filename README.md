@@ -13,7 +13,8 @@ Be sure to check out the Rust Discord! We are on there every day.
 * [Kaynato/AdventOfCode](https://github.com/Kaynato/AdventOfCode)
 * [0e4ef622/aoc](https://github.com/0e4ef622/aoc)
 * [Jonathan Paulson YouTube](https://www.youtube.com/watch?v=R19aQppUh-M) python
-* [AsamK/AdventOfCode](https://github.com/AsamK/AdventOfCode) nom
+* [AsamK/AdventOfCode](https://github.com/AsamK/AdventOfCode) rs/nom
+* [AdarkTheCoder/AdventOfCode](https://github.com/AdarkTheCoder/AdventOfCode) lua
 
 ## 2015
 
@@ -23,11 +24,11 @@ Be sure to check out the Rust Discord! We are on there every day.
 
 * [Voltara/advent2018-fast](https://github.com/Voltara/advent2018-fast) c++
 * [BurntSushi/advent-of-code](https://github.com/BurntSushi/advent-of-code) phenomenal error checking examples
-* [birkenfield/advent18](https://github.com/birkenfeld/advent18) regex
-* [kcaffrey/aoc-rs](https://github.com/kcaffrey/aoc-rs) regex
-* [Ameobea/advent-of-code-2018](https://github.com/Ameobea/advent-of-code-2018) regex
-- [ttencate/aoc2018](https://github.com/ttencate/aoc2018) good decompiler tool
-- [konradborowski/advent-of-code-2018](https://gitlab.com/KonradBorowski/advent-of-code-2018) nom user
+* [birkenfield/advent18](https://github.com/birkenfeld/advent18) rs/regex
+* [kcaffrey/aoc-rs](https://github.com/kcaffrey/aoc-rs) rs/regex
+* [Ameobea/advent-of-code-2018](https://github.com/Ameobea/advent-of-code-2018) rs/regex
+- [ttencate/aoc2018](https://github.com/ttencate/aoc2018) rs/good decompiler tool
+- [konradborowski/advent-of-code-2018](https://gitlab.com/KonradBorowski/advent-of-code-2018) rs/nom
 
 
 * [anowell/advent-of-code](https://github.com/anowell/advent-of-code) not finished
@@ -48,4 +49,6 @@ Be sure to check out the Rust Discord! We are on there every day.
 - [KonradBorowski/advent-of-code-2020](https://gitlab.com/KonradBorowski/advent-of-code-2020) rs
 - [ttencate/aoc2020](https://github.com/ttencate/aoc2020) rs
 - [petertseng/adventofcode-rs-2020](https://github.com/petertseng/adventofcode-rs-2020) rs
-- [smmalis37/aoc2020](https://github.com/smmalis37/aoc2020/blob/main/src/days/day8.rs) rs
+- [smmalis37/aoc2020](https://github.com/smmalis37/aoc2020) rs
+- [SpexGuy/AoC-2020](https://github.com/SpexGuy/AoC-2020) zig
+- [jackdbd/advent-of-code](https://github.com/jackdbd/advent-of-code) zig
