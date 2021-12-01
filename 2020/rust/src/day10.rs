@@ -4,7 +4,7 @@ type Error = Box<dyn std::error::Error>;
 
 pub fn solve(input: &str) -> Result<String, Error> {
     let soln1 = part1(input);
-    let soln2 = 0;
+    let soln2 = part2(input);
     Ok(format!("Part 1: {}\nPart 2: {}", soln1, soln2))
 }
 
@@ -20,7 +20,6 @@ pub fn part1(input: &str) -> usize {
     let mut jolt3 = 1;
     for adapter in input {
         let difference = adapter - prev_adapter;
-        println!("diff: {} a: {} a-1: {}", difference, adapter, prev_adapter);
         if difference == 1 {
             jolt1 += 1;
         } else if difference == 3 {
@@ -28,8 +27,7 @@ pub fn part1(input: &str) -> usize {
         }
         prev_adapter = adapter;
     }
-    let part1 = jolt1 * jolt3;
-    part1
+    jolt1 * jolt3
 }
 
 pub fn part2(input: &str) -> usize {
@@ -39,31 +37,15 @@ pub fn part2(input: &str) -> usize {
         .map(|line| line.parse().unwrap())
         .collect();
     input.sort_unstable();
-
-    // calculate n+2 - n difference. If 2 or 3:
-    // append n+1 to list
-    // calculate permutations of list
-    // edge case:
-    // 11 14 15 16 17 19
-    // if n+2 distance is 2
-    //  calculate n+3 - n+1 distance. If 2 or 3
-    //  calculate n+3 - n distance. If 3
-    //      add n+1 and n+2 to list
-    let mut prev_adapter = 0;
-    let mut jolt1 = 0;
-    let mut jolt3 = 1;
+    input.insert(0, 0);
+    let mut combinations = vec![0usize; input.last().unwrap() + 4];
+    combinations[0] = 1;
     for adapter in input {
-        let difference = adapter - prev_adapter;
-        println!("diff: {} a: {} a-1: {}", difference, adapter, prev_adapter);
-        if difference == 1 {
-            jolt1 += 1;
-        } else if difference == 3 {
-            jolt3 += 1;
-        }
-        prev_adapter = adapter;
+        combinations[adapter+1] += combinations[adapter];
+        combinations[adapter+2] += combinations[adapter];
+        combinations[adapter+3] += combinations[adapter];
     }
-    let part1 = jolt1 * jolt3;
-    part1
+    *combinations.last().unwrap()
 }
 
 
@@ -181,7 +163,7 @@ mod test {
 12
 4
 "#;
-        assert_eq!(part1(&input), 8);
+        assert_eq!(part2(&input), 8);
     }
 
 
