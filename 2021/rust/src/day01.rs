@@ -18,20 +18,12 @@ pub fn parse(input: &str) -> Vec<usize> {
 }
 
 pub fn part1(input: &[usize]) -> usize {
-    // its pretty but 5% slower than the loop version
+    // its pretty but 5% slower than the loop version (only when parsing is done in function?)
     input.windows(2).filter(|pair| pair[0] < pair[1]).count()
 }
 
 pub fn part2(input: &[usize]) -> usize {
-    let mut increased_count = 0;
-    let mut prev_sum = usize::max_value();
-    for i in 0..input.len() - 2 {
-        if input[i + 2] > prev_sum {
-            increased_count += 1;
-        }
-        prev_sum = input[i];
-    }
-    increased_count
+    input.windows(4).filter(|n| n[0] < n[3]).count()
 }
 
 #[cfg(test)]
