@@ -1,5 +1,5 @@
 // Advent of Code
-// Copyright (C) 2020  Isaac Curtis
+// Copyright (C) 2021  Isaac Curtis
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,27 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-extern crate advent2020;
+extern crate advent2021;
 
-use advent2020::*;
+use advent2021::*;
 use clap::{App, Arg};
 use std::io::{self, Write};
 
 type Error = Box<dyn std::error::Error>;
 type Soln = fn(&str) -> Result<String, Error>;
 
-const SOLUTIONS: &[Soln] = &[
-    day01::solve,
-    day02::solve,
-    day03::solve,
-    day04::solve,
-    day05::solve,
-    day06::solve,
-    day07::solve,
-    day08::solve,
-    day09::solve,
-    day10::solve,
-];
+const SOLUTIONS: &[Soln] = &[day01::solve];
 
 fn runday(d: usize, soln: Soln) -> Result<(), Error> {
     use std::fs;
@@ -67,7 +56,7 @@ pub fn run(day_s: &str) -> Result<(), Error> {
 }
 
 fn main() {
-    let matches = App::new("Advent of Code in Rust 2020")
+    let matches = App::new("Advent of Code in Rust 2021")
         .author("Isaac Curtis <iicurtis att outlook doot com>")
         .arg(
             Arg::with_name("day")
