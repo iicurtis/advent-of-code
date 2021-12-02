@@ -25,15 +25,14 @@ pub fn parse(input: &str) -> Vec<Command> {
         .trim()
         .lines()
         .map(|line| {
-            let mut splits = line.split_whitespace();
-            let command = splits.next().unwrap();
+            let (command, value) = line.split_once(' ').unwrap();
             let command = match command {
                 "forward" => Direction::Forward,
                 "down" => Direction::Down,
                 "up" => Direction::Up,
                 _ => unreachable!(),
             };
-            let value = splits.next().unwrap().parse().unwrap();
+            let value = value.parse().unwrap();
             Command { command, value }
         })
         .collect()
@@ -61,14 +60,13 @@ pub fn part2(input: &[Command]) -> usize {
             Direction::Forward => {
                 posy += command.value;
                 posx += aim * command.value;
-            },
+            }
             Direction::Down => aim += command.value,
             Direction::Up => aim -= command.value,
         }
     }
     posx * posy
 }
-
 
 #[cfg(test)]
 mod test {
@@ -87,7 +85,6 @@ forward 2
         assert_eq!(part1(&parse(input)), 150);
     }
 
-
     #[test]
     fn test_part2_0() {
         let input = r#"
@@ -100,7 +97,4 @@ forward 2
 "#;
         assert_eq!(part2(&parse(input)), 900);
     }
-
-
-
 }
