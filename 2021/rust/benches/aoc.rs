@@ -14,6 +14,16 @@ fn day01(c: &mut Criterion) {
     c.bench_function("day01 p2", move |b| b.iter(|| day01::part2(&input)));
 }
 
-criterion_group!(benches, day01);
+fn day02(c: &mut Criterion) {
+    use advent2021::day02;
+    let input = fs::read_to_string("../inputs/day02.txt").expect("Couldn't find file");
+    let input = day02::parse(&input);
+    c.bench_function("day02 p1", move |b| b.iter(|| day02::part1(&input)));
+    let input = fs::read_to_string("../inputs/day02.txt").expect("Couldn't find file");
+    let input = day02::parse(&input);
+    c.bench_function("day02 p2", move |b| b.iter(|| day02::part2(&input)));
+}
+
+criterion_group!(benches, day01, day02);
 
 criterion_main!(benches);
