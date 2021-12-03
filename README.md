@@ -9,12 +9,13 @@ My personal implementations for
 
 Be sure to check out the Rust Discord! We are on there every day.
 
-* [Globidev/advent-of-code](https://github.com/Globidev/advent-of-code)
-* [Kaynato/AdventOfCode](https://github.com/Kaynato/AdventOfCode)
-* [0e4ef622/aoc](https://github.com/0e4ef622/aoc)
+* [Globidev/advent-of-code](https://github.com/Globidev/advent-of-code) rust
+* [Kaynato/AdventOfCode](https://github.com/Kaynato/AdventOfCode) rust
+* [0e4ef622/aoc](https://github.com/0e4ef622/aoc) rust
 * [Jonathan Paulson YouTube](https://www.youtube.com/watch?v=R19aQppUh-M) python
 * [AsamK/AdventOfCode](https://github.com/AsamK/AdventOfCode) rs/nom
 * [AdarkTheCoder/AdventOfCode](https://github.com/AdarkTheCoder/AdventOfCode) lua
+* [sjmulder/aoc](https://github.com/sjmulder/aoc) c
 
 ## 2015
 

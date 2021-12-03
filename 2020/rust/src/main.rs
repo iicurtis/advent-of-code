@@ -34,6 +34,7 @@ const SOLUTIONS: &[Soln] = &[
     day08::solve,
     day09::solve,
     day10::solve,
+    day11::solve,
 ];
 
 fn runday(d: usize, soln: Soln) -> Result<(), Error> {
