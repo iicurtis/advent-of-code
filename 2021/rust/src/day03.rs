@@ -15,25 +15,25 @@ pub fn parse(input: &str) -> Bits {
         .trim()
         .lines()
         .map(|line| {
-            msb = line.len() as u8;
+            msb = line.len();
             u16::from_str_radix(line, 2).unwrap()
         })
         .collect();
-        Bits { vec, msb }
+    Bits { vec, msb }
+}
+
+fn max_bit(numbers: &[u16], pos: usize) -> u16 {
+    let mut c = [0, 0];
+    for &n in numbers {
+        c[(n as usize >> pos) & 1] += 1
+    }
+    (c[1] >= c[0]) as u16
 }
 
 pub fn part1(input: &Bits) -> usize {
-    let mut bit_count = vec![0; input.msb as usize];
-    for n in &input.vec {
-        for i in 0..input.msb as usize {
-            bit_count[i] += (n >> i) & 1u16;
-        }
-    }
-    let half = input.vec.len() as u16 / 2;
-    let mut gamma = 0;
-    for i in 0..input.msb as usize {
-        if bit_count[i] > half { gamma |= 1 << i; }
-    }
+    let gamma: usize = (0..input.msb)
+        .map(|idx| (max_bit(&input.vec, idx) << idx) as usize)
+        .sum();
     let not_gamma = !gamma & ((1 << input.msb) - 1);
     gamma * not_gamma
 }
@@ -41,64 +41,28 @@ pub fn part1(input: &Bits) -> usize {
 pub fn part2(input: &Bits) -> usize {
     let mut o2_vec = input.vec.clone();
     for i in (0..input.msb as usize).rev() {
-        let mut ones_list = Vec::new();
-        let mut zeroes_list = Vec::new();
+        let keep = max_bit(&o2_vec, i) ^ 1;
+        o2_vec.retain(|x| (x >> i) & 1 == keep);
         if o2_vec.len() == 1 {
             break;
-        }
-        for (idx, value) in o2_vec.iter().enumerate().rev() {
-            if (value >> i) & 1u16 == 1 {
-                ones_list.push(idx);
-            } else {
-                zeroes_list.push(idx);
-            }
-        }
-        if ones_list.len() >= zeroes_list.len() {  // 1 is the most common value
-            // eliminate all values in o2_vec that have 0 at index
-            for idx in zeroes_list {
-                o2_vec.remove(idx);
-            }
-            // eliminate all value in co2_vec that have 1 at index
-        } else {
-            for idx in ones_list {
-                o2_vec.remove(idx);
-            }
         }
     }
     let mut co2_vec = input.vec.clone();
     for i in (0..input.msb as usize).rev() {
-        let mut ones_list = Vec::new();
-        let mut zeroes_list = Vec::new();
+        let keep = max_bit(&co2_vec, i);
+        co2_vec.retain(|x| (x >> i) & 1 == keep);
         if co2_vec.len() == 1 {
             break;
         }
-        for (idx, value) in co2_vec.iter().enumerate().rev() {
-            if (value >> i) & 1u16 == 1 {
-                ones_list.push(idx);
-            } else {
-                zeroes_list.push(idx);
-            }
-        }
-        if ones_list.len() < zeroes_list.len() {  // 1 is the most common value
-            // eliminate all values in o2_vec that have 0 at index
-            for idx in zeroes_list {
-                co2_vec.remove(idx);
-            }
-            // eliminate all value in co2_vec that have 1 at index
-        } else {
-            for idx in ones_list {
-                co2_vec.remove(idx);
-            }
-        }
     }
-    let o2_rating: usize = *o2_vec.first().unwrap() as usize;
-    let co2_rating: usize = *co2_vec.first().unwrap() as usize;
+    let o2_rating = *o2_vec.first().unwrap() as usize;
+    let co2_rating = *co2_vec.first().unwrap() as usize;
     o2_rating * co2_rating
 }
 
 pub struct Bits {
     vec: Vec<u16>,
-    msb: u8,
+    msb: usize,
 }
 
 #[cfg(test)]
@@ -142,5 +106,4 @@ mod test {
 "#;
         assert_eq!(part2(&parse(input)), 230);
     }
-
 }
