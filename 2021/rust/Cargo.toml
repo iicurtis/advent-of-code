@@ -11,6 +11,7 @@ rayon = "1"
 #hashbrown = "0.6"
 # simdeez = "0.5"
 #nom = "4"
+#num = "0.4"
 
 [dev-dependencies]
 criterion = "*"

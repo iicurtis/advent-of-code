@@ -12,6 +12,10 @@ fn day01(c: &mut Criterion) {
     let input = fs::read_to_string("../inputs/day01.txt").expect("Couldn't find file");
     let input = day01::parse(&input);
     c.bench_function("day01 p2", move |b| b.iter(|| day01::part2(&input)));
+    let input = fs::read_to_string("../inputs/day01.txt").expect("Couldn't find file");
+    c.bench_function("day01 parse", move |b| {
+        b.iter(|| day01::parse(&input))
+    });
 }
 
 fn day02(c: &mut Criterion) {
@@ -22,6 +26,10 @@ fn day02(c: &mut Criterion) {
     let input = fs::read_to_string("../inputs/day02.txt").expect("Couldn't find file");
     let input = day02::parse(&input);
     c.bench_function("day02 p2", move |b| b.iter(|| day02::part2(&input)));
+    let input = fs::read_to_string("../inputs/day02.txt").expect("Couldn't find file");
+    c.bench_function("day02 parse", move |b| {
+        b.iter(|| day02::parse(&input))
+    });
 }
 
 fn day03(c: &mut Criterion) {
@@ -32,6 +40,10 @@ fn day03(c: &mut Criterion) {
     let input = fs::read_to_string("../inputs/day03.txt").expect("Couldn't find file");
     let input = day03::parse(&input);
     c.bench_function("day03 p2", move |b| b.iter(|| day03::part2(&input)));
+    let input = fs::read_to_string("../inputs/day03.txt").expect("Couldn't find file");
+    c.bench_function("day03 parse", move |b| {
+        b.iter(|| day03::parse(&input))
+    });
 }
 
 fn day04(c: &mut Criterion) {
@@ -42,8 +54,27 @@ fn day04(c: &mut Criterion) {
     let input = fs::read_to_string("../inputs/day04.txt").expect("Couldn't find file");
     let input = day04::parse(&input);
     c.bench_function("day04 p2", move |b| b.iter(|| day04::part2(&input)));
+    let input = fs::read_to_string("../inputs/day04.txt").expect("Couldn't find file");
+    c.bench_function("day04 parse", move |b| {
+        b.iter(|| day04::parse(&input))
+    });
 }
 
-criterion_group!(benches, day01, day02, day03, day04);
+fn day05(c: &mut Criterion) {
+    use advent2021::day05;
+    let input = fs::read_to_string("../inputs/day05.txt").expect("Couldn't find file");
+    let input = day05::parse(&input);
+    c.bench_function("day05 p1", move |b| b.iter(|| day05::part1(&input)));
+    let input = fs::read_to_string("../inputs/day05.txt").expect("Couldn't find file");
+    let input = day05::parse(&input);
+    c.bench_function("day05 p2", move |b| b.iter(|| day05::part2(&input)));
+    let input = fs::read_to_string("../inputs/day05.txt").expect("Couldn't find file");
+    c.bench_function("day05 parse", move |b| {
+        b.iter(|| day05::parse(&input))
+    });
+
+}
+
+criterion_group!(benches, day01, day02, day03, day04, day05);
 
 criterion_main!(benches);

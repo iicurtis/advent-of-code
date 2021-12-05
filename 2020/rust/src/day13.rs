@@ -45,6 +45,7 @@ pub fn part1(input: &Schedule) -> usize {
 }
 
 pub fn part2(input: &Schedule) -> usize {
+    // chinese remainder theorem
     let mut time = 1;
     let mut product = 1;
     for (i, bus) in input.buses.iter().enumerate() {
