@@ -13,11 +13,12 @@ pub fn solve_both(input: &str, preamble: usize) -> (usize, usize) {
         .lines()
         .map(|line| line.parse().unwrap())
         .collect();
-    let (idx, part1) = (preamble..input.len()).find(|&i| {
-        !(i-preamble..i).any(|j| { 
-            input[j+1..i].iter().any(|y| input[j] + y == input[i])
+    let (idx, part1) = (preamble..input.len())
+        .find(|&i| {
+            !(i - preamble..i).any(|j| input[j + 1..i].iter().any(|y| input[j] + y == input[i]))
         })
-    }).map(|i| (i, input[i])).unwrap();
+        .map(|i| (i, input[i]))
+        .unwrap();
     let input = input[..idx].to_vec();
     let mut sum: usize = input[0];
     let mut top = 0;
@@ -66,7 +67,6 @@ mod test {
 "#;
         assert_eq!(solve_both(&input, 5), (127, 62));
     }
-
 
     #[test]
     fn test_part2_0() {

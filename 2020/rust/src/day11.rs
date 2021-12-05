@@ -30,7 +30,7 @@ pub fn parse(input: &str) -> Grid {
     let input = input.trim().lines();
     let ysize = input.clone().count();
     let xsize = input.clone().next().unwrap().len();
-    let mut grid = vec![Seat::Floor; ysize*xsize];
+    let mut grid = vec![Seat::Floor; ysize * xsize];
     for (y, line) in input.enumerate() {
         for (x, c) in line.chars().enumerate() {
             grid[x + y * xsize] = match c {
@@ -55,9 +55,9 @@ pub fn part1(input: &Grid) -> usize {
                     continue;
                 }
                 let mut occupied_neighbors = 0;
-                for dy in y.saturating_sub(1)..=y+1 {
-                    for dx in x.saturating_sub(1)..=x+1 {
-                        if (dx==x && dy==y) || dy >= grid.ysize || dx >= grid.xsize {
+                for dy in y.saturating_sub(1)..=y + 1 {
+                    for dx in x.saturating_sub(1)..=x + 1 {
+                        if (dx == x && dy == y) || dy >= grid.ysize || dx >= grid.xsize {
                             continue;
                         }
                         if grid.grid[dx + dy * grid.xsize] == Seat::Occupied {
@@ -77,7 +77,7 @@ pub fn part1(input: &Grid) -> usize {
         }
 
         if grid.grid == next_grid.grid {
-            break occupied
+            break occupied;
         }
         grid = next_grid;
     }
@@ -97,7 +97,7 @@ pub fn part2(input: &Grid) -> usize {
                 let mut occupied_neighbors = 0;
                 for dy in -1isize..=1 {
                     for dx in -1isize..=1 {
-                        if dx==0 && dy==0 {
+                        if dx == 0 && dy == 0 {
                             continue;
                         }
                         let mut neighbor_y = y as isize;
@@ -105,14 +105,17 @@ pub fn part2(input: &Grid) -> usize {
                         loop {
                             neighbor_y += dy;
                             neighbor_x += dx;
-                            if neighbor_y as usize >= grid.ysize || neighbor_x as usize >= grid.xsize {
+                            if neighbor_y as usize >= grid.ysize
+                                || neighbor_x as usize >= grid.xsize
+                            {
                                 break;
                             }
-                            match grid.grid[neighbor_x as usize + neighbor_y as usize * grid.xsize] {
+                            match grid.grid[neighbor_x as usize + neighbor_y as usize * grid.xsize]
+                            {
                                 Seat::Occupied => {
                                     occupied_neighbors += 1;
                                     break;
-                                },
+                                }
                                 Seat::Empty => break,
                                 _ => (),
                             }
@@ -133,7 +136,7 @@ pub fn part2(input: &Grid) -> usize {
         }
 
         if grid.grid == next_grid.grid {
-            break occupied
+            break occupied;
         }
         std::mem::swap(&mut grid, &mut next_grid);
     }
@@ -161,7 +164,6 @@ impl Display for Seat {
         }
     }
 }
-
 
 #[cfg(test)]
 mod test {
@@ -200,8 +202,4 @@ L.LLLLL.LL
 "#;
         assert_eq!(part2(&parse(input)), 26);
     }
-
-
-
-    
 }

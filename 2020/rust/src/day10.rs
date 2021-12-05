@@ -41,13 +41,12 @@ pub fn part2(input: &str) -> usize {
     let mut combinations = vec![0usize; input.last().unwrap() + 4];
     combinations[0] = 1;
     for adapter in input {
-        combinations[adapter+1] += combinations[adapter];
-        combinations[adapter+2] += combinations[adapter];
-        combinations[adapter+3] += combinations[adapter];
+        combinations[adapter + 1] += combinations[adapter];
+        combinations[adapter + 2] += combinations[adapter];
+        combinations[adapter + 3] += combinations[adapter];
     }
     *combinations.last().unwrap()
 }
-
 
 #[cfg(test)]
 mod test {
@@ -70,7 +69,6 @@ mod test {
 "#;
         assert_eq!(part1(&input), 35);
     }
-
 
     #[test]
     fn test_part1_1() {
@@ -165,8 +163,4 @@ mod test {
 "#;
         assert_eq!(part2(&input), 8);
     }
-
-
-
-    
 }
