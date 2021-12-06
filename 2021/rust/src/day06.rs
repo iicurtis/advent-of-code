@@ -18,27 +18,28 @@ pub fn parse(input: &str) -> Vec<u8> {
 }
 
 // most other answers rely on shifting a single array left and updating the end the beginning.
-// This is 8 lookups (but this array is so small it should be cached)
+// The shift is 8 lookups (but this array is so small it should be cached)
 // Mine has just two lookups but 3 modulus calculations
 pub fn part1(input: &[u8]) -> usize {
-    let state = input.to_vec();
-    let mut offsets = vec![0; 8];
-    for f in state {
-        offsets[f as usize + 1] += 1; // add 1 because we have 0-index before reset
+    let mut school = std::collections::VecDeque::from(vec![0; 9]);
+    for f in input.iter() {
+        school[*f as usize] += 1;
     }
-    let mut next_offsets = offsets.clone();
-    for day in 1..=80 {
-        next_offsets[(day + 2) % 7] += offsets[(day % 7)];
-        offsets[(day + 3) % 7] = next_offsets[(day + 3) % 7]; // update skipping one cycle
+    for _day in 0..80 {
+        let count = school.pop_front().unwrap();
+        school[6] += count;
+        school.push_back(count);
     }
-    next_offsets.iter().sum()
+    school.iter().sum()
 }
 
+// my calculations show about 20% faster with my method than the typical.
+// I'd be curious how the matrix method works.
 pub fn part2(input: &[u8]) -> usize {
     let state = input.to_vec();
     let mut offsets = vec![0; 8];
     for f in state {
-        offsets[f as usize + 1] += 1;
+        offsets[f as usize + 1] += 1;  // add 1 because we have 0-index before reset
     }
     let mut next_offsets = offsets.clone();
     for day in 1..=256 {
