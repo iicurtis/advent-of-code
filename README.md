@@ -58,3 +58,4 @@ Be sure to check out the Rust Discord! We are on there every day.
 ## 2021
 
 - [AxlLind/AdventOfCode2021](https://github.com/AxlLind/AdventOfCode2021) rs
+- [ritobanrc/aoc2021](https://github.com/ritobanrc/aoc2021) rs
