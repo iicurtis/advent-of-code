@@ -54,6 +54,7 @@ Be sure to check out the Rust Discord! We are on there every day.
 - [smmalis37/aoc2020](https://github.com/smmalis37/aoc2020) rs
 - [SpexGuy/AoC-2020](https://github.com/SpexGuy/AoC-2020) zig
 - [jackdbd/advent-of-code](https://github.com/jackdbd/advent-of-code) zig
+- [dannyvankooten/advent-of-code-2020](https://github.com/dannyvankooten/advent-of-code-2020) c
 
 ## 2021
 
