@@ -3,44 +3,17 @@
 type Error = Box<dyn std::error::Error>;
 
 pub fn solve(input: &str) -> Result<String, Error> {
-    let input = parse(input);
-    let soln1 = part1(&input);
-    let soln2 = part2(&input);
+    let soln1 = part1(input);
+    let soln2 = part2(input);
     Ok(format!("Part 1: {}\nPart 2: {}", soln1, soln2))
 }
 
-pub struct SDisplay {
-    input: Vec<String>,
-    output: Vec<String>,
-}
-
-pub fn parse(input: &str) -> Vec<SDisplay> {
-    input
-        .trim()
-        .lines()
-        .map(|l| {
-            let mut l = l.split(" | ");
-            let input = l
-                .next()
-                .unwrap()
-                .split_whitespace()
-                .map(|b| b.to_string())
-                .collect();
-            let output = l
-                .next()
-                .unwrap()
-                .split_whitespace()
-                .map(|b| b.to_string())
-                .collect();
-            SDisplay { input, output }
-        })
-        .collect()
-}
-
-pub fn part1(input: &[SDisplay]) -> usize {
+pub fn part1(input: &str) -> usize {
+    let input = input.trim().lines();
+    let output: Vec<&str> = input.map(|l| l.split(" | ").nth(1).unwrap()).collect();
     let mut count = 0;
-    for message in input {
-        for num in &message.output {
+    for message in output {
+        for num in message.split_whitespace() {
             match num.len() {
                 2 => count += 1,
                 3 => count += 1,
@@ -53,103 +26,27 @@ pub fn part1(input: &[SDisplay]) -> usize {
     count
 }
 
-fn find_map(line: &[String]) -> Vec<char> {
-    let mut map = vec!['.'; 8];
-    // if contains
-    // len == 2 => { find len 6 with only one of them }
-    // len == 4               => 4
-    // len == 3               => 7
-    // len == 7               => 8
-    // len == 5 && map[2, !5] => 2
-    // len == 5 && map[1]     => 5
-    // len == 5 && map[2, 5]  => 3
-    // len == 6 && map[!2, 5] => 6
-    // len == 6 && map[2, 3]  => 9
-    // len == 6 && map[!3]    => 0
-    let one: Vec<char> = line
-        .iter()
-        .find(|x| x.len() == 2)
-        .unwrap()
-        .chars()
-        .collect();
-    let six = line
-        .iter()
-        .find(|x| x.len() == 6 && (x.contains(one[0]) ^ x.contains(one[1])))
-        .unwrap();
-    if six.contains(one[0]) {
-        map[5] = one[0];
-        map[2] = one[1];
-    } else {
-        map[2] = one[0];
-        map[5] = one[1];
-    }
-    let mut four: Vec<char> = line
-        .iter()
-        .find(|x| x.len() == 4)
-        .unwrap()
-        .chars()
-        .collect();
-    four.retain(|&v| v != one[0] && v != one[1]);
-    let zero = line
-        .iter()
-        .find(|x| x.len() == 6 && (x.contains(four[0]) ^ x.contains(four[1])))
-        .unwrap();
-    if zero.contains(four[0]) {
-        map[1] = four[0];
-        map[3] = four[1];
-    } else {
-        map[3] = four[0];
-        map[1] = four[1];
-    }
-    map
-}
-
-fn decode(line: &[String], map: &[char]) -> usize {
-    let mut result = 0;
-    for (i, num_string) in line.iter().enumerate() {
-        result += 10_usize.pow(3 - i as u32)
-            * match num_string.len() {
-                2 => 1,
-                3 => 7,
-                4 => 4,
-                7 => 8,
-                5 => {
-                    if num_string.contains(map[1]) {
-                        5
-                    }
-                    // 5 has upper left bar
-                    else if num_string.contains(map[5]) {
-                        3
-                    }
-                    // 3 has lower right bar but not upper left
-                    else {
-                        2
-                    }
-                }
-                6 => {
-                    if !num_string.contains(map[2]) {
-                        6
-                    }
-                    // six doesn't have upper right bar
-                    else if num_string.contains(map[3]) {
-                        9
-                    }
-                    // contains middle, not 0
-                    else {
-                        0
-                    }
-                }
-                _ => unreachable!(),
-            }
-    }
-    result
-}
-
-pub fn part2(input: &[SDisplay]) -> usize {
+pub fn part2(input: &str) -> usize {
+    let input = input.trim().lines();
+    let input: Vec<(&str, &str)> = input.map(|l| l.split_once(" | ").unwrap()).collect();
+    let decoder = vec![4, 7, 2, 5, 3, 6, 0, 9, 1, 8];
+    let mut decoded = vec![0; 8];
     let mut count = 0;
-    for message in input {
-        let map = find_map(&message.input);
-        count += decode(&message.output, &map);
+    for message in input.iter() {
+        for n in b'a'..=b'g' {
+            decoded[n as usize - b'a' as usize] =
+                message.0.as_bytes().iter().filter(|&c| *c == n).count();
+        }
+        for (i, num) in message.1.split_whitespace().enumerate() {
+            let sum = num
+                .chars()
+                .map(|c| decoded[c as usize - b'a' as usize])
+                .sum::<usize>()
+                / 2
+                % 15
+                % 11;
+            count += decoder[sum] * 10_usize.pow(3 - i as u32);
+        }
     }
     count
 }
@@ -172,7 +69,7 @@ bdfegc cbegaf gecbf dfcage bdacg ed bedf ced adcbefg gebcd | ed bcgafe cdgba cbg
 egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg | gbdfcae bgc cg cgb
 gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 "#;
-        assert_eq!(part1(&parse(input)), 26);
+        assert_eq!(part1(&input), 26);
     }
 
     #[test]
@@ -189,6 +86,6 @@ bdfegc cbegaf gecbf dfcage bdacg ed bedf ced adcbefg gebcd | ed bcgafe cdgba cbg
 egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg | gbdfcae bgc cg cgb
 gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 "#;
-        assert_eq!(part2(&parse(input)), 61229);
+        assert_eq!(part2(&input), 61229);
     }
 }
