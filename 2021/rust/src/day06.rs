@@ -39,7 +39,7 @@ pub fn part2(input: &[u8]) -> usize {
     let state = input.to_vec();
     let mut offsets = vec![0; 8];
     for f in state {
-        offsets[f as usize + 1] += 1;  // add 1 because we have 0-index before reset
+        offsets[f as usize + 1] += 1; // add 1 because we have 0-index before reset
     }
     let mut next_offsets = offsets.clone();
     for day in 1..=256 {
