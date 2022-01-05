@@ -17,6 +17,7 @@ Be sure to check out the Rust Discord! We are on there every day.
 * [AdarkTheCoder/AdventOfCode](https://github.com/AdarkTheCoder/AdventOfCode) lua
 * [sjmulder/aoc](https://github.com/sjmulder/aoc) c
 * [rabuf/advent-of-code](https://github.com/rabuf/advent-of-code) rust+elisp
+* [MichalMarsalek/Advent-of-code](https://github.com/MichalMarsalek/Advent-of-code) nim
 
 ## 2015
 

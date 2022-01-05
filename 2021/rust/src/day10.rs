@@ -70,22 +70,22 @@ pub fn part2(input: &str) -> usize {
                 b']' => {
                     if *level.last().unwrap() == b'[' {
                         level.pop();
-                    }
+                    } else { level.clear(); break }
                 },
                 b'>' => {
                     if *level.last().unwrap() == b'<' {
                         level.pop();
-                    } else { continue }
+                    } else { level.clear(); break }
                 },
                 b')' => {
                     if *level.last().unwrap() == b'(' {
                         level.pop();
-                    } else { continue }
+                    } else { level.clear(); break }
                 },
                 b'}' => {
                     if *level.last().unwrap() == b'{' {
                         level.pop();
-                    } else { continue }
+                    } else { level.clear(); break }
                 },
                 _ => unreachable!(),
             };
@@ -102,8 +102,8 @@ pub fn part2(input: &str) -> usize {
         });
         score
     }).collect::<Vec<usize>>();
+    score.retain(|v| *v != 0);
     score.sort_unstable();
-    println!("{:?}", score);
     score[score.len() / 2]
 }
 
