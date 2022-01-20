@@ -10,10 +10,8 @@ My personal implementations for
 Be sure to check out the Rust Discord! We are on there every day.
 
 * [Globidev/advent-of-code](https://github.com/Globidev/advent-of-code) rust
-* [Kaynato/AdventOfCode](https://github.com/Kaynato/AdventOfCode) rust
 * [0e4ef622/aoc](https://github.com/0e4ef622/aoc) rust
 * [Jonathan Paulson YouTube](https://www.youtube.com/watch?v=R19aQppUh-M) python
-* [AsamK/AdventOfCode](https://github.com/AsamK/AdventOfCode) rs/nom
 * [AdarkTheCoder/AdventOfCode](https://github.com/AdarkTheCoder/AdventOfCode) lua
 * [sjmulder/aoc](https://github.com/sjmulder/aoc) c
 * [rabuf/advent-of-code](https://github.com/rabuf/advent-of-code) rust+elisp
@@ -43,6 +41,7 @@ Be sure to check out the Rust Discord! We are on there every day.
 ## 2019
 
 - [ttencate/aoc2019](https://github.com/ttencate/aoc2019) good intcode
+- [AsamK/AdventOfCode](https://github.com/AsamK/AdventOfCode) rs/nom
 - [petertseng/adventofcode-rs-2019](https://github.com/petertseng/adventofcode-rs-2019)
 
 ## 2020
