@@ -17,7 +17,7 @@
 extern crate advent2021;
 
 use advent2021::*;
-use clap::{App, Arg};
+use clap::{Arg, Command};
 use std::io::{self, Write};
 
 type Error = Box<dyn std::error::Error>;
@@ -35,6 +35,7 @@ const SOLUTIONS: &[Soln] = &[
     day09::solve,
     day10::solve,
     day11::solve,
+    day12::solve,
 ];
 
 fn runday(d: usize, soln: Soln) -> Result<(), Error> {
@@ -68,19 +69,18 @@ pub fn run(day_s: &str) -> Result<(), Error> {
 }
 
 fn main() {
-    let matches = App::new("Advent of Code in Rust 2021")
+    let matches = Command::new("Advent of Code in Rust 2021")
         .author("Isaac Curtis <iicurtis att outlook doot com>")
         .arg(
-            Arg::with_name("day")
-                .short("d")
+            Arg::new("day")
+                .short('d')
                 .default_value("0")
                 .help("Day of the advent calendar")
-                .value_name("DAY")
-                .takes_value(true),
+                .value_name("DAY"),
         )
         .get_matches();
 
-    let day = matches.value_of("day").unwrap_or_default();
+    let day = matches.get_one::<String>("day").unwrap();
     // DETECT stdin
     // LOAD inputX.txt
     match run(day) {

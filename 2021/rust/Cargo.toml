@@ -5,7 +5,7 @@ authors = ["Isaac Curtis <iicurtis@outlook.com>"]
 edition = "2021"
 
 [dependencies]
-clap = "2"
+clap = "4"
 itertools = "0.10"
 rayon = "1"
 #hashbrown = "0.6"
