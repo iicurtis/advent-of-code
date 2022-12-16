@@ -22,12 +22,11 @@ pub fn parse(input: &str) -> Grid {
     let grid = input
         .trim()
         .lines()
-        .map(|l| {
+        .flat_map(|l| {
             xsize = l.len();
             ysize += 1;
             l.as_bytes().iter().map(|b| b - b'0').collect::<Vec<u8>>()
         })
-        .flatten()
         .collect();
     Grid { xsize, ysize, grid }
 }

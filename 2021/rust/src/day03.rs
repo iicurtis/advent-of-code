@@ -40,7 +40,7 @@ pub fn part1(input: &Bits) -> usize {
 
 pub fn part2(input: &Bits) -> usize {
     let mut o2_vec = input.vec.clone();
-    for i in (0..input.msb as usize).rev() {
+    for i in (0..input.msb).rev() {
         let keep = max_bit(&o2_vec, i) ^ 1;
         o2_vec.retain(|x| (x >> i) & 1 == keep);
         if o2_vec.len() == 1 {
@@ -48,7 +48,7 @@ pub fn part2(input: &Bits) -> usize {
         }
     }
     let mut co2_vec = input.vec.clone();
-    for i in (0..input.msb as usize).rev() {
+    for i in (0..input.msb).rev() {
         let keep = max_bit(&co2_vec, i);
         co2_vec.retain(|x| (x >> i) & 1 == keep);
         if co2_vec.len() == 1 {

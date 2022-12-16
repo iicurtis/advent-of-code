@@ -34,21 +34,21 @@ fn cave_paths<'a>(
 }
 
 pub fn part1(input: &str) -> usize {
-    let mut caves = std::collections::HashMap::new();
+    let mut caves: std::collections::HashMap<&str, Vec<&str>> = std::collections::HashMap::new();
     for line in input.trim().lines() {
         let (a, b) = line.split_once('-').unwrap();
-        caves.entry(a).or_insert(Vec::new()).push(b);
-        caves.entry(b).or_insert(Vec::new()).push(a);
+        caves.entry(a).or_default().push(b);
+        caves.entry(b).or_default().push(a);
     }
     cave_paths(&caves, "start", &mut Vec::new(), true)
 }
 
 pub fn part2(input: &str) -> usize {
-    let mut caves = std::collections::HashMap::new();
+    let mut caves: std::collections::HashMap<&str, Vec<&str>> = std::collections::HashMap::new();
     for line in input.trim().lines() {
         let (a, b) = line.split_once('-').unwrap();
-        caves.entry(a).or_insert(Vec::new()).push(b);
-        caves.entry(b).or_insert(Vec::new()).push(a);
+        caves.entry(a).or_default().push(b);
+        caves.entry(b).or_default().push(a);
     }
     cave_paths(&caves, "start", &mut Vec::new(), false)
 }
