@@ -16,6 +16,7 @@ Be sure to check out the Rust Discord! We are on there every day.
 * [sjmulder/aoc](https://github.com/sjmulder/aoc) c
 * [rabuf/advent-of-code](https://github.com/rabuf/advent-of-code) rust+elisp
 * [MichalMarsalek/Advent-of-code](https://github.com/MichalMarsalek/Advent-of-code) nim
+* [odnoletkov/advent-of-code-jq](https://github.com/odnoletkov/advent-of-code-jq) jq
 
 ## 2015
 
@@ -60,3 +61,9 @@ Be sure to check out the Rust Discord! We are on there every day.
 
 - [AxlLind/AdventOfCode2021](https://github.com/AxlLind/AdventOfCode2021) rs
 - [ritobanrc/aoc2021](https://github.com/ritobanrc/aoc2021) rs
+
+## 2022
+
+- https://github.com/JeffIrwin/aoc-2022
+- https://github.com/aradi/AoC-2022
+- https://github.com/jacobwilliams/AoC-2022
