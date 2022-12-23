@@ -26,6 +26,7 @@ type Soln = fn(&str) -> Result<String, Error>;
 const SOLUTIONS: &[Soln] = &[
     day01::solve,
     day02::solve,
+    day03::solve,
 ];
 
 fn runday(d: usize, soln: Soln) -> Result<(), Error> {
