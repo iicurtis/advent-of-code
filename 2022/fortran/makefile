@@ -7,7 +7,7 @@
 FC = gfortran
 FCFLAGS = -g -pg -O3 -w -Wall
 
-OBJS = day06.o day12.o
+OBJS = day01.o day06.o day12.o
 
 .PHONY: all clean
 .SUFFIXES: .f90 .o

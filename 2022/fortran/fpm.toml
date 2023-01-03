@@ -1,0 +1,15 @@
+name = "aoc-2022-fortran"
+version = "0.1.0"
+license = "license"
+author = "Isaac Curtis <iicurtis@outlook.com>"
+maintainer = "iicurtis"
+copyright = "Copyright (C) 2022, Isaac Curtis"
+[build]
+auto-executables = true
+auto-tests = true
+auto-examples = true
+[install]
+library = false
+[dependencies]
+stdlib.git = "https://github.com/fortran-lang/stdlib"
+stdlib.branch = "stdlib-fpm"
