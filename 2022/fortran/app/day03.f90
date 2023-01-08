@@ -6,10 +6,8 @@ program day03
 
   integer(int32) :: iunit,ierr,fid,nread
   character(:), allocatable    ::  line, first, second
-  integer(int64) :: part1, part2, n_chars, i, elves
-  logical  :: bits1(128)=.false.,bits2(128)=.false.
-  character(len=1) :: c
-  character(len=1024) :: buffer, ioerrmsg, group_elves(3)
+  integer(int64) :: part1, part2, n_chars, i, elves, seen1, seen2, group_elves(3)
+  character(len=1024) :: buffer, ioerrmsg
   integer(int64) :: time_start,time_end,cr,cm
   call system_clock(count_rate=cr)
   call system_clock(count_rate=cm)
@@ -25,39 +23,35 @@ program day03
      buffer = ''
      line = ''
      do
-     read(fid,'(A)',advance='NO',size=nread,iostat=ierr,iomsg=ioerrmsg) buffer
-     if (is_iostat_eor(ierr)) then
-        ! add the last block of text before the end of record
-        if (nread>0) line = line//buffer(1:nread)
-        exit
-     else if (is_iostat_end(ierr)) then
-        goto 20
-     else if (ierr==0) then ! all the characters were read
-        line = line//buffer  ! add this block of text to the string
-     else  ! some kind of error
-        write(*,*) ierr, ioerrmsg
-        error stop 'Read error'
-        exit
-     end if
-     end do
-
-     n_chars = len(line)/2
-     first = line(1:n_chars); second = line(n_chars+1:)
-     do i = 1, n_chars
-        c = first(i:i) ! check character of first split in second
-        if (index(second, c)>0) then
-           part1 = part1 + value(c)
+        read(fid,'(A)',advance='NO',size=nread,iostat=ierr,iomsg=ioerrmsg) buffer
+        if (is_iostat_eor(ierr)) then
+           ! add the last block of text before the end of record
+           if (nread>0) line = line//buffer(1:nread)
+           if (nread.eq.0) goto 20 ! if line is empty, stop reading
+           exit
+        else if (is_iostat_end(ierr)) then
+           goto 20
+        else if (ierr==0) then ! all the characters were read
+           line = line//buffer  ! add this block of text to the string
+        else  ! some kind of error
+           write(*,*) ierr, ioerrmsg
+           error stop 'Read error'
            exit
         end if
      end do
-     group_elves(elves) = line
+
+     seen1 = 0
+     seen2 = 0
+     n_chars = len(line)/2
+     first = line(1:n_chars); second = line(n_chars+1:)
+     do i = 1, n_chars
+        seen1 = ibset(seen1, 63 - value(first(i:i)))
+        seen2 = ibset(seen2, 63 - value(second(i:i)))
+     end do
+     part1 = part1 + leadz(iand(seen1, seen2))
+     group_elves(elves) = ior(seen1, seen2)
      if (elves == 3) then
-        do i = 1, len(line)
-           if(index(group_elves(1), line(i:i)) > 0 .and. index(group_elves(2), line(i:i))>0) then
-              part2 = part2 + value(line(i:i))
-              exit
-           end if
-        end do
+        part2 = part2 + leadz(iand(group_elves(1), iand(group_elves(2), group_elves(3))))
      end if
      elves = merge(1_int64, elves+1, elves==3)
   end do
@@ -69,7 +63,7 @@ program day03
   write(*,"(a,i10)") "  part 2: ", part2
   write(*,"(a,f12.6,a)") "  system_clock: ", (time_end - time_start) / real(cr) * 1e6, " μs"
 
-  contains
+contains
   integer function value(c1)
     character(len=1), intent(in) :: c1
     integer :: j
@@ -78,6 +72,6 @@ program day03
     else
        value = 26 + 1 + ichar(c1) - ichar('A')
     end if
-  end function
+  end function value
 
 end program day03
