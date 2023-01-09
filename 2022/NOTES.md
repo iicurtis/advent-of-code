@@ -98,6 +98,7 @@ what overlaps.
 
 ### parsing
 Key is to split at half of strings and examine each character.
+This is the most interesting fortran parsing I've had to do yet.
 
 rust
 ```rust
