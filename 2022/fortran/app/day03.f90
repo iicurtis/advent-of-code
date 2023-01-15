@@ -44,8 +44,8 @@ program day03
     n_chars = len(line)/2
     first = line(1:n_chars); second = line(n_chars+1:)
     do i = 1, n_chars
-      seen1 = ibset(seen1, value(first(i:i)))
-      seen2 = ibset(seen2, value(second(i:i)))
+      seen1 = ibset(seen1, value_branchless(first(i:i)))
+      seen2 = ibset(seen2, value_branchless(second(i:i)))
     end do
     part1 = part1 + trailz(iand(seen1, seen2))
     group_elves(elves) = ior(seen1, seen2)
@@ -74,9 +74,7 @@ program day03
   integer function value_branchless(c1)
     character(len=1), intent(in) :: c1
     integer :: cint, c
-    cint = ichar(c1) - ichar('A')
-    c = iand(xor(shiftr(cint, 5), 1), 1)  ! if c1 is uppercase (>32), c = 26
-    value_branchless = mod(cint, 32) + c*26 + 1
+    value_branchless = mod(ichar(c1) - 38, 58)
   end function value_branchless
 
 end program

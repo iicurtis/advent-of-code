@@ -9,14 +9,14 @@ My personal implementations for
 
 Be sure to check out the Rust Discord! We are on there every day.
 
-* [Globidev/advent-of-code](https://github.com/Globidev/advent-of-code) rust
-* [0e4ef622/aoc](https://github.com/0e4ef622/aoc) rust
-* [Jonathan Paulson YouTube](https://www.youtube.com/watch?v=R19aQppUh-M) python
-* [AdarkTheCoder/AdventOfCode](https://github.com/AdarkTheCoder/AdventOfCode) lua
-* [sjmulder/aoc](https://github.com/sjmulder/aoc) c
-* [rabuf/advent-of-code](https://github.com/rabuf/advent-of-code) rust+elisp
-* [MichalMarsalek/Advent-of-code](https://github.com/MichalMarsalek/Advent-of-code) nim
-* [odnoletkov/advent-of-code-jq](https://github.com/odnoletkov/advent-of-code-jq) jq
+- [c: sjmulder/aoc](https://github.com/sjmulder/aoc)
+- [jq: odnoletkov/advent-of-code-jq](https://github.com/odnoletkov/advent-of-code-jq)
+- [rust: Globidev/advent-of-code](https://github.com/Globidev/advent-of-code)
+- [rust: 0e4ef622/aoc](https://github.com/0e4ef622/aoc)
+- [python: Jonathan Paulson YouTube](https://www.youtube.com/watch?v=R19aQppUh-M)
+- [lua: AdarkTheCoder/AdventOfCode](https://github.com/AdarkTheCoder/AdventOfCode)
+- [rust/elisp: rabuf/advent-of-code](https://github.com/rabuf/advent-of-code)
+- [nim: MichalMarsalek/Advent-of-code](https://github.com/MichalMarsalek/Advent-of-code)
 
 ## 2015
 
@@ -64,6 +64,7 @@ Be sure to check out the Rust Discord! We are on there every day.
 
 ## 2022
 
-- https://github.com/JeffIrwin/aoc-2022
-- https://github.com/aradi/AoC-2022
-- https://github.com/jacobwilliams/AoC-2022
+- https://github.com/JeffIrwin/aoc-2022 (fortran)
+- https://github.com/aradi/AoC-2022 (fortran)
+- https://github.com/jacobwilliams/AoC-2022 (fortran)
+- [julia: goggle](https://github.com/goggle/AdventOfCode2022.jl)
