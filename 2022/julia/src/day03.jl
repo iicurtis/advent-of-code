@@ -19,5 +19,3 @@ function value(c::Char)
 end
 
 end #module
-
-day03()
