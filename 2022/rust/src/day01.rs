@@ -60,7 +60,6 @@ mod test {
         assert_eq!(part1(&parse(input)), 24000);
     }
 
-
     #[test]
     fn test_part2_0() {
         let input = r#"

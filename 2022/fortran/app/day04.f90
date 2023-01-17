@@ -27,8 +27,6 @@ program day04
     if (.not. (elf2(1) > elf1(2) .or. elf1(1) > elf2(2))) then
       part2 = part2 + 1
     end if
-
-
   end do
   20 close(fid)
 
