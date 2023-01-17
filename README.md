@@ -68,3 +68,4 @@ Be sure to check out the Rust Discord! We are on there every day.
 - https://github.com/aradi/AoC-2022 (fortran)
 - https://github.com/jacobwilliams/AoC-2022 (fortran)
 - [julia: goggle](https://github.com/goggle/AdventOfCode2022.jl)
+- [py, rs, kotlin, hs: ephemient](https://github.com/ephemient/aoc2022)

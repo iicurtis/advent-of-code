@@ -9,19 +9,32 @@ pub fn solve(input: &str) -> Result<String, Error> {
 }
 
 pub fn part1(input: &str) -> usize {
-    input.trim().lines().map(|line| {
-        line.splitn(4, [',', '-'])
-            .map(|x| x.parse::<usize>().unwrap()).collect::<Vec<usize>>()
-    }).filter(|splits| splits[0] <= splits[2] && splits[1] >= splits[3] || splits[0] >= splits[2] && splits[1] <= splits[3])
-    .count()
+    input
+        .trim()
+        .lines()
+        .map(|line| {
+            line.splitn(4, [',', '-'])
+                .map(|x| x.parse::<usize>().unwrap())
+                .collect::<Vec<usize>>()
+        })
+        .filter(|splits| {
+            splits[0] <= splits[2] && splits[1] >= splits[3]
+                || splits[0] >= splits[2] && splits[1] <= splits[3]
+        })
+        .count()
 }
 
 pub fn part2(input: &str) -> usize {
-    input.trim().lines().map(|line| {
-        line.splitn(4, [',', '-'])
-            .map(|x| x.parse::<usize>().unwrap()).collect::<Vec<usize>>()
-    }).filter(|splits| splits[0] <= splits[3] && splits[1] >= splits[2])
-    .count()
+    input
+        .trim()
+        .lines()
+        .map(|line| {
+            line.splitn(4, [',', '-'])
+                .map(|x| x.parse::<usize>().unwrap())
+                .collect::<Vec<usize>>()
+        })
+        .filter(|splits| splits[0] <= splits[3] && splits[1] >= splits[2])
+        .count()
 }
 
 #[cfg(test)]
