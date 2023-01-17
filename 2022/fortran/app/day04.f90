@@ -6,7 +6,6 @@ program day04
   implicit none
 
   integer(int32) :: iunit,ierr,fid,nread
-  character(:), allocatable    ::  line, first, second
   character(len=1024) :: buffer, ioerrmsg
   integer(int64) :: part1, part2, elf1(2), elf2(2)
   call initialize_day
@@ -14,22 +13,18 @@ program day04
   part1 = 0
   part2 = 0
 
-  nread = 0
   open(newunit=fid,file="../inputs/day04.txt", status='old')
   do
-    line = ''
     read(fid, "(a)", end=20, iostat=ierr) buffer
     if (len_trim(buffer) == 0) exit
     do iunit = 1, len_trim(buffer)
       if (buffer(iunit:iunit) == "-") buffer(iunit:iunit) = " "
     end do
     read(buffer, *) elf1, elf2
-    if ((elf1(1) <= elf2(1)) .and. (elf1(2) >= elf2(2))) then
-      part1 = part1 + 1
-    else if ((elf1(1) <= elf2(1)) .and. (elf2(2) >= elf1(2))) then
+    if ( product(elf1 - elf2) <= 0 ) then ! either one negative or matched start/end
       part1 = part1 + 1
     end if
-    if (.not. (elf2(1) > elf1(2) .or. elf1(1) > elf2(2)) then
+    if (.not. (elf2(1) > elf1(2) .or. elf1(1) > elf2(2))) then
       part2 = part2 + 1
     end if
 
