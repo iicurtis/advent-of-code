@@ -5,7 +5,7 @@ function day04(input::String = joinpath(@__DIR__, "..", "..", "inputs", "day04.t
     input = open(input, "r") do file
         read(file, String)
     end
-    input_lines = map(s -> parse.(Int, s), split.(split(rstrip(input), "\n"), c -> c in ",-"))
+    input_lines = map(i -> parse.(Int, i), split.(split(rstrip(input), "\n"), c -> c in ",-"))
     part1 = 0
     part2 = 0
     for (a,b,c,d) in input_lines
