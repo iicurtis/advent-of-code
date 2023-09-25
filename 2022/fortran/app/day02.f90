@@ -23,7 +23,7 @@ program day02
      if(a.lt.'A') exit
      abc = ichar(a) - ichar('A')
      xyz = ichar(b) - ichar('X')
-     j = mod(ichar(b) - ichar(a) - 20, 3) + 1
+     j = mod(xyz + 3 - abc, 3) + 1
      part1 = part1 + xyz + outcomes(j) + 1
      select case (xyz)
         case (0)
