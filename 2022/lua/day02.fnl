@@ -12,10 +12,7 @@
   (+ xyz (. outcomes j) 1))
 
 (fn get-round-part2 [abc xyz]
-  (case xyz
-    0 (+ (math.fmod (+ abc 2) 3) 1)
-    1 (+ abc 4)
-    2 (+ (math.fmod (+ abc 1) 3) 6 1)))
+  (+ 1 (math.fmod (+ abc xyz 2) 3) (* xyz 3)))
 
 (fn play [get-round]
   (with-open [f (io.open input-file :r)]

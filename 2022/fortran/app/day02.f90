@@ -5,7 +5,7 @@ program day02
   implicit none
 
   integer(int32) :: iunit,ierr,fid
-  integer(int64) :: part1, part2, abc, xyz, outcomes(3), j, outcomes2(3)
+  integer(int64) :: part1, part2, abc, xyz, outcome, outcomes(3), j, outcomes2(3)
   character    ::   a, b
   integer(int64) :: time_start,time_end,cr,cm
   call system_clock(count_rate=cr)
@@ -18,21 +18,15 @@ program day02
 
   open(newunit=fid,file="../inputs/day02.txt", status='old')
   do
-     read(fid,'(a1,1x,a1)',iostat=ierr) a,b
-     if(ierr.ne.0) exit
-     if(a.lt.'A') exit
-     abc = ichar(a) - ichar('A')
-     xyz = ichar(b) - ichar('X')
-     j = mod(xyz + 3 - abc, 3) + 1
-     part1 = part1 + xyz + outcomes(j) + 1
-     select case (xyz)
-        case (0)
-           part2 = part2 + mod(abc + 2, 3_int64) + 1
-        case (1)
-           part2 = part2 + abc + 1 + 3
-        case (2)
-           part2 = part2 + mod(abc + 1, 3_int64) + 1 + 6
-     end select
+    read(fid,'(a1,1x,a1)',iostat=ierr) a,b
+    if(ierr.ne.0) exit
+    if(a.lt.'A') exit
+    abc = ichar(a) - ichar('A')
+    xyz = ichar(b) - ichar('X')
+    j = mod(xyz + 3 - abc, 3) + 1
+    part1 = part1 + xyz + outcomes(j) + 1
+    outcome = 1 + mod(abc + xyz + 2, 3) + xyz * 3
+    part2 = part2 + outcome
   end do
   close(fid)
 

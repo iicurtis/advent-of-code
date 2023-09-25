@@ -1,7 +1,5 @@
 module Day01
 
-using AdventOfCode2022
-
 function day01(input::String=joinpath(@__DIR__, "..", "..", "inputs", "day01.txt"))
   input = open(input, "r") do file
     read(file, String)
@@ -12,3 +10,5 @@ function day01(input::String=joinpath(@__DIR__, "..", "..", "inputs", "day01.txt
 end
 
 end # module
+
+Day01.day01()

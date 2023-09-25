@@ -37,12 +37,7 @@ pub fn part1(input: &[(u8, u8)]) -> usize {
 pub fn part2(input: &[(u8, u8)]) -> usize {
     input
         .iter()
-        .map(|(abc, xyz)| match xyz {
-            0 => (*abc as usize + 2) % 3 + 1,
-            1 => *abc as usize + 1 + 3,
-            2 => (*abc as usize + 1) % 3 + 1 + 6,
-            _ => unreachable!(),
-        })
+        .map(|(abc, xyz)| ((*abc + *xyz + 2) % 3 + 1 + xyz * 3) as usize)
         .sum()
 }
 
