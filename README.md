@@ -17,6 +17,7 @@ Be sure to check out the Rust Discord! We are on there every day.
 - [lua: AdarkTheCoder/AdventOfCode](https://github.com/AdarkTheCoder/AdventOfCode)
 - [rust/elisp: rabuf/advent-of-code](https://github.com/rabuf/advent-of-code)
 - [nim: MichalMarsalek/Advent-of-code](https://github.com/MichalMarsalek/Advent-of-code)
+- [janet felixr](https://github.com/felixr/advent-of-code)
 
 ## 2015
 
@@ -69,3 +70,12 @@ Be sure to check out the Rust Discord! We are on there every day.
 - https://github.com/jacobwilliams/AoC-2022 (fortran)
 - [julia: goggle](https://github.com/goggle/AdventOfCode2022.jl)
 - [py, rs, kotlin, hs: ephemient](https://github.com/ephemient/aoc2022)
+- [lisp atgreen](https://github.com/atgreen/advent-of-code-2022)
+- [lisp elmosfire](https://gitlab.com/Elmosfire/aoc2022lisp)
+- [lisp rabuf](https://github.com/rabuf/advent-of-code)
+- [lisp flockofsparrows](https://codeberg.org/flockofsparrows/AoC22)
+- [lisp kingcons maximum complexity](https://github.com/kingcons/advent-of-code)
+- [lisp blake-watkins](https://github.com/blake-watkins/advent-of-code-2022)
+- [lisp xvan](https://github.com/xvan/adventofcode-2022)
+- [fennel brennop](https://github.com/brennop/aoc-2022)
+- [fennel ec965](https://github.com/ec965/adventofcode2022)
