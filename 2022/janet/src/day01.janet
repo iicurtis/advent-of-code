@@ -7,4 +7,6 @@
            (map sum _)
            (sort _ >)
            (take 3 _)))
-(print (in inp 0) "\n" (sum inp))
+(defn run []
+  (print "Part 1: " (in inp 0))
+  (print "Part 2: " (sum inp)))
