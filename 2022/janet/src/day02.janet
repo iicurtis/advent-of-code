@@ -13,6 +13,7 @@
                             :line (* (cmt (* :1 " " :2) ,tuple) "\n")
                             :main (some :line)}
                           (slurp "../inputs/day02.txt")))
-  (printf "Part 1: %P" (sum (map |(outcome ;$) results)))
-  (printf "Part 2: %P" (sum (map |(outcome ($ 0) (% (+ 2 ;$) 3)) results))))  # why does this work????
+  (printf "Day 02:")
+  (printf " Part 1: %P" (sum (map |(outcome ;$) results)))
+  (printf " Part 2: %P" (sum (map |(outcome ($ 0) (% (+ 2 ;$) 3)) results))))  # why does this work????
 (run)
