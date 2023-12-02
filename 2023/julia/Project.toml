@@ -1,0 +1,12 @@
+name = "AdventOfCode2023"
+uuid = "c02b2cdd-8171-47ca-8464-ad7ab3e71b83"
+authors = ["Isaac Curtis <iicurtis@outlook.com>"]
+version = "0.1.0"
+
+[deps]
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+LanguageServer = "2b0e0bc5-e4fd-59b4-8912-456d1b03d8d7"
+Pluto = "c3e4b0f8-55cb-11ea-2926-15256bba5781"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
