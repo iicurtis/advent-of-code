@@ -53,3 +53,5 @@ Manifest.toml
 
 **/bin/
 **/build/
+
+.qlot
