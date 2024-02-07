@@ -1,5 +1,5 @@
 ;;;; Day 1: Calorie Counting
-(in-package :aoc-2022)
+(in-package :advent-of-code-2022)
 
 (defparameter *day1-input* #P"../inputs/day01.txt")
 (defparameter *day1-test-input* "1000
@@ -31,9 +31,9 @@
 (defun read-cals (input)
   "Convert input into groups of calorie sums"
   (let ((cals (sort
-                (mapcar (lambda (nums) (reduce #'+ (mapcar #'parse-integer nums)))
-                        (split-sequence:split-sequence "" input :test #'equal))
-                #'>)))
-      cals))
+               (mapcar (lambda (nums) (reduce #'+ (mapcar #'parse-integer nums)))
+                       (split-sequence:split-sequence "" input :test #'equal))
+               #'>)))
+    cals))
 
 (run-day1)

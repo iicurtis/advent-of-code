@@ -19,6 +19,8 @@ Be sure to check out the Rust Discord! We are on there every day.
 - [nim: MichalMarsalek/Advent-of-code](https://github.com/MichalMarsalek/Advent-of-code)
 - [janet felixr](https://github.com/felixr/advent-of-code)
 - [janet tionis](https://github.com/tionis/adventofcode)
+- [lisp_iamfirecracker](https://github.com/iamFIREcracker/adventofcode)
+- [lisp_verdammelt](https://github.com/verdammelt/advent-of-code)
 
 ## 2015
 
